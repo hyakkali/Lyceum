@@ -20,22 +20,22 @@
         <form action="/community-create" method="post" onsubmit="return validateForm()">
           <div class="form-group">
             <label>Name</label>
-            <input type="text" class="form-control" name="community-name">
+            <input type="text" class="form-control" name="name">
           </div> <!-- end div form-group -->
           <div class="form-group">
             <label>Description</label>
-            <input type="text" class="form-control" name="community-description">
+            <input type="text" class="form-control" name="description">
           </div> <!-- end div form-group -->
           <div id="url" class="form-group">
             <label>Material</label>
-            <input type="url" class="form-control" name="community-material">
+            <input type="url" class="form-control" name="material">
             <button id="button" type="button" onclick="addURL()">Add URL</button>
             <script>
               function addURL() {
                 var url = $('#url');
                 var button = $('#button');
                 url.append('<label id="label" >Material</label>');
-                url.append('<input type="url" class="form-control" name="track-material">');
+                url.append('<input type="url" class="form-control" name="material">');
                 url.append('<style> #label {padding-top:15px;}');
                 $('#button').appendTo(url);
               }
