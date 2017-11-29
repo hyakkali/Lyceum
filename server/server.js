@@ -9,7 +9,7 @@ var app = express();
 var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
+app.use(bodyParser.urlencoded({ //allows form submission to be read
   extended:true
 }));
 app.set('view engine','hbs');
