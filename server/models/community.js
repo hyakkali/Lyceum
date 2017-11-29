@@ -1,7 +1,7 @@
 const mongoose  = require('mongoose ');
 const validator = require('validator');
 
-var trackSchema = mongoose.Schema({
+var CommunitySchema = mongoose.Schema({
   name:{
     type:String,
     required:true,
@@ -32,6 +32,6 @@ var trackSchema = mongoose.Schema({
   }]
 });
 
-var Track = mongoose.model('Track',trackSchema);
+var Community = mongoose.model('Community',CommunitySchema);
 
-module.exports = {Track};
+module.exports = {Community};

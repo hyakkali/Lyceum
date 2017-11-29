@@ -3,7 +3,7 @@ module.exports = (app)=>{
     res.render('index.hbs');
   });
 
-  app.get('/track-create',(req,res)=>{
-    res.render('track-create.hbs');
+  app.get('/community-create',(req,res)=>{
+    res.render('community-create.hbs');
   });
 }

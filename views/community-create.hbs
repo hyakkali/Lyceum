@@ -16,19 +16,19 @@
   <body>
     <div class="container">
       <div class="col-sm-6 col-sm-offset-3">
-        <h1>Create Track</h1>
-        <form action="/track-create" method="post" onsubmit="myFunction()">
+        <h1>Create a New Community</h1>
+        <form action="/community-create" method="post" onsubmit="return validateForm()">
           <div class="form-group">
             <label>Name</label>
-            <input type="text" class="form-control" name="track-name">
+            <input type="text" class="form-control" name="community-name">
           </div> <!-- end div form-group -->
           <div class="form-group">
             <label>Description</label>
-            <input type="text" class="form-control" name="track-description">
+            <input type="text" class="form-control" name="community-description">
           </div> <!-- end div form-group -->
           <div id="url" class="form-group">
             <label>Material</label>
-            <input type="url" class="form-control" name="track-material">
+            <input type="url" class="form-control" name="community-material">
             <button id="button" type="button" onclick="addURL()">Add URL</button>
             <script>
               function addURL() {
