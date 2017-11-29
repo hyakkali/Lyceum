@@ -11,19 +11,13 @@ module.exports = (app)=>{
   });
 
   app.post('/community-create',(req,res)=>{
-    if (req.body.material) {
-      var comm = new Community({
-        name:req.body.name,
-        description:req.body.description,
-        createdAt: new Date().getTime(),
-        material:req.body.material
-      });
-    }else {
-      var comm = new Community({
-        name:req.body.name,
-        description:req.body.description,
-        createdAt: new Date().getTime(),
-      });
+    var comm = new Community({
+      name:req.body.name,
+      description:req.body.description,
+      createdAt: new Date().getTime(),
+    });
+    if (req.body.material) { //if material is posted
+      comm.material=req.body.material
     }
     comm.save().then((doc)=>{
       res.send(doc);
