@@ -1,4 +1,4 @@
-const mongoose  = require('mongoose ');
+const mongoose  = require('mongoose');
 const validator = require('validator');
 
 var CommunitySchema = mongoose.Schema({
@@ -17,14 +17,14 @@ var CommunitySchema = mongoose.Schema({
   },
   createdBy:{
     type: mongoose.Schema.Types.ObjectId,
-    required:true
+    required:false //false for now but should be true once user model created
   },
   createdAt:{
     type:Number,
     required:true
   },
   material:[{
-    type:String
+    type:String,
     validate:{
       validator:validator.isURL,
       message:'{VALUE} is not a valid URL'
