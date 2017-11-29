@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/Communities');
+mongoose.connect(process.env.MONGODB_URI);
 
 var app = express();
 var port = process.env.PORT || 3000;
