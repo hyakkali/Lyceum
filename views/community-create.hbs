@@ -20,27 +20,44 @@
         <form action="/community-create" method="post" onsubmit="return validateForm()">
           <div class="form-group">
             <label>Name</label>
-            <input type="text" class="form-control" name="name">
+            <input type="text" class="form-control" id="name" name="name">
           </div> <!-- end div form-group -->
           <div class="form-group">
             <label>Description</label>
-            <input type="text" class="form-control" name="description">
+            <input type="text" class="form-control" id="description" name="description">
           </div> <!-- end div form-group -->
           <div id="url" class="form-group">
-            <label>Material</label>
-            <input type="url" class="form-control" name="material">
+            <label id="label-one">Material</label>
+            <input type="url" class="form-control" id="material" name="material">
             <button id="button" type="button" onclick="addURL()">Add URL</button>
             <script>
               function addURL() {
                 var url = $('#url');
                 var button = $('#button');
-                url.append('<label id="label" >Material</label>');
-                url.append('<input type="url" class="form-control" name="material">');
+                var label = $('#label-one');
+                label.html('Material #1');
+                url.append('<label id="label">Material</label>');
+                url.append('<input type="url" class="form-control" id="material" name="material">');
                 url.append('<style> #label {padding-top:15px;}');
+                var newLabel = $('#label'); //array of id label labels
+                var count = newLabel.length+1;
+                newLabel.html('Material #'+count);
                 $('#button').appendTo(url);
               }
             </script>
           </div> <!-- end div form-group -->
+          <script>
+            function validateForm() {
+              var name = document.getElementById('name');
+              var description = document.getElementById('description');
+              if (name.value.trim()===''||description.value.trim()==='') {
+                name.style.borderColor = "#E34234";
+                description.style.borderColor = "#E34234";
+                return false;
+              }
+              return true;
+            }
+          </script>
           <button type="submit" class="btn btn-warning btn-lg">Create Track</button>
         </form>
       </div> <!-- end div col-sm-6 col-sm-offset-3 -->
