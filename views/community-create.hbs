@@ -16,6 +16,9 @@
   <body>
     <div class="container">
       <div class="col-sm-6 col-sm-offset-3">
+        <div id="errors">
+
+        </div>
         <h1>Create a New Community</h1>
         <form action="/community-create" method="post" onsubmit="return validateForm()">
           <div class="form-group">
@@ -50,9 +53,14 @@
             function validateForm() {
               var name = document.getElementById('name');
               var description = document.getElementById('description');
+              var div = document.getElementById('errors');
+              div.className = '';
+              div.innerHTML = '';
               if (name.value.trim()===''||description.value.trim()==='') {
                 name.style.borderColor = "#E34234";
                 description.style.borderColor = "#E34234";
+                div.className += 'alert alert-danger';
+                div.innerHTML += 'Name and description are required!';
                 return false;
               }
               return true;

@@ -11,12 +11,20 @@ module.exports = (app)=>{
   });
 
   app.post('/community-create',(req,res)=>{
-    var comm = new Community({
-      name:req.body.name,
-      description:req.body.description,
-      createdAt: new Date().getTime(),
-      material:req.body.material
-    });
+    if (req.body.material) {
+      var comm = new Community({
+        name:req.body.name,
+        description:req.body.description,
+        createdAt: new Date().getTime(),
+        material:req.body.material
+      });
+    }else {
+      var comm = new Community({
+        name:req.body.name,
+        description:req.body.description,
+        createdAt: new Date().getTime(),
+      });
+    }
     comm.save().then((doc)=>{
       res.send(doc);
     },(e)=>{
