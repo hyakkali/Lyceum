@@ -19,3 +19,5 @@ require('./routes.js')(app);
 app.listen(port,()=>{
   console.log('The magic happens on port',port);
 });
+
+module.exports = {app};
