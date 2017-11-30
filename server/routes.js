@@ -1,5 +1,6 @@
 var {Community} = require('./models/community');
 const moment = require('moment');
+const {ObjectID} = require('mongodb');
 
 module.exports = (app)=>{
   app.get('/',(req,res)=>{
@@ -20,9 +21,26 @@ module.exports = (app)=>{
       comm.material=req.body.material
     }
     comm.save().then((doc)=>{
-      res.send(doc);
+      // res.send(doc);
+      res.redirect('/community/'+comm._id); //redirect to community page
     },(e)=>{
       res.status(400).send(e);
     });
+  });
+
+  app.get('/community/:id',(req,res)=>{ //GET specific community page
+    var id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+      return res.status(404).send();
+    };
+
+    Community.findById(id).then((comm)=>{
+      if (!comm) {
+        return res.status(404).send();
+      }
+      
+      res.status(200).send({comm});
+    }).catch((e)=>res.status(400).send());
   });
 }

@@ -24,15 +24,15 @@ describe('POST /community-create', ()=> {
           'https://en.wikipedia.org/wiki/Quantum_computing'
         ]
       })
-      .expect(200)
-      .expect((res)=>{
-        expect(res.body.name).toBe('Relative Physics');
-        expect(res.body.description).toBe('Generic description');
-        expect(res.body.material).toEqual([
-          'https://thenounproject.com/',
-          'https://en.wikipedia.org/wiki/Quantum_computing'
-        ]);
-      })
+      .expect(302)
+      // .expect((res)=>{
+      //   expect(res.body.name).toBe('Relative Physics');
+      //   expect(res.body.description).toBe('Generic description');
+      //   expect(res.body.material).toEqual([
+      //     'https://thenounproject.com/',
+      //     'https://en.wikipedia.org/wiki/Quantum_computing'
+      //   ]);
+      // })
       .end((err,res)=>{
         if (err) {
           return done(err);
@@ -61,5 +61,20 @@ describe('POST /community-create', ()=> {
           done();
         }).catch((e)=>done(e));
       });
+  });
+});
+
+describe('GET /community/:id', ()=> {
+  it('should return community', (done) =>{
+    request(app)
+      .get(`/community/${communities[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res)=>{
+        expect(res.body.comm.name).toBe(communities[0].name);
+        expect(res.body.comm.description).toBe(communities[0].description);
+        expect(res.body.comm.createdAt).toBe(communities[0].createdAt);
+        expect(res.body.comm.material).toEqual(communities[0].material);
+      })
+      .end(done);
   });
 });
