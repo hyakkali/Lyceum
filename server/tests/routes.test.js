@@ -135,4 +135,19 @@ describe('DELETE /community/:id', ()=> {
         }).catch((e)=>done(e));
       });
   });
+
+  it('should return a 404 if community not found', (done) =>{
+    var id = new ObjectID().toHexString();
+    request(app)
+      .delete(`/community/${id}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return a 404 if object is invalid', (done) =>{
+    request(app)
+      .delete('/community/12344')
+      .expect(404)
+      .end(done);
+  });
 });
