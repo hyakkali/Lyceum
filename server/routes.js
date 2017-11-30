@@ -1,4 +1,6 @@
 var {Community} = require('./models/community');
+var {Topic} = require('./models/topic');
+
 const moment = require('moment');
 const {ObjectID} = require('mongodb');
 const _ = require('lodash');
@@ -89,4 +91,52 @@ module.exports = (app)=>{
       res.status(200).send({comm});
     }).catch((e)=>res.status(400).send());
   });
+
+  app.get('/topic-create',(req,res)=>{
+    res.render('topic-create.hbs');
+  });
+
+  app.post('/topic-create',(req,res)=>{
+    var topic = new Topic({
+      name:req.body.name,
+      description:req.body.description,
+      createdAt: new Date().getTime(),
+    });
+    if (req.body.material) { //if material is posted
+      topic.material=req.body.material
+    }
+    topic.save().then((doc)=>{
+      // res.send(doc);
+      res.redirect('/topic/'+topic._id); //redirect to community page
+    },(e)=>{
+      res.status(400).send(e);
+    });
+  });
+
+  app.get('/topics',(req,res)=>{ //GET all communities
+    Topic.find().then((topics)=>{
+      res.send({topics});
+    },(e)=>{
+      if (e) {
+        res.status(400).send(e)
+      }
+    });
+  });
+
+  app.get('/topic/:id',(req,res)=>{ //GET specific community page
+    var id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+      return res.status(404).send();
+    };
+
+    Topic.findById(id).then((topic)=>{
+      if (!topic) {
+        return res.status(404).send();
+      }
+
+      res.status(200).send({topic});
+    }).catch((e)=>res.status(400).send());
+  });
+
 }
