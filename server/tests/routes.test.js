@@ -91,6 +91,30 @@ describe('GET /community/:id', ()=> {
   });
 });
 
+describe('PATCH /community/:id', ()=> {
+  it('should update the todo', (done)=> {
+    var id = communities[0]._id.toHexString();
+    var name = 'Update name';
+    var description = 'Update name';
+    var material = ['https://calendar.google.com/','https://www.facebook.com/'];
+
+    request(app)
+      .patch(`/community/${id}`)
+      .send({
+        name,
+        description,
+        material
+      })
+      .expect(200)
+      .expect((res)=>{
+        expect(res.body.comm.name).toBe(name);
+        expect(res.body.comm.description).toBe(description);
+        expect(res.body.comm.material).toEqual(material);
+      })
+      .end(done)
+  });
+});
+
 describe('DELETE /community/:id', ()=> {
   it('should remove a community', (done) =>{
     var id = communities[0]._id.toHexString();

@@ -1,6 +1,7 @@
 var {Community} = require('./models/community');
 const moment = require('moment');
 const {ObjectID} = require('mongodb');
+const _ = require('lodash');
 
 module.exports = (app)=>{
   app.get('/',(req,res)=>{
@@ -25,6 +26,24 @@ module.exports = (app)=>{
       res.redirect('/community/'+comm._id); //redirect to community page
     },(e)=>{
       res.status(400).send(e);
+    });
+  });
+
+  app.patch('/community/:id',(req,res)=>{
+    var id = req.params.id;
+    var body = _.pick(req.body,['name','description','material']);
+
+    if (!ObjectID.isValid(id)) {
+      return res.status(404).send();
+    }
+
+    Community.findOneAndUpdate({_id:id},{$set:body},{new:true}).then((comm)=>{
+      if (!comm) {
+        return res.status(404).send();
+      }
+      res.send({comm});
+    }).catch((e)=>{
+      res.status(400).send();
     });
   });
 
