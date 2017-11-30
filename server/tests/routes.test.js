@@ -90,3 +90,25 @@ describe('GET /community/:id', ()=> {
       .end(done);
   });
 });
+
+describe('DELETE /community/:id', ()=> {
+  it('should remove a community', (done) =>{
+    var id = communities[0]._id.toHexString();
+
+    request(app)
+      .delete(`/community/${id}`)
+      .expect(200)
+      .expect((res)=>{
+        expect(res.body.comm._id).toBe(id)
+      })
+      .end((err,res)=>{
+        if (err) {
+          return done(err);
+        }
+        Community.findById(id).then((comm)=>{
+          expect(comm).toBeFalsy();
+          done();
+        }).catch((e)=>done(e));
+      });
+  });
+});
