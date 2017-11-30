@@ -64,6 +64,18 @@ describe('POST /community-create', ()=> {
   });
 });
 
+describe('GET /communities', ()=>{
+  it('should return all communities', (done)=> {
+    request(app)
+      .get('/communities')
+      .expect(200)
+      .expect((res)=>{
+        expect(res.body.comms.length).toBe(2);
+      })
+      .end(done);
+  });
+});
+
 describe('GET /community/:id', ()=> {
   it('should return community', (done) =>{
     request(app)

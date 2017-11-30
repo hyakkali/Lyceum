@@ -28,6 +28,16 @@ module.exports = (app)=>{
     });
   });
 
+  app.get('/communities',(req,res)=>{ //GET all communities
+    Community.find().then((comms)=>{
+      res.send({comms});
+    },(e)=>{
+      if (e) {
+        res.status(400).send(e)
+      }
+    });
+  });
+
   app.get('/community/:id',(req,res)=>{ //GET specific community page
     var id = req.params.id;
 
@@ -39,7 +49,7 @@ module.exports = (app)=>{
       if (!comm) {
         return res.status(404).send();
       }
-      
+
       res.status(200).send({comm});
     }).catch((e)=>res.status(400).send());
   });
