@@ -141,7 +141,11 @@ module.exports = (app)=>{
     }).catch((e)=>res.status(400).send());
   });
 
-  app.post('/users',(req,res)=>{
+  app.get('/users/signup',(req,res)=>{
+    res.render('signup.hbs');
+  })
+
+  app.post('/users/signup',(req,res)=>{
     var body = _.pick(req.body,['first_name','last_name','email','password']);
     var user = new User(body);
     user.save().then((user)=>{
@@ -157,6 +161,10 @@ module.exports = (app)=>{
   app.get('/users/profile',authenticate,(req,res)=>{
     res.send(req.user);
   });
+
+  app.get('/users/login',(req,res)=>{
+    res.render('login.hbs');
+  })
 
   app.post('/users/login',(req,res)=>{
     var body = _.pick(req.body,['email','password']);
