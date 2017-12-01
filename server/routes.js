@@ -1,5 +1,7 @@
 var {Community} = require('./models/community');
 var {Topic} = require('./models/topic');
+var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 const moment = require('moment');
 const {ObjectID} = require('mongodb');
@@ -137,6 +139,23 @@ module.exports = (app)=>{
 
       res.status(200).send({topic});
     }).catch((e)=>res.status(400).send());
+  });
+
+  app.post('/users',(req,res)=>{
+    var body = _.pick(req.body,['first_name','last_name','email','password']);
+    var user = new User(body);
+    user.save().then((user)=>{
+      // res.send(user);
+      return user.generateAuthToken();
+    }).then((token)=>{
+      res.header('x-auth',token).send(user);
+    }).catch((e)=>{
+      res.status(400).send(e);
+    })
+  });
+
+  app.get('/users/profile',authenticate,(req,res)=>{
+    res.send(req.user);
   });
 
 }
