@@ -1,12 +1,17 @@
 const {ObjectID} = require('mongodb');
+const jwt = require('jsonwebtoken');
 
 const {Community} = require('./../../models/community');
 const {Topic} = require('./../../models/topic');
+const {User} = require('./../../models/user');
+
 
 const commOneId = new ObjectID();
 const commTwoId = new ObjectID();
 const topicOneId = new ObjectID();
 const topicTwoId = new ObjectID();
+const userOneId = new ObjectID();
+const userTwoId = new ObjectID();
 
 const communities = [{
   _id:commOneId,
@@ -48,6 +53,28 @@ const topics = [{
   ]
 }];
 
+const users = [{
+  _id:userOneId,
+  first_name:'Hemanth',
+  last_name:'Yakkali',
+  email:'hemanth.yakkali@duke.edu',
+  password:'testpassword',
+  tokens:[{
+    access:'auth',
+    token:jwt.sign({_id:userOneId,access:'auth'},'abc123').toString()
+  }]
+},{
+  _id:userTwoId,
+  first_name:'Spencer',
+  last_name:'Schneier',
+  email:'spencer@lyceum.network',
+  password:'testanotherpassword',
+  tokens:[{
+    access:'auth',
+    token:jwt.sign({_id:userTwoId,access:'auth'},'abc123').toString()
+  }]
+}];
+
 const populateComms = (done)=>{
   Community.remove({}).then(()=>{
     var commOne = new Community(communities[0]).save();
@@ -66,4 +93,13 @@ const populateTopics = (done)=>{
 }).then(()=>done());
 };
 
-module.exports = {communities,populateComms,topics,populateTopics};
+const populateUsers = (done)=>{
+  User.remove({}).then(()=>{
+    var userOne = new User(users[0]).save();
+    var userTwo = new User(users[1]).save();
+
+    return Promise.all([userOne,userTwo])
+  }).then(()=>done());
+};
+
+module.exports = {communities,populateComms,topics,populateTopics,users,populateUsers};
