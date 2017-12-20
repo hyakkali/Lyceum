@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <p>{{community.name}}</p>
+    <p>{{community.description}}</p>
+    {{#each community.material}}
+      <li><a href="{{this}}">{{this}}</a></li>
+    {{else}}
+      <p>No links yet!</p>
+    {{/each}}
+    <a href="/topic-create">Create a topic!</a>
+  </body>
+</html>

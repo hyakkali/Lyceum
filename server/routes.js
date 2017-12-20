@@ -90,7 +90,8 @@ module.exports = (app)=>{
         return res.status(404).send();
       }
 
-      res.status(200).send({comm});
+      res.render('community.hbs',{community:comm});
+      // res.status(200).send({comm});
     }).catch((e)=>res.status(400).send());
   });
 
@@ -158,8 +159,17 @@ module.exports = (app)=>{
     })
   });
 
-  app.get('/users/profile',authenticate,(req,res)=>{
-    res.send(req.user);
+  app.get('/users/profile/:id',authenticate,(req,res)=>{
+    var id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+      return res.status(404).send();
+    }
+    User.findById(id).then((user)=>{
+      if (!user) {
+        return res.status(404).send();
+      }
+      res.status(200).send({user});
+    }).catch((e)=>done(e));
   });
 
   app.get('/users/login',(req,res)=>{
