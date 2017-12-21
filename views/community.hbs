@@ -2,26 +2,87 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="/js/libs/jquery-3.2.1.slim.min.js" charset="utf-8"></script>
+    <script src="/js/libs/validator.min.js" charset="utf-8"></script>
     <title></title>
+    <style>
+      body {padding-top: 80px;}
+    </style>
   </head>
   <body>
-    <p>{{community.name}}</p>
-    <p>{{community.description}}</p>
-    {{#each community.material}}
-      <li><a href="{{this}}">{{this}}</a></li>
-    {{else}}
-      <p>No links yet!</p>
-    {{/each}}
+    <div class="container">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h1>{{community.name}}</h1>
+        <h4>{{community.description}}</h4>
 
-    <form class="" action="/post/{{community._id}}" method="post">
-      <input type="text" name="message" value="">
-      <input type="submit" name="" value="Post">
-    </form>
+        <br>
 
-    {{#each posts}}
-      <li>{{this}}</li>
-    {{else}}
-      <p>No posts yet!</p>
-    {{/each}}
+        {{#each community.material}}
+          <li><a href="{{this}}">{{this}}</a></li>
+        {{else}}
+          <p>No links yet!</p>
+        {{/each}}
+
+        <div id="errors"></div>
+
+        <form class="" action="/link/{{community._id}}" method="post" onsubmit="return validateForm()">
+          <div class="form-group">
+            <label>Post a new link</label>
+            <input type="text" class="form-control" id="link" name="link">
+          </div> <!-- end div form-group -->
+          <script>
+            function validateForm() {
+              var link = document.getElementById('link');
+              var div = document.getElementById('errors');
+              div.className = '';
+              div.innerHTML = '';
+              if (!validator.isURL(link.value.trim())) {
+                link.style.borderColor = "#E34234";
+                div.className += 'alert alert-danger';
+                div.innerHTML += 'Must be a valid URL!';
+                return false;
+              }
+              return true;
+            }
+          </script>
+          <button type="submit" class="btn btn-warning btn-md">Post Link</button>
+        </form> <!-- add validation for valid URL's -->
+
+        <br>
+
+        {{#each posts}}
+          <li>{{this}}</li>
+        {{else}}
+          <p>No posts yet!</p>
+        {{/each}}
+
+        <div id="errors2"></div>
+
+        <form class="" action="/post/{{community._id}}" method="post" onsubmit="return validateForm()">
+          <div class="form-group">
+            <label>Post a message</label>
+            <input type="text" class="form-control"  id="message" name="message">
+          </div> <!-- end div form-group -->
+          <script>
+            function validateForm() {
+              var message = document.getElementById('message');
+              var div = document.getElementById('errors2');
+              div.className = '';
+              div.innerHTML = '';
+              if (message.value.trim()==='') {
+                message.style.borderColor = "#E34234";
+                div.className += 'alert alert-danger';
+                div.innerHTML += 'Post cannot me empty';
+                return false;
+              }
+              return true;
+            }
+          </script>
+          <button type="submit" class="btn btn-warning btn-md">Post Message</button>
+        </form> <!-- add validation for no empty messages -->
+      </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+    </div> <!-- end div container -->
   </body>
 </html>

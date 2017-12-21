@@ -114,10 +114,20 @@ module.exports = (app)=>{
           return res.status(404).send();
         }
         res.status(200).redirect('/community/'+id);
-      })
+      }).catch((e)=>res.status(400).send());
       // res.status(200).render('community.hbs',{post:post})
     },(e)=>res.status(400).send(e));
   });
+
+  app.post('/link/:id',(req,res)=>{
+    var id = req.params.id;
+    Community.findOneAndUpdate({_id:id},{$push:{material:req.body.link}},{new:true}).then((comm)=>{
+      if (!comm) {
+        return res.status(404).send();
+      }
+      res.status(200).redirect('/community/'+id);
+    }).catch((e)=>res.status(400).send());
+  },(e)=>res.status(400).send(e));
 
 // TOPIC
 
