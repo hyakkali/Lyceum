@@ -60,13 +60,13 @@
 
         <div id="errors2"></div>
 
-        <form class="" action="/post/{{community._id}}" method="post" onsubmit="return validateForm()">
+        <form class="" action="/post/{{community._id}}" method="post" onsubmit="return validateForm2()">
           <div class="form-group">
             <label>Post a message</label>
             <input type="text" class="form-control"  id="message" name="message">
           </div> <!-- end div form-group -->
           <script>
-            function validateForm() {
+            function validateForm2() {
               var message = document.getElementById('message');
               var div = document.getElementById('errors2');
               div.className = '';
@@ -74,7 +74,7 @@
               if (message.value.trim()==='') {
                 message.style.borderColor = "#E34234";
                 div.className += 'alert alert-danger';
-                div.innerHTML += 'Post cannot me empty';
+                div.innerHTML += 'Post cannot be empty';
                 return false;
               }
               return true;

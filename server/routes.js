@@ -26,9 +26,7 @@ module.exports = (app)=>{
       description:req.body.description,
       createdAt: new Date().getTime(),
     });
-    if (req.body.material) { //if material is posted
-      comm.material=req.body.material
-    }
+    
     comm.save().then((doc)=>{
       // res.send(doc);
       res.redirect('/community/'+comm._id); //redirect to community page

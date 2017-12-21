@@ -26,26 +26,6 @@
             <label>Description</label>
             <input type="text" class="form-control" id="description" name="description">
           </div> <!-- end div form-group -->
-          <div id="url" class="form-group">
-            <label id="label-one">Material</label>
-            <input type="url" class="form-control" id="material" name="material">
-            <button id="button" type="button" onclick="addURL()">Add URL</button>
-            <script>
-              function addURL() {
-                var url = $('#url');
-                var button = $('#button');
-                var label = $('#label-one');
-                label.html('Material #1');
-                url.append('<label id="label">Material</label>');
-                url.append('<input type="url" class="form-control" id="material" name="material">');
-                url.append('<style> #label {padding-top:15px;}');
-                var newLabel = $('#label'); //array of id label labels
-                var count = newLabel.length+1;
-                newLabel.html('Material #'+count);
-                $('#button').appendTo(url);
-              }
-            </script>
-          </div> <!-- end div form-group -->
           <script>
             function validateForm() {
               var name = document.getElementById('name');
@@ -63,7 +43,7 @@
               return true;
             }
           </script>
-          <button type="submit" class="btn btn-warning btn-lg">Create Community</button>
+          <button type="submit" class="btn btn-warning btn-lg">Create</button>
         </form>
       </div> <!-- end div col-sm-6 col-sm-offset-3 -->
     </div> <!-- end div container -->

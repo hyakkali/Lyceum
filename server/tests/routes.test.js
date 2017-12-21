@@ -26,10 +26,6 @@ describe('POST /community-create', ()=> {
       .send({
         name:'Relative Physics',
         description: 'Generic description',
-        material:[
-          'https://thenounproject.com/',
-          'https://en.wikipedia.org/wiki/Quantum_computing'
-        ]
       })
       .expect(302)
       // .expect((res)=>{
