@@ -19,6 +19,10 @@ var CommunitySchema = mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     required:false
   }],
+  posts:[{
+    type:String,
+    required:false
+  }],
   createdBy:{
     type: mongoose.Schema.Types.ObjectId,
     required:false //false for now but should be true once user model created

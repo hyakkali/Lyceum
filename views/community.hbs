@@ -12,7 +12,16 @@
     {{else}}
       <p>No links yet!</p>
     {{/each}}
-    <h3>Topics</h3>
-    <a href="/topic-create">Create a topic!</a>
+
+    <form class="" action="/post/{{community._id}}" method="post">
+      <input type="text" name="message" value="">
+      <input type="submit" name="" value="Post">
+    </form>
+
+    {{#each posts}}
+      <li>{{this}}</li>
+    {{else}}
+      <p>No posts yet!</p>
+    {{/each}}
   </body>
 </html>

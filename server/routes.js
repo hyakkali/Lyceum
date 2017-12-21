@@ -93,22 +93,29 @@ module.exports = (app)=>{
       if (!comm) {
         return res.status(404).send();
       }
-
-      res.render('community.hbs',{community:comm})
+      res.render('community.hbs',{community:comm,posts:comm.posts})
       // res.status(200).send({comm});
     }).catch((e)=>res.status(400).send());
   });
 
 // POST
 
-  app.post('/post',(req,res)=>{
+  app.post('/post/:id',(req,res)=>{
+    var id = req.params.id;
     var post = new Post({
       message:req.body.message,
       createdAt: new Date().getTime(),
     });
 
     post.save().then((doc)=>{
-      res.status(200).send(doc);
+      // res.status(200).send(doc);
+      Community.findOneAndUpdate({_id:id},{$push:{posts:post.message}},{new:true}).then((comm)=>{
+        if (!comm) {
+          return res.status(404).send();
+        }
+        res.status(200).redirect('/community/'+id);
+      })
+      // res.status(200).render('community.hbs',{post:post})
     },(e)=>res.status(400).send(e));
   });
 
