@@ -1,6 +1,8 @@
 var {Community} = require('./models/community');
 var {Topic} = require('./models/topic');
 var {User} = require('./models/user');
+var {Post} = require('./models/post');
+
 var {authenticate} = require('./middleware/authenticate');
 
 const moment = require('moment');
@@ -11,6 +13,8 @@ module.exports = (app)=>{
   app.get('/',(req,res)=>{
     res.render('index.hbs');
   });
+
+// COMMUNITY
 
   app.get('/community-create',(req,res)=>{
     res.render('community-create.hbs');
@@ -90,10 +94,25 @@ module.exports = (app)=>{
         return res.status(404).send();
       }
 
-      res.render('community.hbs',{community:comm});
+      res.render('community.hbs',{community:comm})
       // res.status(200).send({comm});
     }).catch((e)=>res.status(400).send());
   });
+
+// POST
+
+  app.post('/post',(req,res)=>{
+    var post = new Post({
+      message:req.body.message,
+      createdAt: new Date().getTime(),
+    });
+
+    post.save().then((doc)=>{
+      res.status(200).send(doc);
+    },(e)=>res.status(400).send(e));
+  });
+
+// TOPIC
 
   app.get('/topic-create',(req,res)=>{
     res.render('topic-create.hbs');
@@ -141,6 +160,8 @@ module.exports = (app)=>{
       res.status(200).send({topic});
     }).catch((e)=>res.status(400).send());
   });
+
+// USER
 
   app.get('/users/signup',(req,res)=>{
     res.render('signup.hbs');

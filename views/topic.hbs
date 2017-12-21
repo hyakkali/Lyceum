@@ -5,14 +5,11 @@
     <title></title>
   </head>
   <body>
-    <p>{{community.name}}</p>
-    <p>{{community.description}}</p>
-    {{#each community.material}}
+    <p>{{topic.name}}</p>
+    {{#each topic.material}}
       <li><a href="{{this}}">{{this}}</a></li>
     {{else}}
       <p>No links yet!</p>
     {{/each}}
-    <h3>Topics</h3>
-    <a href="/topic-create">Create a topic!</a>
   </body>
 </html>

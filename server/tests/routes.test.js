@@ -7,6 +7,7 @@ const {app} = require('./../server');
 const {Community} = require('./../models/community');
 const {Topic} = require('./../models/topic');
 const {User} = require('./../models/user');
+const {Post} = require('./../models/post');
 
 
 const {communities,populateComms,topics,populateTopics,users,populateUsers} = require('./seed/seed');
@@ -158,6 +159,28 @@ describe('DELETE /community/:id', ()=> {
   });
 });
 
+// POST
+
+describe('POST /post', ()=> {
+  it('should create a new post', (done)=> {
+    request(app)
+      .post('/post')
+      .send({message:"New message!"})
+      .expect(200)
+      .expect((res)=>{
+        expect(res.body.message).toBe('New message!')
+      })
+      .end((err,res)=>{
+        if (err) {
+          return done(err);
+        };
+        done();
+      });
+  });
+});
+
+// TOPIC
+
 describe('POST /topic-create', ()=> {
   it('should create a new topic', (done) =>{
     request(app)
@@ -236,6 +259,8 @@ describe('GET /topic/:id', ()=> {
       .end(done);
   });
 });
+
+// USER
 
 describe('POST /users/signup', ()=> {
   it('should create a new user', (done) =>{

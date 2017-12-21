@@ -15,6 +15,10 @@ var CommunitySchema = mongoose.Schema({
     minlength:1,
     unique:false
   },
+  topic:[{
+    type:mongoose.Schema.Types.ObjectId,
+    required:false
+  }],
   createdBy:{
     type: mongoose.Schema.Types.ObjectId,
     required:false //false for now but should be true once user model created
