@@ -3,7 +3,7 @@ var {Topic} = require('./models/topic');
 var {User} = require('./models/user');
 var {Post} = require('./models/post');
 
-var {authenticate} = require('./middleware/authenticate');
+var {requiresLogin} = require('./middleware/authenticate');
 
 const moment = require('moment');
 const {ObjectID} = require('mongodb');
@@ -54,7 +54,7 @@ module.exports = (app)=>{
     });
   })
 
-  app.get('/profile',(req,res,next)=>{
+  app.get('/profile',requiresLogin,(req,res,next)=>{
     User.findById(req.session.userId)
       .exec((err,user)=>{
         if (err) {
@@ -71,7 +71,7 @@ module.exports = (app)=>{
       });
   });
 
-  app.get('/logout',(req,res,next)=>{
+  app.get('/logout',requiresLogin,(req,res,next)=>{
     if (req.session) {
       req.session.destroy(function (err) {
         if (err) {
@@ -88,7 +88,7 @@ module.exports = (app)=>{
     res.render('community-create.hbs');
   });
 
-  app.post('/community-create',(req,res)=>{
+  app.post('/community-create',requiresLogin,(req,res)=>{
     var comm = new Community({
       name:req.body.name,
       description:req.body.description,
@@ -103,7 +103,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.patch('/community/:id',(req,res)=>{
+  app.patch('/community/:id',requiresLogin,(req,res)=>{
     var id = req.params.id;
     var body = _.pick(req.body,['name','description','material']);
 
@@ -121,7 +121,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.delete('/community/:id',(req,res)=>{
+  app.delete('/community/:id',requiresLogin,(req,res)=>{
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
@@ -149,7 +149,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.get('/community/:id',(req,res)=>{ //GET specific community page
+  app.get('/community/:id',requiresLogin,(req,res)=>{ //GET specific community page
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
@@ -167,7 +167,7 @@ module.exports = (app)=>{
 
 // POST
 
-  app.post('/post/:id',(req,res)=>{
+  app.post('/post/:id',requiresLogin,(req,res)=>{
     var id = req.params.id;
     var post = new Post({
       message:req.body.message,
@@ -186,7 +186,7 @@ module.exports = (app)=>{
     },(e)=>res.status(400).send(e));
   });
 
-  app.post('/link/:id',(req,res)=>{
+  app.post('/link/:id',requiresLogin,(req,res)=>{
     var id = req.params.id;
     Community.findOneAndUpdate({_id:id},{$push:{material:req.body.link}},{new:true}).then((comm)=>{
       if (!comm) {
@@ -198,11 +198,11 @@ module.exports = (app)=>{
 
 // TOPIC
 
-  app.get('/topic-create',(req,res)=>{
+  app.get('/topic-create',requiresLogin,(req,res)=>{
     res.render('topic-create.hbs');
   });
 
-  app.post('/topic-create',(req,res)=>{
+  app.post('/topic-create',requiresLogin,(req,res)=>{
     var topic = new Topic({
       name:req.body.name,
       description:req.body.description,
@@ -219,7 +219,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.get('/topics',(req,res)=>{ //GET all communities
+  app.get('/topics',(req,res)=>{ //GET all topics
     Topic.find().then((topics)=>{
       res.send({topics});
     },(e)=>{
@@ -229,7 +229,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.get('/topic/:id',(req,res)=>{ //GET specific community page
+  app.get('/topic/:id',requiresLogin,(req,res)=>{ //GET specific topic page
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
@@ -245,60 +245,4 @@ module.exports = (app)=>{
     }).catch((e)=>res.status(400).send());
   });
 
-// // USER
-//
-//   app.get('/users/signup',(req,res)=>{
-//     res.render('signup.hbs');
-//   })
-//
-//   app.post('/users/signup',(req,res)=>{
-//     var body = _.pick(req.body,['first_name','last_name','email','password']);
-//     var user = new User(body);
-//     user.save().then((user)=>{
-//       // res.send(user);
-//       return user.generateAuthToken();
-//     }).then((token)=>{
-//       res.header('x-auth',token).send(user);
-//     }).catch((e)=>{
-//       res.status(400).send(e);
-//     })
-//   });
-//
-//   app.get('/users/profile/:id',authenticate,(req,res)=>{
-//     var id = req.params.id;
-//     if (!ObjectID.isValid(id)) {
-//       return res.status(404).send();
-//     }
-//     User.findById(id).then((user)=>{
-//       if (!user) {
-//         return res.status(404).send();
-//       }
-//       res.status(200).send({user});
-//     }).catch((e)=>done(e));
-//   });
-//
-//   app.get('/users/login',(req,res)=>{
-//     res.render('login.hbs');
-//   })
-//
-//   app.post('/users/login',(req,res)=>{
-//     var body = _.pick(req.body,['email','password']);
-//
-//     User.findByCredentials(body.email,body.password).then((user)=>{
-//       return user.generateAuthToken().then((token)=>{
-//         res.header('x-auth',token).send(user);
-//       });
-//     }).catch((e)=>{
-//       res.status(400).send();
-//     });
-//   });
-//
-//   app.delete('/users/logout',authenticate,(req,res)=>{
-//     req.user.removeToken(req.token).then(()=>{
-//       res.status(200).send();
-//     },()=>{
-//       res.status(400).send();
-//     });
-//   });
-//
 }

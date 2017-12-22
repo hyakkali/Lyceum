@@ -1,18 +1,13 @@
 var {User} = require('./../models/user');
 
-var authenticate = (req,res,next)=>{
-  var token = req.header('x-auth');
+var requiresLogin = (req,res,next)=>{
+  if (req.session && req.session.userId) {
+    return next();
+  }else {
+    var err = new Error('You must be logged in to view this page.');
+    err.status = 401;
+    return next(err);
+  }
+}
 
-  User.findByToken(token).then((user)=>{
-    if (!user) {
-      return Promise.reject();
-    }
-    req.user = user;
-    req.token=token;
-    next();
-  }).catch((e)=>{
-    res.status(401).send();
-  });
-};
-
-module.exports = {authenticate};
+module.exports = {requiresLogin};
