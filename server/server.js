@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
 
@@ -11,6 +13,15 @@ mongoose.connect(process.env.MONGODB_URI||'mongodb://localhost:27017/Communities
 
 var app = express();
 var port = process.env.PORT || 3000;
+
+app.use(session({
+  secret:'work hard',
+  resave:true,
+  saveUninitialized:false,
+  store:new MongoStore({
+    mongooseConnection:mongoose.connection
+  })
+}));
 
 app.use(express.static(publicPath));
 app.use(bodyParser.json());

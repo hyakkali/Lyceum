@@ -14,6 +14,74 @@ module.exports = (app)=>{
     res.render('index.hbs');
   });
 
+// USER
+
+  app.get('/register',(req,res)=>{
+    res.render('signup.hbs');
+  })
+
+  app.get('/login',(req,res)=>{
+    res.render('login.hbs');
+  })
+
+  app.post('/register',(req,res,next)=>{
+
+    var user = new User({
+      first_name:req.body.first_name,
+      last_name:req.body.last_name,
+      email:req.body.email,
+      password:req.body.password,
+    });
+
+    user.save().then((doc)=>{
+      req.session.userId = user._id;
+      res.redirect('/profile');
+    },(e)=>{
+      return next(error);
+    });
+  });
+
+  app.post('/login',(req,res,next)=>{
+    User.authenticate(req.body.logemail,req.body.logpassword,(err,user)=>{
+      if (err||!user) {
+        var err = new Error('Wrong email or password.');
+        err.status = 401;
+        return next(err);
+      }else {
+        req.session.userId=user._id;
+        return res.redirect('/profile');
+      }
+    });
+  })
+
+  app.get('/profile',(req,res,next)=>{
+    User.findById(req.session.userId)
+      .exec((err,user)=>{
+        if (err) {
+          return next(err);
+        }else {
+          if (user===null) {
+            var err = new Error('Not authorized! Go back!');
+            err.status = 400;
+            return next(err);
+          }else {
+            return res.send('<h1>Name: </h1>' + user.first_name + '<h2>Mail: </h2>' + user.email + '<br><a type="button" href="/logout">Logout</a>')
+          }
+        }
+      });
+  });
+
+  app.get('/logout',(req,res,next)=>{
+    if (req.session) {
+      req.session.destroy(function (err) {
+        if (err) {
+          return next(err);
+        }else {
+          return res.redirect('/');
+        }
+      });
+    }
+  });
 // COMMUNITY
 
   app.get('/community-create',(req,res)=>{
@@ -177,60 +245,60 @@ module.exports = (app)=>{
     }).catch((e)=>res.status(400).send());
   });
 
-// USER
-
-  app.get('/users/signup',(req,res)=>{
-    res.render('signup.hbs');
-  })
-
-  app.post('/users/signup',(req,res)=>{
-    var body = _.pick(req.body,['first_name','last_name','email','password']);
-    var user = new User(body);
-    user.save().then((user)=>{
-      // res.send(user);
-      return user.generateAuthToken();
-    }).then((token)=>{
-      res.header('x-auth',token).send(user);
-    }).catch((e)=>{
-      res.status(400).send(e);
-    })
-  });
-
-  app.get('/users/profile/:id',authenticate,(req,res)=>{
-    var id = req.params.id;
-    if (!ObjectID.isValid(id)) {
-      return res.status(404).send();
-    }
-    User.findById(id).then((user)=>{
-      if (!user) {
-        return res.status(404).send();
-      }
-      res.status(200).send({user});
-    }).catch((e)=>done(e));
-  });
-
-  app.get('/users/login',(req,res)=>{
-    res.render('login.hbs');
-  })
-
-  app.post('/users/login',(req,res)=>{
-    var body = _.pick(req.body,['email','password']);
-
-    User.findByCredentials(body.email,body.password).then((user)=>{
-      return user.generateAuthToken().then((token)=>{
-        res.header('x-auth',token).send(user);
-      });
-    }).catch((e)=>{
-      res.status(400).send();
-    });
-  });
-
-  app.delete('/users/logout',authenticate,(req,res)=>{
-    req.user.removeToken(req.token).then(()=>{
-      res.status(200).send();
-    },()=>{
-      res.status(400).send();
-    });
-  });
-
+// // USER
+//
+//   app.get('/users/signup',(req,res)=>{
+//     res.render('signup.hbs');
+//   })
+//
+//   app.post('/users/signup',(req,res)=>{
+//     var body = _.pick(req.body,['first_name','last_name','email','password']);
+//     var user = new User(body);
+//     user.save().then((user)=>{
+//       // res.send(user);
+//       return user.generateAuthToken();
+//     }).then((token)=>{
+//       res.header('x-auth',token).send(user);
+//     }).catch((e)=>{
+//       res.status(400).send(e);
+//     })
+//   });
+//
+//   app.get('/users/profile/:id',authenticate,(req,res)=>{
+//     var id = req.params.id;
+//     if (!ObjectID.isValid(id)) {
+//       return res.status(404).send();
+//     }
+//     User.findById(id).then((user)=>{
+//       if (!user) {
+//         return res.status(404).send();
+//       }
+//       res.status(200).send({user});
+//     }).catch((e)=>done(e));
+//   });
+//
+//   app.get('/users/login',(req,res)=>{
+//     res.render('login.hbs');
+//   })
+//
+//   app.post('/users/login',(req,res)=>{
+//     var body = _.pick(req.body,['email','password']);
+//
+//     User.findByCredentials(body.email,body.password).then((user)=>{
+//       return user.generateAuthToken().then((token)=>{
+//         res.header('x-auth',token).send(user);
+//       });
+//     }).catch((e)=>{
+//       res.status(400).send();
+//     });
+//   });
+//
+//   app.delete('/users/logout',authenticate,(req,res)=>{
+//     req.user.removeToken(req.token).then(()=>{
+//       res.status(200).send();
+//     },()=>{
+//       res.status(400).send();
+//     });
+//   });
+//
 }

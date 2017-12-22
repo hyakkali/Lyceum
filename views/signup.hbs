@@ -14,7 +14,7 @@
       <div class="col-sm-6 col-sm-offset-3">
         <h1>Signup</h1>
         <div id="errors"></div>
-        <form action="/users/signup" method="post" onsubmit="return validateForm()">
+        <form action="/register" method="post" onsubmit="return validateForm()">
           <div class="form-group">
             <label>First Name</label>
             <input type="text" class="form-control" id="first_name"name="first_name">
@@ -33,7 +33,7 @@
           </div> <!-- end div form-group -->
           <div class="form-group">
             <label>Confirm Password</label>
-            <input type="password" class="form-control" id="password2" name="password">
+            <input type="password" class="form-control" id="password2">
           </div> <!-- end div form-group -->
           <script>
           function validateForm() {
@@ -50,6 +50,7 @@
               last_name.style.borderColor = "#E34234";
               email.style.borderColor = "#E34234";
               password.style.borderColor = "#E34234";
+              password2.style.borderColor = "#E34234";
               div.className += 'alert alert-danger';
               div.innerHTML += 'Make sure to fill out all the fields!';
               return false;
