@@ -2,25 +2,24 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="/js/libs/jquery-3.2.1.slim.min.js" charset="utf-8"></script>
+    <script src="/js/libs/validator.min.js" charset="utf-8"></script>
+    <title></title>
     <style>
       body {padding-top: 80px;}
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="jumbotron text-center">
-        <h1>Welcome to Lyceum!</h1>
-        <a href="/communities">View Communities</a>
-        <br>
-        <a href="/community-create">Create a community!</a>
-        <br>
-        <a href="/users/signup">Signup</a>
-        <br>
-        <a href="/users/login">Login</a>
-        <br>
+      <div class="col-sm-6 col-sm-offset-3">
+        <h1>Communities</h1>
+        {{#each comms}}
+          <li><a href="/community/{{this._id}}">{{this.name}}</a></li>
+        {{else}}
+          <p>No Communities!</p>
+        {{/each}}
       </div>
     </div>
   </body>

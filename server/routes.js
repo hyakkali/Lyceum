@@ -26,7 +26,7 @@ module.exports = (app)=>{
       description:req.body.description,
       createdAt: new Date().getTime(),
     });
-    
+
     comm.save().then((doc)=>{
       // res.send(doc);
       res.redirect('/community/'+comm._id); //redirect to community page
@@ -72,7 +72,8 @@ module.exports = (app)=>{
 
   app.get('/communities',(req,res)=>{ //GET all communities
     Community.find().then((comms)=>{
-      res.send({comms});
+      res.status(200).render('community_list.hbs',{comms:comms})
+      // res.send({comms});
     },(e)=>{
       if (e) {
         res.status(400).send(e)
