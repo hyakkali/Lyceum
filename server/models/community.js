@@ -7,7 +7,7 @@ var CommunitySchema = mongoose.Schema({
     required:true,
     trim:true,
     minlength:1,
-    unique:false
+    unique:true
   },
   description:{
     type:String,
