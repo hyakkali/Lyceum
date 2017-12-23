@@ -3,13 +3,14 @@ var {Topic} = require('./models/topic');
 var {User} = require('./models/user');
 var {Post} = require('./models/post');
 
-var {requiresLogin} = require('./middleware/authenticate');
+var {requiresLogin} = require('./middleware/loginRequired');
 
 const moment = require('moment');
 const {ObjectID} = require('mongodb');
 const _ = require('lodash');
 
 module.exports = (app)=>{
+
   app.get('/',(req,res)=>{
     res.render('index.hbs');
   });
@@ -149,7 +150,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.get('/community/:id',requiresLogin,(req,res)=>{ //GET specific community page
+  app.get('/community/:id',(req,res)=>{ //GET specific community page
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
@@ -198,7 +199,7 @@ module.exports = (app)=>{
 
 // TOPIC
 
-  app.get('/topic-create',requiresLogin,(req,res)=>{
+  app.get('/topic-create',(req,res)=>{
     res.render('topic-create.hbs');
   });
 
@@ -229,7 +230,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.get('/topic/:id',requiresLogin,(req,res)=>{ //GET specific topic page
+  app.get('/topic/:id',(req,res)=>{ //GET specific topic page
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
