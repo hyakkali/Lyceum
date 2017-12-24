@@ -20,6 +20,7 @@
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "hbs": "^4.0.1",
+    "helmet": "^3.9.0",
     "jsonwebtoken": "^8.1.0",
     "lodash": "^4.17.4",
     "moment": "^2.19.2",

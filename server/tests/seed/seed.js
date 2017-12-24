@@ -59,20 +59,12 @@ const users = [{
   last_name:'Yakkali',
   email:'hemanth.yakkali@duke.edu',
   password:'testpassword',
-  tokens:[{
-    access:'auth',
-    token:jwt.sign({_id:userOneId,access:'auth'},'abc123').toString()
-  }]
 },{
   _id:userTwoId,
   first_name:'Spencer',
   last_name:'Schneier',
   email:'spencer@lyceum.network',
   password:'testanotherpassword',
-  tokens:[{
-    access:'auth',
-    token:jwt.sign({_id:userTwoId,access:'auth'},'abc123').toString()
-  }]
 }];
 
 const populateComms = (done)=>{

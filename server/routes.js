@@ -25,7 +25,7 @@ module.exports = (app)=>{
     res.render('login.hbs');
   })
 
-  app.post('/register',(req,res,next)=>{
+  app.post('/register',(req,res)=>{
 
     var user = new User({
       first_name:req.body.first_name,
@@ -38,12 +38,12 @@ module.exports = (app)=>{
       req.session.userId = user._id;
       res.redirect('/profile');
     },(e)=>{
-      return next(error);
+      res.status(400).send(e);
     });
   });
 
   app.post('/login',(req,res,next)=>{
-    User.authenticate(req.body.logemail,req.body.logpassword,(err,user)=>{
+    User.authenticate(req.body.email,req.body.password,(err,user)=>{
       if (err||!user) {
         var err = new Error('Wrong email or password.');
         err.status = 401;

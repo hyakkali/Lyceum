@@ -5,6 +5,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
+const helmet = require('helmet');
 
 const publicPath = path.join(__dirname,'../public');
 
@@ -22,6 +23,8 @@ app.use(session({
     mongooseConnection:mongoose.connection
   })
 }));
+
+app.use(helmet());
 
 app.use(express.static(publicPath));
 app.use(bodyParser.json());
