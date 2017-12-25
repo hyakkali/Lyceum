@@ -129,7 +129,16 @@ module.exports = (app)=>{
     });
   });
 
-  app.delete('/community/:id',requiresLogin,(req,res)=>{
+  app.get('/community-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
+    var id = req.params.id;
+    Community.findById(id).then((comm)=>{
+      if (!comm) {
+        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
+      }
+      return res.render('community-delete.hbs',{community:comm});
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))  })
+
+  app.post('/community-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
@@ -142,7 +151,7 @@ module.exports = (app)=>{
       if (!comm) {
         return res.status(404).render('error.hbs',{error:'Community could not be found.'});
       }
-      res.status(200).send({comm})
+      return res.redirect('/communities');
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be deleted.'}));
   });
 
