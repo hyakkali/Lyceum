@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="/js/libs/validator.min.js" charset="utf-8"></script>
     <style>
       body {padding-top: 80px;}
     </style>
@@ -25,7 +26,7 @@
           </div> <!-- end div form-group -->
           <div class="form-group">
             <label>Email</label>
-            <input type="email" class="form-control" id="email"name="email">
+            <input type="text" class="form-control" id="email"name="email">
           </div> <!-- end div form-group -->
           <div class="form-group">
             <label>Password</label>
@@ -55,7 +56,13 @@
               div.innerHTML += 'Make sure to fill out all the fields!';
               return false;
             }
-            else if (password.value!==password2.value) {
+            if (!validator.isEmail(email.value)) {
+              email.style.borderColor = "#E34234";
+              div.className += 'alert alert-danger';
+              div.innerHTML += 'Email must be valid!';
+              return false;
+            }
+            if (password.value!==password2.value) {
               password.style.borderColor = "#E34234";
               password2.style.borderColor = "#E34234";
               div.className += 'alert alert-danger';
