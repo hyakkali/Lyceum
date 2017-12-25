@@ -60,16 +60,13 @@ module.exports = (app)=>{
       .exec((err,user)=>{
         if (err) {
           return next(err);
-        }else {
-          if (user===null) {
-            var err = new Error('Not authorized! Go back!');
-            err.status = 400;
-            return next(err);
-          }else {
-            // return res.send('<h1>Name: </h1>' + user.first_name + '<h2>Mail: </h2>' + user.email + '<br><a type="button" href="/logout">Logout</a>')
-            return res.status(200).render('profile.hbs',{user:user});
-          }
         }
+        if (user===null) {
+          var err = new Error('Not authorized! Go back!');
+          err.status = 400;
+          return next(err);
+        }
+        return res.status(200).render('profile.hbs',{user:user});
       });
   });
 
@@ -84,6 +81,7 @@ module.exports = (app)=>{
       });
     }
   });
+
 // COMMUNITY
 
   app.get('/community-create',(req,res)=>{
@@ -151,7 +149,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.get('/community/:id',(req,res)=>{ //GET specific community page
+  app.get('/community/:id',requiresLogin,(req,res)=>{ //GET specific community page
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
@@ -172,20 +170,32 @@ module.exports = (app)=>{
   app.post('/post/:id',requiresLogin,(req,res)=>{
     var id = req.params.id; // community id
     var time = new Date().getTime();
-    var post = new Post({
-      message:req.body.message,
-      createdAt: moment(time).format('h:mm a'),
-    });
-
-    post.save().then((doc)=>{
-      // res.status(200).send(doc);
-      Community.findOneAndUpdate({_id:id},{$push:{posts:post}},{new:true}).then((comm)=>{
-        if (!comm) {
-          return res.status(404).send();
+    User.findById(req.session.userId)
+      .exec((err,user)=>{
+        if (err) {
+          return next(err);
         }
-        res.status(200).redirect('/community/'+id); //reload same page with new post saved
-      }).catch((e)=>res.status(400).send());
-    },(e)=>res.status(400).send(e));
+        if (user===null) {
+          var err = new Error('Not authorized! Go back!');
+          err.status = 400;
+          return next(err);
+        }
+        var post = new Post({
+          message:req.body.message,
+          createdAt: moment(time).format('h:mm a'),
+          createdBy:user.first_name+' '+user.last_name
+        });
+
+        post.save().then((doc)=>{
+          // res.status(200).send(doc);
+          Community.findOneAndUpdate({_id:id},{$push:{posts:post}},{new:true}).then((comm)=>{
+            if (!comm) {
+              return res.status(404).send();
+            }
+            res.status(200).redirect('/community/'+id); //reload same page with new post saved
+          }).catch((e)=>res.status(400).send());
+        },(e)=>res.status(400).send(e));
+      })
   });
 
   app.post('/link/:id',requiresLogin,(req,res)=>{

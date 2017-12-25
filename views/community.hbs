@@ -54,10 +54,10 @@
         </form> <!-- add validation for valid URL's -->
 
         <br>
-
         {{#each posts}}
           {{this.message}}
           {{this.createdAt}}
+          {{this.createdBy}}
           <br>
         {{else}}
           <p>No posts yet!</p>
