@@ -32,6 +32,7 @@ module.exports = (app)=>{
       first_name:req.body.first_name,
       last_name:req.body.last_name,
       email:req.body.email,
+      username:req.body.username,
       password:req.body.password,
     });
 
@@ -184,7 +185,7 @@ module.exports = (app)=>{
         var post = new Post({
           message:req.body.message,
           createdAt: moment(time).format('h:mm a'),
-          createdBy:user.first_name+' '+user.last_name
+          createdBy:user.username,
         });
 
         post.save().then((doc)=>{

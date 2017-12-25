@@ -18,15 +18,19 @@
         <form action="/register" method="post" onsubmit="return validateForm()">
           <div class="form-group">
             <label>First Name</label>
-            <input type="text" class="form-control" id="first_name"name="first_name">
+            <input type="text" class="form-control" id="first_name" name="first_name">
           </div> <!-- end div form-group -->
           <div class="form-group">
             <label>Last Name</label>
-            <input type="text" class="form-control" id="last_name"name="last_name">
+            <input type="text" class="form-control" id="last_name" name="last_name">
           </div> <!-- end div form-group -->
           <div class="form-group">
             <label>Email</label>
-            <input type="text" class="form-control" id="email"name="email">
+            <input type="text" class="form-control" id="email" name="email">
+          </div> <!-- end div form-group -->
+          <div class="form-group">
+            <label>Display Name</label>
+            <input type="text" class="form-control" id="username" name="username">
           </div> <!-- end div form-group -->
           <div class="form-group">
             <label>Password</label>
@@ -41,6 +45,7 @@
             var first_name = document.getElementById('first_name');
             var last_name = document.getElementById('last_name');
             var email = document.getElementById('email');
+            var username = document.getElementById('username');
             var password = document.getElementById('password');
             var password2 = document.getElementById('password2');
             var div = document.getElementById('errors');
@@ -50,6 +55,7 @@
               first_name.style.borderColor = "#E34234";
               last_name.style.borderColor = "#E34234";
               email.style.borderColor = "#E34234";
+              username.style.borderColor = "#E34234";
               password.style.borderColor = "#E34234";
               password2.style.borderColor = "#E34234";
               div.className += 'alert alert-danger';
