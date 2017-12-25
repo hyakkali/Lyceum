@@ -22,6 +22,46 @@ var PostSchema = mongoose.Schema({
   }
 });
 
+var UserSchema = new mongoose.Schema({
+  first_name:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:false
+  },
+  last_name:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:false
+  },
+  email:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:true,
+    validate:{
+      validator:validator.isEmail,
+      message:'{VALUE} is not a valid e-mail'
+    }
+  },
+  username:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:true
+  },
+  password:{
+    type:String,
+    required:true,
+    minlength:6
+  },
+});
+
 var CommunitySchema = mongoose.Schema({
   name:{
     type:String,
@@ -41,9 +81,10 @@ var CommunitySchema = mongoose.Schema({
     required:false
   }],
   posts:[PostSchema],
+  users:[UserSchema],
   createdBy:{
-    type: mongoose.Schema.Types.ObjectId,
-    required:false //false for now but should be true once user model created
+    type:mongoose.Schema.Types.ObjectId,
+    required:true,
   },
   createdAt:{
     type:Number,

@@ -86,6 +86,9 @@
           </script>
           <button type="submit" class="btn btn-warning btn-md">Post Message</button>
         </form> <!-- add validation for no empty messages -->
+        {{#if owner}}
+          <a href="/community-update/{{community._id}}">Update</a>
+        {{/if}}
       </div> <!-- end div col-sm-6 col-sm-offset-3 -->
     </div> <!-- end div container -->
   </body>

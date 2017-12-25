@@ -3,7 +3,7 @@ var {Topic} = require('./models/topic');
 var {User} = require('./models/user');
 var {Post} = require('./models/post');
 
-var {requiresLogin,isAuthenticated} = require('./middleware/loginRequired');
+var {requiresLogin,isAuthenticated,requiresOwner,isOwner} = require('./middleware/loginRequired');
 
 const moment = require('moment');
 const {ObjectID} = require('mongodb');
@@ -90,6 +90,7 @@ module.exports = (app)=>{
       name:req.body.name,
       description:req.body.description,
       createdAt: new Date().getTime(),
+      createdBy:req.session.userId
     });
 
     comm.save().then((doc)=>{
@@ -100,7 +101,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.get('/community-update/:id',requiresLogin,(req,res)=>{
+  app.get('/community-update/:id',[requiresLogin,requiresOwner],(req,res)=>{
     var id = req.params.id;
     Community.findById(id).then((comm)=>{
       if (!comm) {
@@ -110,7 +111,7 @@ module.exports = (app)=>{
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
   })
 
-  app.post('/community-update/:id',requiresLogin,(req,res)=>{
+  app.post('/community-update/:id',[requiresLogin,requiresOwner],(req,res)=>{
     var id = req.params.id;
     var body = _.pick(req.body,['name','description']);
 
@@ -156,7 +157,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.get('/community/:id',requiresLogin,(req,res)=>{ //GET specific community page
+  app.get('/community/:id',[requiresLogin,isOwner],(req,res)=>{ //GET specific community page
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
