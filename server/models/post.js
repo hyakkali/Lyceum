@@ -10,7 +10,7 @@ var PostSchema = mongoose.Schema({
   },
   createdBy:{
     type:String,
-    required:false,
+    required:true,
     trim:true,
     minlength:1,
     unique:false
