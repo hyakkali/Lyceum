@@ -66,7 +66,8 @@ module.exports = (app)=>{
             err.status = 400;
             return next(err);
           }else {
-            return res.send('<h1>Name: </h1>' + user.first_name + '<h2>Mail: </h2>' + user.email + '<br><a type="button" href="/logout">Logout</a>')
+            // return res.send('<h1>Name: </h1>' + user.first_name + '<h2>Mail: </h2>' + user.email + '<br><a type="button" href="/logout">Logout</a>')
+            return res.status(200).render('profile.hbs',{user:user});
           }
         }
       });
