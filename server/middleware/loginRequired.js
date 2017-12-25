@@ -10,4 +10,11 @@ var requiresLogin = (req,res,next)=>{
   }
 }
 
-module.exports = {requiresLogin};
+var isAuthenticated = (req,res,next)=>{
+  if (req.session && req.session.userId) {
+    return next();
+  }
+  return res.render('index.hbs');
+}
+
+module.exports = {requiresLogin,isAuthenticated};

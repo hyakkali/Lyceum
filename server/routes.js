@@ -3,7 +3,7 @@ var {Topic} = require('./models/topic');
 var {User} = require('./models/user');
 var {Post} = require('./models/post');
 
-var {requiresLogin} = require('./middleware/loginRequired');
+var {requiresLogin,isAuthenticated} = require('./middleware/loginRequired');
 
 const moment = require('moment');
 const {ObjectID} = require('mongodb');
@@ -11,8 +11,9 @@ const _ = require('lodash');
 
 module.exports = (app)=>{
 
-  app.get('/',(req,res)=>{
-    res.render('index.hbs');
+  app.get('/',isAuthenticated,(req,res)=>{
+    var user = true;
+    res.render('index.hbs',{user:user});
   });
 
 // USER

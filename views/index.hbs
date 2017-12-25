@@ -17,10 +17,13 @@
         <br>
         <a href="/community-create">Create a community!</a>
         <br>
-        <a href="/register">Signup</a>
-        <br>
-        <a href="/login">Login</a>
-        <br>
+        {{#if user}}
+          <a href="/logout">Logout</a>
+        {{else}}
+          <a href="/register">Signup</a>
+          <br>
+          <a href="/login">Login</a>
+        {{/if}}
       </div>
     </div>
   </body>
