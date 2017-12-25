@@ -12,18 +12,17 @@ const _ = require('lodash');
 module.exports = (app)=>{
 
   app.get('/',isAuthenticated,(req,res)=>{
-    var user = true;
-    res.render('index.hbs',{user:user});
+    return res.render('index.hbs',{user:true});
   });
 
 // USER
 
   app.get('/register',(req,res)=>{
-    res.render('signup.hbs');
+    return res.render('signup.hbs');
   })
 
   app.get('/login',(req,res)=>{
-    res.render('login.hbs');
+    return res.render('login.hbs');
   })
 
   app.post('/register',(req,res)=>{
@@ -38,18 +37,16 @@ module.exports = (app)=>{
 
     user.save().then((doc)=>{
       req.session.userId = user._id;
-      res.redirect('/profile');
+      return res.redirect('/profile');
     },(e)=>{
-      res.status(400).send(e);
+      return res.status(400).render('error.hbs',{error:'Email or Display Name already exists.'});
     });
   });
 
   app.post('/login',(req,res,next)=>{
     User.authenticate(req.body.email,req.body.password,(err,user)=>{
       if (err||!user) {
-        var err = new Error('Wrong email or password.');
-        err.status = 401;
-        return next(err);
+        return res.status(401).render('error.hbs',{error:'Wrong email or password.'})
       }else {
         req.session.userId=user._id;
         return res.redirect('/profile');
@@ -64,9 +61,7 @@ module.exports = (app)=>{
           return next(err);
         }
         if (user===null) {
-          var err = new Error('Not authorized! Go back!');
-          err.status = 400;
-          return next(err);
+          return res.status(400).render('error.hbs',{error:'Not authorized! Go back!'})
         }
         return res.status(200).render('profile.hbs',{user:user});
       });
@@ -87,7 +82,7 @@ module.exports = (app)=>{
 // COMMUNITY
 
   app.get('/community-create',(req,res)=>{
-    res.render('community-create.hbs');
+    return res.render('community-create.hbs');
   });
 
   app.post('/community-create',requiresLogin,(req,res)=>{
@@ -99,9 +94,9 @@ module.exports = (app)=>{
 
     comm.save().then((doc)=>{
       // res.send(doc);
-      res.redirect('/community/'+comm._id); //redirect to community page
+      return res.redirect('/community/'+comm._id); //redirect to community page
     },(e)=>{
-      res.status(400).send(e);
+      return res.status(400).render('error.hbs',{error:'Community could not be saved.'});
     });
   });
 
@@ -110,16 +105,16 @@ module.exports = (app)=>{
     var body = _.pick(req.body,['name','description','material']);
 
     if (!ObjectID.isValid(id)) {
-      return res.status(404).send();
+      return res.status(404).render('error.hbs',{error:'Invalid URL.'});
     }
 
     Community.findOneAndUpdate({_id:id},{$set:body},{new:true}).then((comm)=>{
       if (!comm) {
-        return res.status(404).send();
+        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
       }
       res.send({comm});
     }).catch((e)=>{
-      res.status(400).send();
+      res.status(400).render('error.hbs',{error:'Community could not be updated.'});
     });
   });
 
@@ -127,17 +122,17 @@ module.exports = (app)=>{
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
-      return res.status(404).send();
+      return res.status(404).render('error.hbs',{error:'Invalid URL.'});
     }
 
     Community.findOneAndRemove({
       _id:id
     }).then((comm)=>{
       if (!comm) {
-        return res.status(404).send();
+        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
       }
       res.status(200).send({comm})
-    }).catch((e)=>res.status(400).send());
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be deleted.'}));
   });
 
   app.get('/communities',(req,res)=>{ //GET all communities
@@ -146,7 +141,7 @@ module.exports = (app)=>{
       // res.send({comms});
     },(e)=>{
       if (e) {
-        res.status(400).send(e)
+        res.status(400).render('error.hbs',{error:'Communities could not be found.'})
       }
     });
   });
@@ -155,16 +150,16 @@ module.exports = (app)=>{
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
-      return res.status(404).send();
+      return res.status(404).render('error.hbs',{error:'Invalid URL.'});
     };
 
     Community.findById(id).then((comm)=>{
       if (!comm) {
-        return res.status(404).send();
+        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
       }
       res.render('community.hbs',{community:comm,posts:comm.posts})
       // res.status(200).send({comm});
-    }).catch((e)=>res.status(400).send());
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be rendered.'}));
   });
 
 // POST
@@ -178,9 +173,7 @@ module.exports = (app)=>{
           return next(err);
         }
         if (user===null) {
-          var err = new Error('Not authorized! Go back!');
-          err.status = 400;
-          return next(err);
+          return res.status(400).render('error.hbs',{error:'Not authorized! Go back!'})
         }
         var post = new Post({
           message:req.body.message,
@@ -192,11 +185,11 @@ module.exports = (app)=>{
           // res.status(200).send(doc);
           Community.findOneAndUpdate({_id:id},{$push:{posts:post}},{new:true}).then((comm)=>{
             if (!comm) {
-              return res.status(404).send();
+              return res.status(404).render('error.hbs',{error:'Community could not be found.'});
             }
             res.status(200).redirect('/community/'+id); //reload same page with new post saved
-          }).catch((e)=>res.status(400).send());
-        },(e)=>res.status(400).send(e));
+          }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be updated.'}));
+        },(e)=>res.status(400).render('error.hbs',{error:'Post could not be saved.'}));
       })
   });
 
@@ -204,11 +197,11 @@ module.exports = (app)=>{
     var id = req.params.id;
     Community.findOneAndUpdate({_id:id},{$push:{material:req.body.link}},{new:true}).then((comm)=>{
       if (!comm) {
-        return res.status(404).send();
+        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
       }
       res.status(200).redirect('/community/'+id);
-    }).catch((e)=>res.status(400).send());
-  },(e)=>res.status(400).send(e));
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be updated.'}));
+  },(e)=>res.status(400).render('error.hbs',{error:'Link could not be saved.'}));
 
 // TOPIC
 
