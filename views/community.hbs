@@ -6,6 +6,8 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="/js/libs/jquery-3.2.1.slim.min.js" charset="utf-8"></script>
     <script src="/js/libs/validator.min.js" charset="utf-8"></script>
+    <script src="/js/libs/moment.js" charset="utf-8"></script>
+
     <title></title>
     <style>
       body {padding-top: 80px;}
@@ -20,7 +22,8 @@
         <br>
 
         {{#each community.material}}
-          <li><a href="{{this}}">{{this}}</a></li>
+          <a href="{{this}}">{{this}}</a>
+          <br>
         {{else}}
           <p>No links yet!</p>
         {{/each}}
@@ -53,7 +56,9 @@
         <br>
 
         {{#each posts}}
-          <li>{{this}}</li>
+          {{this.message}}
+          {{this.createdAt}}
+          <br>
         {{else}}
           <p>No posts yet!</p>
         {{/each}}

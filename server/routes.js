@@ -169,21 +169,21 @@ module.exports = (app)=>{
 // POST
 
   app.post('/post/:id',requiresLogin,(req,res)=>{
-    var id = req.params.id;
+    var id = req.params.id; // community id
+    var time = new Date().getTime();
     var post = new Post({
       message:req.body.message,
-      createdAt: new Date().getTime(),
+      createdAt: moment(time).format('h:mm a'),
     });
 
     post.save().then((doc)=>{
       // res.status(200).send(doc);
-      Community.findOneAndUpdate({_id:id},{$push:{posts:post.message}},{new:true}).then((comm)=>{
+      Community.findOneAndUpdate({_id:id},{$push:{posts:post}},{new:true}).then((comm)=>{
         if (!comm) {
           return res.status(404).send();
         }
-        res.status(200).redirect('/community/'+id);
+        res.status(200).redirect('/community/'+id); //reload same page with new post saved
       }).catch((e)=>res.status(400).send());
-      // res.status(200).render('community.hbs',{post:post})
     },(e)=>res.status(400).send(e));
   });
 
