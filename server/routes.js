@@ -43,7 +43,7 @@ module.exports = (app)=>{
     });
   });
 
-  app.post('/login',(req,res,next)=>{
+  app.post('/login',(req,res)=>{
     User.authenticate(req.body.email,req.body.password,(err,user)=>{
       if (err||!user) {
         return res.status(401).render('error.hbs',{error:'Wrong email or password.'})
@@ -54,11 +54,11 @@ module.exports = (app)=>{
     });
   })
 
-  app.get('/profile',requiresLogin,(req,res,next)=>{
+  app.get('/profile',requiresLogin,(req,res)=>{
     User.findById(req.session.userId)
       .exec((err,user)=>{
         if (err) {
-          return next(err);
+          return res.status(400).render('error.hbs',{error:'User could not be found.'})
         }
         if (user===null) {
           return res.status(400).render('error.hbs',{error:'Not authorized! Go back!'})
@@ -67,11 +67,11 @@ module.exports = (app)=>{
       });
   });
 
-  app.get('/logout',requiresLogin,(req,res,next)=>{
+  app.get('/logout',requiresLogin,(req,res)=>{
     if (req.session) {
       req.session.destroy(function (err) {
         if (err) {
-          return next(err);
+          return res.status(400).render('error.hbs',{error:'Session could not be destroyed.'})
         }else {
           return res.redirect('/');
         }
@@ -100,9 +100,19 @@ module.exports = (app)=>{
     });
   });
 
-  app.patch('/community/:id',requiresLogin,(req,res)=>{
+  app.get('/community-update/:id',requiresLogin,(req,res)=>{
     var id = req.params.id;
-    var body = _.pick(req.body,['name','description','material']);
+    Community.findById(id).then((comm)=>{
+      if (!comm) {
+        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
+      }
+      return res.render('community-update.hbs',{community:comm});
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
+  })
+
+  app.post('/community-update/:id',requiresLogin,(req,res)=>{
+    var id = req.params.id;
+    var body = _.pick(req.body,['name','description']);
 
     if (!ObjectID.isValid(id)) {
       return res.status(404).render('error.hbs',{error:'Invalid URL.'});
@@ -112,7 +122,7 @@ module.exports = (app)=>{
       if (!comm) {
         return res.status(404).render('error.hbs',{error:'Community could not be found.'});
       }
-      res.send({comm});
+      return res.status(200).redirect('/community/'+comm._id);
     }).catch((e)=>{
       res.status(400).render('error.hbs',{error:'Community could not be updated.'});
     });

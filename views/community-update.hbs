@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <style>
+      body {padding-top: 80px;}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h1>Update {{community.name}} Community</h1>
+        <form action="/community-update/{{community._id}}" method="post" onsubmit="return validateForm()">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+          </div> <!-- end div form-group -->
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" class="form-control" id="description" name="description">
+          </div> <!-- end div form-group -->
+          <script>
+            function validateForm() {
+              var name = document.getElementById('name');
+              var description = document.getElementById('description');
+              var origName = "{{community.name}}";
+              var origDesc = "{{community.description}}";
+              if (name.value.trim()==='') {
+                name.value = origName;
+              }
+              if (description.value.trim()==='') {
+                description.value = origDesc;
+              }
+              return true;
+            }
+          </script>
+          <button type="submit" class="btn btn-warning btn-lg">Update Community</button>
+        </form>
+      </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+    </div> <!-- end div container -->
+  </body>
+</html>
