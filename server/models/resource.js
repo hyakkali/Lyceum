@@ -1,7 +1,35 @@
 const mongoose  = require('mongoose');
 
+var PostSchema = mongoose.Schema({
+  message:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:false
+  },
+  createdBy:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:false
+  },
+  createdAt:{
+    type:String,
+    required:true
+  }
+});
+
 var ResourceSchema = mongoose.Schema({
   link:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:false
+  },
+  description:{
     type:String,
     required:true,
     trim:true,
@@ -13,6 +41,15 @@ var ResourceSchema = mongoose.Schema({
     required:true,
   },
   dislikes:{
+    type:Number,
+    required:true
+  },
+  reviews:[PostSchema],
+  createdBy:{
+    type:mongoose.Schema.Types.ObjectId,
+    required:true,
+  },
+  createdAt:{
     type:Number,
     required:true
   }
