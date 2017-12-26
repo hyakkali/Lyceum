@@ -21,6 +21,24 @@ var PostSchema = mongoose.Schema({
   }
 });
 
+var ResourceSchema = mongoose.Schema({
+  link:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:false
+  },
+  likes:{
+    type:Number,
+    required:true,
+  },
+  dislikes:{
+    type:Number,
+    required:true
+  }
+});
+
 var CommunitySchema = mongoose.Schema({
   name:{
     type:String,
@@ -40,6 +58,7 @@ var CommunitySchema = mongoose.Schema({
     required:false
   }],
   posts:[PostSchema],
+  resources:[ResourceSchema],
   createdBy:{
     type:mongoose.Schema.Types.ObjectId,
     required:true,
