@@ -1,5 +1,4 @@
 const mongoose  = require('mongoose');
-const validator = require('validator');
 
 var PostSchema = mongoose.Schema({
   message:{
@@ -51,10 +50,6 @@ var CommunitySchema = mongoose.Schema({
   },
   material:[{
     type:String,
-    validate:{
-      validator:validator.isURL,
-      message:'{VALUE} is not a valid URL'
-    }
   }]
 });
 

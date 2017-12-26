@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 
 var TopicSchema = mongoose.Schema({
   name:{
@@ -25,10 +24,6 @@ var TopicSchema = mongoose.Schema({
   },
   material:[{
     type:String,
-    validate:{
-      validator:validator.isURL,
-      message:'{VALUE} is not a valid URL'
-    }
   }]
 });
 
