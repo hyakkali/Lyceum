@@ -22,6 +22,13 @@ var PostSchema = mongoose.Schema({
 });
 
 var ResourceSchema = mongoose.Schema({
+  name:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:false
+  },
   link:{
     type:String,
     required:true,
@@ -50,7 +57,7 @@ var ResourceSchema = mongoose.Schema({
     required:true,
   },
   createdAt:{
-    type:Number,
+    type:String,
     required:true
   }
 });

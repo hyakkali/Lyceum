@@ -6,7 +6,8 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="/js/libs/jquery-3.2.1.slim.min.js" charset="utf-8"></script>
     <script src="/js/libs/validator.min.js" charset="utf-8"></script>
-
+    <script src="/js/libs/linkify.min.js" charset="utf-8"></script>
+    <script src="/js/libs/linkify-jquery.min.js" charset="utf-8"></script>
     <title></title>
     <style>
       body {padding-top: 80px;}
@@ -17,29 +18,59 @@
       <div class="col-sm-6 col-sm-offset-3">
         <h1>{{community.name}}</h1>
         <h4>{{community.description}}</h4>
-
         <br>
 
-        {{#each community.material}}
-          <a href="{{this}}">{{this}}</a>
-          <br>
-        {{else}}
-          <p>No links yet!</p>
-        {{/each}}
+        <div class="resources">
+          {{#each community.resources}}
+            {{this.name}}
+            {{this.link}}
+            {{this.description}}
+            {{this.likes}}
+            {{this.dislikes}}
+            {{this.createdBy}}
+            {{this.createdAt}}
+            <br>
+          {{else}}
+            <p>No links yet!</p>
+          {{/each}}
+        </div>
+
+        <script>
+          $(".resources").linkify();
+        </script>
+
 
         <div id="errors"></div>
 
-        <form class="" action="/link/{{community._id}}" method="post" onsubmit="return validateForm()">
+        <form class="" action="/resource/{{community._id}}" method="post" onsubmit="return validateForm()">
           <div class="form-group">
-            <label>Post a new link</label>
+            <label>Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+          </div> <!-- end div form-group -->
+          <div class="form-group">
+            <label>Link</label>
             <input type="text" class="form-control" id="link" name="link">
+          </div> <!-- end div form-group -->
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" class="form-control" id="description" name="description">
           </div> <!-- end div form-group -->
           <script>
             function validateForm() {
+              var name = document.getElementById('name');
               var link = document.getElementById('link');
+              var description = document.getElementById('description');
               var div = document.getElementById('errors');
               div.className = '';
               div.innerHTML = '';
+              if (name.value.trim()===''||link.value.trim()===''||description.value.trim()==='') {
+                name.style.borderColor = "#E34234";
+                link.style.borderColor = "#E34234";
+                description.style.borderColor = "#E34234";
+                div.className += 'alert alert-danger';
+                div.innerHTML += 'All fields must be filled out!';
+                return false;
+              }
               if (!validator.isURL(link.value.trim())) {
                 link.style.borderColor = "#E34234";
                 div.className += 'alert alert-danger';

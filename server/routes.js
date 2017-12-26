@@ -2,6 +2,7 @@ var {Community} = require('./models/community');
 var {Topic} = require('./models/topic');
 var {User} = require('./models/user');
 var {Post} = require('./models/post');
+var {Resource} = require('./models/resource');
 
 var {requiresLogin,isAuthenticated,requiresOwner,isOwner} = require('./middleware/loginRequired');
 
@@ -202,7 +203,6 @@ module.exports = (app)=>{
         });
 
         post.save().then((doc)=>{
-          // res.status(200).send(doc);
           Community.findOneAndUpdate({_id:id},{$push:{posts:post}},{new:true}).then((comm)=>{
             if (!comm) {
               return res.status(404).render('error.hbs',{error:'Community could not be found.'});
@@ -213,15 +213,28 @@ module.exports = (app)=>{
       })
   });
 
-  app.post('/link/:id',requiresLogin,(req,res)=>{
+  app.post('/resource/:id',requiresLogin,(req,res)=>{
     var id = req.params.id;
-    Community.findOneAndUpdate({_id:id},{$push:{material:req.body.link}},{new:true}).then((comm)=>{
-      if (!comm) {
-        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
-      }
-      res.status(200).redirect('/community/'+id);
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be updated.'}));
-  },(e)=>res.status(400).render('error.hbs',{error:'Link could not be saved.'}));
+    var time = new Date().getTime();
+    var resource = new Resource({
+      name:req.body.name,
+      link:req.body.link,
+      description:req.body.description,
+      likes:0,
+      dislikes:0,
+      createdBy:req.session.userId,
+      createdAt:moment(time).format('h:mm a'),
+    })
+    resource.save().then((doc)=>{
+      Community.findOneAndUpdate({_id:id},{$push:{resources:resource}},{new:true}).then((comm)=>{
+        if (!comm) {
+          return res.status(404).render('error.hbs',{error:'Community could not be found.'});
+        }
+        res.status(200).redirect('/community/'+id);
+      }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be updated.'}));
+    },(e)=>res.status(400).render('error.hbs',{error:'Resource could not be saved.'}));
+  });
+
 
 // TOPIC
 

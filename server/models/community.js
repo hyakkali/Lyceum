@@ -22,7 +22,21 @@ var PostSchema = mongoose.Schema({
 });
 
 var ResourceSchema = mongoose.Schema({
+  name:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:false
+  },
   link:{
+    type:String,
+    required:true,
+    trim:true,
+    minlength:1,
+    unique:false
+  },
+  description:{
     type:String,
     required:true,
     trim:true,
@@ -35,6 +49,15 @@ var ResourceSchema = mongoose.Schema({
   },
   dislikes:{
     type:Number,
+    required:true
+  },
+  reviews:[PostSchema],
+  createdBy:{
+    type:mongoose.Schema.Types.ObjectId,
+    required:true,
+  },
+  createdAt:{
+    type:String,
     required:true
   }
 });
@@ -67,9 +90,6 @@ var CommunitySchema = mongoose.Schema({
     type:Number,
     required:true
   },
-  material:[{
-    type:String,
-  }]
 });
 
 var Community = mongoose.model('Community',CommunitySchema);
