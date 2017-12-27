@@ -180,10 +180,9 @@ module.exports = (app)=>{
       }
       Resource.find({community:id}).then((resources)=>{
         Post.find({community:id}).then((posts)=>{
-          return res.render('community.hbs',{community:comm,posts:posts,resources:resources});
-        })
-      },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}))
-      // res.status(200).send({comm});
+         res.render('community.hbs',{community:comm,posts:posts,resources:resources});
+       },(e)=> res.status(400).render('error.hbs',{error:"Posts could not be found."}));
+     },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be rendered.'}));
   });
 
