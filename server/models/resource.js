@@ -62,6 +62,10 @@ var ResourceSchema = mongoose.Schema({
   createdAt:{
     type:String,
     required:true
+  },
+  community:{
+    type:mongoose.Schema.Types.ObjectId,
+    required:true,
   }
 });
 
