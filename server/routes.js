@@ -216,23 +216,33 @@ module.exports = (app)=>{
   app.post('/resource/:id',requiresLogin,(req,res)=>{
     var id = req.params.id;
     var time = new Date().getTime();
-    var resource = new Resource({
-      name:req.body.name,
-      link:req.body.link,
-      description:req.body.description,
-      likes:0,
-      dislikes:0,
-      createdBy:req.session.userId,
-      createdAt:moment(time).format('h:mm a'),
-    })
-    resource.save().then((doc)=>{
-      Community.findOneAndUpdate({_id:id},{$push:{resources:resource}},{new:true}).then((comm)=>{
-        if (!comm) {
-          return res.status(404).render('error.hbs',{error:'Community could not be found.'});
+    User.findById(req.session.userId)
+      .exec((err,user)=>{
+        if (err) {
+          return next(err);
         }
-        res.status(200).redirect('/community/'+id);
-      }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be updated.'}));
-    },(e)=>res.status(400).render('error.hbs',{error:'Resource could not be saved.'}));
+        if (user===null) {
+          return res.status(400).render('error.hbs',{error:'Not authorized! Go back!'})
+        }
+        var resource = new Resource({
+          name:req.body.name,
+          link:req.body.link,
+          description:req.body.description,
+          likes:0,
+          dislikes:0,
+          createdBy:user.username,
+          createdAt:moment(time).format('h:mm a'),
+        })
+
+        resource.save().then((doc)=>{
+          Community.findOneAndUpdate({_id:id},{$push:{resources:resource}},{new:true}).then((comm)=>{
+            if (!comm) {
+              return res.status(404).render('error.hbs',{error:'Community could not be found.'});
+            }
+            res.status(200).redirect('/community/'+id);
+          }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be updated.'}));
+        },(e)=>res.status(400).render('error.hbs',{error:'Resource could not be saved.'}));
+      })
   });
 
 

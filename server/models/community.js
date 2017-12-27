@@ -53,8 +53,11 @@ var ResourceSchema = mongoose.Schema({
   },
   reviews:[PostSchema],
   createdBy:{
-    type:mongoose.Schema.Types.ObjectId,
+    type:String,
     required:true,
+    trim:true,
+    minlength:1,
+    unique:false
   },
   createdAt:{
     type:String,
