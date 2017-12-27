@@ -178,7 +178,11 @@ module.exports = (app)=>{
       if (!comm) {
         return res.status(404).render('error.hbs',{error:'Community could not be found.'});
       }
-      res.render('community.hbs',{community:comm,posts:comm.posts})
+      Resource.find({community:id}).then((resources)=>{
+        Post.find({community:id}).then((posts)=>{
+          return res.render('community.hbs',{community:comm,posts:posts,resources:resources});
+        })
+      },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}))
       // res.status(200).send({comm});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be rendered.'}));
   });
@@ -200,21 +204,17 @@ module.exports = (app)=>{
           message:req.body.message,
           createdAt: moment(time).format('h:mm a'),
           createdBy:user.username,
+          community:id
         });
 
         post.save().then((doc)=>{
-          Community.findOneAndUpdate({_id:id},{$push:{posts:post}},{new:true}).then((comm)=>{
-            if (!comm) {
-              return res.status(404).render('error.hbs',{error:'Community could not be found.'});
-            }
-            res.status(200).redirect('/community/'+id); //reload same page with new post saved
-          }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be updated.'}));
+          return res.status(200).redirect('/community/'+id); //reload same page with new post saved
         },(e)=>res.status(400).render('error.hbs',{error:'Post could not be saved.'}));
       })
   });
 
   app.post('/resource/:id',requiresLogin,(req,res)=>{
-    var id = req.params.id;
+    var id = req.params.id; // community id
     var time = new Date().getTime();
     User.findById(req.session.userId)
       .exec((err,user)=>{
@@ -232,19 +232,36 @@ module.exports = (app)=>{
           dislikes:0,
           createdBy:user.username,
           createdAt:moment(time).format('h:mm a'),
+          community:id,
         })
 
         resource.save().then((doc)=>{
-          Community.findOneAndUpdate({_id:id},{$push:{resources:resource}},{new:true}).then((comm)=>{
-            if (!comm) {
-              return res.status(404).render('error.hbs',{error:'Community could not be found.'});
-            }
-            res.status(200).redirect('/community/'+id);
-          }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be updated.'}));
+          return res.status(200).redirect('/community/'+id);
         },(e)=>res.status(400).render('error.hbs',{error:'Resource could not be saved.'}));
       })
   });
 
+  app.post('/like/:id/:commid',(req,res)=>{
+    var id = req.params.id; //resource id
+    var commid = req.params.commid; //community id
+    Resource.findOneAndUpdate({_id:id},{$inc:{likes:1}},{new:true}).then((resource)=>{
+      if (!resource) {
+        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+      }
+      res.status(200).redirect('/community/'+commid);
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+  });
+
+  app.post('/dislike/:id/:commid',(req,res)=>{
+    var id = req.params.id; //resource id
+    var commid = req.params.commid; //community id
+    Resource.findOneAndUpdate({_id:id},{$inc:{dislikes:1}},{new:true}).then((resource)=>{
+      if (!resource) {
+        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+      }
+      res.status(200).redirect('/community/'+commid);
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+  });
 
 // TOPIC
 

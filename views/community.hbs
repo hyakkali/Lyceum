@@ -19,17 +19,30 @@
         <h1>{{community.name}}</h1>
         <h4>{{community.description}}</h4>
         <br>
-
+        {{res}}
         <div class="resources">
-          {{#each community.resources}}
+          {{#each resources}}
             {{this.name}}
+            <br>
             {{this.link}}
+            <br>
             {{this.description}}
-            {{this.likes}}
-            {{this.dislikes}}
-            {{this.createdBy}}
+            <br>
+            Likes: {{this.likes}}
+            <br>
+            Dislikes: {{this.dislikes}}
+            <br>
+            Created by {{this.createdBy}} at
             {{this.createdAt}}
             <br>
+            <form action="/like/{{this._id}}/{{../community._id}}" method="post">
+              <button type="submit" class="btn btn-warning btn-sm">Like</button>
+            </form>
+            <form action="/dislike/{{this._id}}/{{../community._id}}" method="post">
+              <button type="submit" class="btn btn-warning btn-sm">Dislike</button>
+            </form>
+            <br>
+
           {{else}}
             <p>No links yet!</p>
           {{/each}}
