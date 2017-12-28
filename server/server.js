@@ -1,19 +1,19 @@
+require('./config/config');
+
 const express = require('express');
 const path = require('path');
-const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
 const helmet = require('helmet');
 
+const {mongoose} = require('./db/mongoose');
+
 const publicPath = path.join(__dirname,'../public');
 
-mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI||'mongodb://localhost:27017/Communities');
-
 var app = express();
-var port = process.env.PORT || 3000;
+var port = process.env.PORT;
 
 app.use(session({
   secret:'work hard',
