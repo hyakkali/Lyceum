@@ -75,17 +75,19 @@ describe('After logging in', ()=> {
         testSession.post('/community-create')
         .send({
           name:'Relative Physics',
-          description: 'Generic description',
+          description:'Generic description',
         })
         .expect(302)
         .end((err,res)=>{
           if (err) {
             return done(err);
           }
-          Community.find({
-            name:'Relative Physics'
-          }).then((comms)=>{
+          Community.find({name:'Relative Physics'}).then((comms)=>{
             expect(comms.length).toBe(1);
+          }).catch((e)=>done(e));
+          Community.findOne({name:'Relative Physics'}).then((comm)=>{
+            expect(comm.name).toBe('Relative Physics');
+            expect(comm.description).toBe('Generic description');
             done();
           }).catch((e)=>done(e));
         });
@@ -118,14 +120,21 @@ describe('After logging in', ()=> {
 
   describe('POST /post', ()=> {
     it('should create a new post', (done)=> {
-      testSession.post(`/post/${communities[0]._id.toHexString()}`)
+      var id = communities[0]._id.toHexString();
+      testSession.post(`/post/${id}`)
         .send({message:"New message!"})
         .expect(302)
         .end((err,res)=>{
           if (err) {
             return done(err);
-          };
-          done();
+          }
+          Post.find({community:id}).then((post)=>{
+            expect(post.length).toBe(1);
+          }).catch((e)=>done(e));
+          Post.findOne({community:id}).then((post)=>{
+            expect(post.message).toBe("New message!")
+            done();
+          }).catch((e)=>done(e));
         });
     });
   });
@@ -142,7 +151,16 @@ describe('After logging in', ()=> {
           description,
         })
         .expect(302)
-        .end(done)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Community.findById(id).then((comm)=>{
+            expect(comm.name).toBe(name);
+            expect(comm.description).toBe(description);
+            done();
+          }).catch((e)=>done(e));
+        })
     });
 
     it('should not update the community if not owner', (done)=> {
