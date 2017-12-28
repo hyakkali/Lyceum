@@ -240,12 +240,12 @@ module.exports = (app)=>{
       })
   });
 
-  app.post('/review/:id/:commid',(req,res)=>{
+  app.post('/review/:id/:commid',requiresLogin,(req,res)=>{
     var id = req.params.id; //resource id
     var commid = req.params.commid; //community id
-    var vote = req.body.vote;
+    var rating = req.body.rating;
 
-    if (vote==='like') {
+    if (rating==='like') {
       //findOneAndUpdate resource for likes
       Resource.findOneAndUpdate({_id:id},{$inc:{likes:1}},{new:true}).then((resource)=>{
         if (!resource) {
@@ -266,13 +266,13 @@ module.exports = (app)=>{
             resource:id
           })
           review.save().then((review)=>{
-            //return to original community page
-            return res.status(200).redirect('/community/'+commid);
+            //return to resource page
+            return res.status(200).redirect('/resource/'+id);
           },(e)=>res.status(400).render('error.hbs',{error:e}));
         }).catch((e)=>res.status(400).render('error.hbs',{error:'Error with finding user.'}))
       }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
     }
-    if (vote==='dislike') {
+    if (rating==='dislike') {
       //findOneAndUpdate resource for Dislikes
       Resource.findOneAndUpdate({_id:id},{$inc:{dislikes:1}},{new:true}).then((resource)=>{
         if (!resource) {
@@ -293,12 +293,29 @@ module.exports = (app)=>{
             resource:id
           })
           review.save().then((review)=>{
-            //return to original community page
-            return res.status(200).redirect('/community/'+commid);
+            //return to resource page
+            return res.status(200).redirect('/resource/'+id);
           },(e)=>res.status(400).render('error.hbs',{error:'Review could not be saved.'}));
         }).catch((e)=>res.status(400).render('error.hbs',{error:'Error with finding user.'}))
       }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
     }
+  })
+
+  app.get('/resource/:id',requiresLogin,(req,res)=>{
+    var id = req.params.id; //resource id
+
+    if (!ObjectID.isValid(id)) {
+      return res.status(404).render('error.hbs',{error:'Invalid URL.'});
+    };
+
+    Resource.findById(id).then((resource)=>{
+      if (!resource) {
+        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+      }
+      Review.find({resource:id}).then((reviews)=>{
+        return res.render('resource.hbs',{resource:resource,reviews:reviews})
+      },(e)=> res.status(400).render('error.hbs',{error:"Reviews could not be found."}));
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be rendered.'}));
   })
 
 // TOPIC

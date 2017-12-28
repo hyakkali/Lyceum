@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <title></title>
+    <style>
+      body {padding-top: 80px;}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h1>{{resource.name}}</h1>
+        <h4>{{resource.description}}</h4>
+        <h4>Created By: {{resource.createdBy}}</h4>
+        <h4>Likes: {{resource.likes}}</h4>
+        <h4>Dislikes: {{resource.dislikes}}</h4>
+
+        {{#each reviews}}
+          {{#if this.message}}
+            {{this.message}}
+            <br>
+            {{this.createdBy}}
+            <br>
+            {{this.createdAt}}
+            <br>
+          {{/if}}
+        {{else}}
+          <p>No reviews yet!</p>
+        {{/each}}
+        <form action="/review/{{resource._id}}/{{resource.community}}" method="post">
+          <input type="radio" name="rating" value="like" checked> Like
+          <input type="radio" name="rating" value="dislike"> Dislike <br>
+          <input type="text" name="message" value="">
+          <button type="submit" class="btn btn-warning btn-sm" name="button">Post Review</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -19,10 +19,9 @@
         <h1>{{community.name}}</h1>
         <h4>{{community.description}}</h4>
         <br>
-        {{res}}
         <div class="resources">
           {{#each resources}}
-            {{this.name}}
+            <a href="/resource/{{this._id}}">{{this.name}}</a>
             <br>
             {{this.link}}
             <br>
@@ -35,15 +34,9 @@
             Created by {{this.createdBy}} at
             {{this.createdAt}}
             <br>
-            <!-- <form action="/like/{{this._id}}/{{../community._id}}" method="post">
-              <button type="submit" class="btn btn-warning btn-sm">Like</button>
-            </form>
-            <form action="/dislike/{{this._id}}/{{../community._id}}" method="post">
-              <button type="submit" class="btn btn-warning btn-sm">Dislike</button>
-            </form> -->
             <form action="/review/{{this._id}}/{{../community._id}}" method="post">
-              <input type="radio" name="vote" value="like" checked> Like
-              <input type="radio" name="vote" value="dislike"> Dislike <br>
+              <input type="radio" name="rating" value="like" checked> Like
+              <input type="radio" name="rating" value="dislike"> Dislike <br>
               <input type="text" name="message" value="">
               <button type="submit" class="btn btn-warning btn-sm" name="button">Post Review</button>
             </form>
