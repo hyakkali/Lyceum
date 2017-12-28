@@ -35,11 +35,17 @@
             Created by {{this.createdBy}} at
             {{this.createdAt}}
             <br>
-            <form action="/like/{{this._id}}/{{../community._id}}" method="post">
+            <!-- <form action="/like/{{this._id}}/{{../community._id}}" method="post">
               <button type="submit" class="btn btn-warning btn-sm">Like</button>
             </form>
             <form action="/dislike/{{this._id}}/{{../community._id}}" method="post">
               <button type="submit" class="btn btn-warning btn-sm">Dislike</button>
+            </form> -->
+            <form action="/review/{{this._id}}/{{../community._id}}" method="post">
+              <input type="radio" name="vote" value="like" checked> Like
+              <input type="radio" name="vote" value="dislike"> Dislike <br>
+              <input type="text" name="message" value="">
+              <button type="submit" class="btn btn-warning btn-sm" name="button">Post Review</button>
             </form>
             <br>
 

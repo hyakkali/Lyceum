@@ -1,25 +1,25 @@
 const mongoose  = require('mongoose');
 
-var PostSchema = mongoose.Schema({
-  message:{
-    type:String,
-    required:true,
-    trim:true,
-    minlength:1,
-    unique:false
-  },
-  createdBy:{
-    type:String,
-    required:true,
-    trim:true,
-    minlength:1,
-    unique:false
-  },
-  createdAt:{
-    type:String,
-    required:true
-  }
-});
+// var PostSchema = mongoose.Schema({
+//   message:{
+//     type:String,
+//     required:true,
+//     trim:true,
+//     minlength:1,
+//     unique:false
+//   },
+//   createdBy:{
+//     type:String,
+//     required:true,
+//     trim:true,
+//     minlength:1,
+//     unique:false
+//   },
+//   createdAt:{
+//     type:String,
+//     required:true
+//   }
+// });
 
 var ResourceSchema = mongoose.Schema({
   name:{
@@ -51,7 +51,7 @@ var ResourceSchema = mongoose.Schema({
     type:Number,
     required:true
   },
-  reviews:[PostSchema],
+  // reviews:[PostSchema],
   createdBy:{
     type:String,
     required:true,

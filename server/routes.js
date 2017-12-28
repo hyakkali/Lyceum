@@ -3,6 +3,7 @@ var {Topic} = require('./models/topic');
 var {User} = require('./models/user');
 var {Post} = require('./models/post');
 var {Resource} = require('./models/resource');
+var {Review} = require('./models/review');
 
 var {requiresLogin,isAuthenticated,requiresOwner,isOwner} = require('./middleware/loginRequired');
 
@@ -239,27 +240,66 @@ module.exports = (app)=>{
       })
   });
 
-  app.post('/like/:id/:commid',(req,res)=>{
+  app.post('/review/:id/:commid',(req,res)=>{
     var id = req.params.id; //resource id
     var commid = req.params.commid; //community id
-    Resource.findOneAndUpdate({_id:id},{$inc:{likes:1}},{new:true}).then((resource)=>{
-      if (!resource) {
-        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
-      }
-      res.status(200).redirect('/community/'+commid);
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
-  });
+    var vote = req.body.vote;
 
-  app.post('/dislike/:id/:commid',(req,res)=>{
-    var id = req.params.id; //resource id
-    var commid = req.params.commid; //community id
-    Resource.findOneAndUpdate({_id:id},{$inc:{dislikes:1}},{new:true}).then((resource)=>{
-      if (!resource) {
-        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
-      }
-      res.status(200).redirect('/community/'+commid);
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
-  });
+    if (vote==='like') {
+      //findOneAndUpdate resource for likes
+      Resource.findOneAndUpdate({_id:id},{$inc:{likes:1}},{new:true}).then((resource)=>{
+        if (!resource) {
+          return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+        }
+        //create review with liked set to true
+        User.findById(req.session.userId).then((user)=>{
+          if (!user) {
+            return res.status(404).render('error.hbs',{error:'User could not be found.'});
+          }
+          var time = new Date().getTime();
+          var review = new Review({
+            message:req.body.message,
+            liked:true,
+            disliked:false,
+            createdBy:user.username,
+            createdAt:moment(time).format('h:mm a'),
+            resource:id
+          })
+          review.save().then((review)=>{
+            //return to original community page
+            return res.status(200).redirect('/community/'+commid);
+          },(e)=>res.status(400).render('error.hbs',{error:e}));
+        }).catch((e)=>res.status(400).render('error.hbs',{error:'Error with finding user.'}))
+      }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+    }
+    if (vote==='dislike') {
+      //findOneAndUpdate resource for Dislikes
+      Resource.findOneAndUpdate({_id:id},{$inc:{dislikes:1}},{new:true}).then((resource)=>{
+        if (!resource) {
+          return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+        }
+        //create review with disliked set to true
+        User.findById(req.session.userId).then((user)=>{
+          if (!user) {
+            return res.status(404).render('error.hbs',{error:'User could not be found.'});
+          }
+          var time = new Date().getTime();
+          var review = new Review({
+            message:req.body.message,
+            liked:false,
+            disliked:true,
+            createdBy:user.username,
+            createdAt:moment(time).format('h:mm a'),
+            resource:id
+          })
+          review.save().then((review)=>{
+            //return to original community page
+            return res.status(200).redirect('/community/'+commid);
+          },(e)=>res.status(400).render('error.hbs',{error:'Review could not be saved.'}));
+        }).catch((e)=>res.status(400).render('error.hbs',{error:'Error with finding user.'}))
+      }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+    }
+  })
 
 // TOPIC
 
