@@ -7,7 +7,7 @@ var requiresLogin = (req,res,next)=>{
   if (req.session && req.session.userId) {
     return next();
   }
-  res.render('login_required.hbs');
+  res.status(401).render('login_required.hbs');
 }
 
 var isAuthenticated = (req,res,next)=>{

@@ -159,7 +159,6 @@ module.exports = (app)=>{
   app.get('/communities',(req,res)=>{ //GET all communities
     Community.find().then((comms)=>{
       res.status(200).render('community_list.hbs',{comms:comms})
-      // res.send({comms});
     },(e)=>{
       if (e) {
         res.status(400).render('error.hbs',{error:'Communities could not be found.'})

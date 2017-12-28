@@ -1,6 +1,7 @@
 const expect = require('expect');
 const request = require('supertest');
 const {ObjectID} = require('mongodb');
+const session = require('supertest-session');
 
 const {app} = require('./../server');
 const {Community} = require('./../models/community');
@@ -19,14 +20,181 @@ const {
   populateResources
 } = require('./seed/seed');
 
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/CommunityTest');
+var testSession = null;
+
+beforeEach(()=>{
+  testSession = session(app);
+})
 
 beforeEach(populateComms);
 // beforeEach(populateTopics);
 beforeEach(populateUsers);
 beforeEach(populateResources);
 
+describe('After logging in', ()=> {
+
+  var authenticatedSession;
+
+  beforeEach(function (done) {
+    testSession.post('/login')
+      .send({
+        email:users[1].email,
+        password:users[1].password
+      })
+      .expect(302)
+      .end(function (err) {
+        if (err) return done(err);
+        authenticatedSession = testSession;
+        return done();
+      });
+  });
+
+  describe('GET /profile', ()=> {
+    it('should get profile if authenticated', (done)=> {
+        testSession.get('/profile')
+        .expect(200)
+        .end(done)
+    });
+  });
+
+  describe('GET /logout', ()=> {
+    it('should logout user', (done)=> {
+        testSession.get('/logout')
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          done();
+        });
+    });
+  });
+
+  describe('POST /community-create', ()=> {
+    it('should create a new community', (done) =>{
+        testSession.post('/community-create')
+        .send({
+          name:'Relative Physics',
+          description: 'Generic description',
+        })
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Community.find({
+            name:'Relative Physics'
+          }).then((comms)=>{
+            expect(comms.length).toBe(1);
+            done();
+          }).catch((e)=>done(e));
+        });
+    });
+
+    it('should not create community with invalid body data', (done) =>{
+        testSession.post('/community-create')
+        .send({})
+        .expect(400)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+
+          Community.find().then((comms)=>{
+            expect(comms.length).toBe(2); //2 comms in seed data
+            done();
+          }).catch((e)=>done(e));
+        });
+    });
+  });
+
+  describe('GET /community/:id', ()=> {
+    it('should return community', (done) =>{
+        testSession.get(`/community/${communities[0]._id.toHexString()}`)
+        .expect(200)
+        .end(done);
+    });
+  });
+
+  describe('POST /post', ()=> {
+    it('should create a new post', (done)=> {
+      testSession.post(`/post/${communities[0]._id.toHexString()}`)
+        .send({message:"New message!"})
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          };
+          done();
+        });
+    });
+  });
+
+  describe('POST /community-update/:id', ()=> {
+    it('should update the community if owner', (done)=> {
+      var id = communities[1]._id.toHexString();
+      var name = 'Update name';
+      var description = 'Update name';
+
+      testSession.post(`/community-update/${id}`)
+        .send({
+          name,
+          description,
+        })
+        .expect(302)
+        .end(done)
+    });
+
+    it('should not update the community if not owner', (done)=> {
+      var id = communities[0]._id.toHexString();
+      var name = 'Update name';
+      var description = 'Update name';
+
+      testSession.post(`/community-update/${id}`)
+        .send({
+          name,
+          description,
+        })
+        .expect(401)
+        .end(done)
+    });
+  });
+
+  describe('POST /community-delete/:id', ()=> {
+    it('should remove a community if owner', (done) =>{
+      var id = communities[1]._id.toHexString();
+
+      testSession.post(`/community-delete/${id}`)
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Community.findById(id).then((comm)=>{
+            expect(comm).toBeFalsy();
+            done();
+          }).catch((e)=>done(e));
+        });
+    });
+
+    it('should not remove a community if not owner', (done) =>{
+      var id = communities[0]._id.toHexString();
+
+      testSession.post(`/community-delete/${id}`)
+        .expect(401)
+        .end(done)
+    });
+
+    it('should return a 404 if community not found', (done) =>{
+      var id = new ObjectID().toHexString();
+      testSession.post(`/community-delete/${id}`)
+        .expect(404)
+        .end(done);
+    });
+  });
+
+
+});
 
 // USER
 
@@ -35,18 +203,14 @@ describe('POST /register', ()=> {
     var first_name = 'First';
     var last_name = 'Last';
     var email = 'sample@gmail.com';
+    var username = 'sampleusername';
     var password = 'samplepassword';
 
     request(app)
       .post('/register')
-      .send({first_name,last_name,email,password})
+      .send({first_name,last_name,email,username,password})
       .expect(302)
-      // .expect((res)=>{
-      //   expect(res.body._id).toBeTruthy();
-      //   expect(res.body.first_name).toBe(first_name);
-      //   expect(res.body.last_name).toBe(last_name);
-      //   expect(res.body.email).toBe(email);
-      // })
+
       .end((err)=>{
         if (err) {
           return done(err);
@@ -62,12 +226,13 @@ describe('POST /register', ()=> {
   it('should return validation errors if request invalid', (done)=> {
     var first_name = 'First';
     var last_name = 'Last';
-    var email = 'sample@';
+    var email = '';
+    var username = 'sampleusername';
     var password = 'samplepassword';
 
     request(app)
       .post('/register')
-      .send({first_name,last_name,email,password})
+      .send({first_name,last_name,email,username,password})
       .expect(400)
       .end(done);
     });
@@ -76,7 +241,24 @@ describe('POST /register', ()=> {
       request(app)
         .post('/register')
         .send({
+          first_name:'First',
+          last_name:'Last',
           email:users[0].email,
+          username:'newusername',
+          password:'samplepassword'
+        })
+        .expect(400)
+        .end(done);
+    });
+
+    it('should not create user if username in use', (done) =>{
+      request(app)
+        .post('/register')
+        .send({
+          first_name:'First',
+          last_name:'Last',
+          email:'username@gmail.com',
+          username:users[0].username,
           password:'samplepassword'
         })
         .expect(400)
@@ -85,14 +267,10 @@ describe('POST /register', ()=> {
 });
 
 describe('GET /profile', ()=> {
-
   it('should return 401 if not authenticated', (done)=> {
     request(app)
       .get('/profile')
       .expect(401)
-      .expect((res)=>{
-        expect(res.body).toEqual({})
-      })
       .end(done)
   });
 });
@@ -127,176 +305,6 @@ describe('POST /login', ()=> {
         if (err) {
           return done(err);
         }
-        done();
-      });
-  });
-});
-
-describe('GET /logout', ()=> {
-  it('should logout user', (done)=> {
-    request(app)
-      .get('/logout')
-      .expect(302)
-      .end((err,res)=>{
-        if (err) {
-          return done(err);
-        }
-        done();
-      });
-  });
-});
-
-describe('POST /community-create', ()=> {
-  it('should create a new community', (done) =>{
-    request(app)
-      .post('/community-create')
-      .send({
-        name:'Relative Physics',
-        description: 'Generic description',
-      })
-      .expect(302)
-      // .expect((res)=>{
-      //   expect(res.body.name).toBe('Relative Physics');
-      //   expect(res.body.description).toBe('Generic description');
-      //   expect(res.body.material).toEqual([
-      //     'https://thenounproject.com/',
-      //     'https://en.wikipedia.org/wiki/Quantum_computing'
-      //   ]);
-      // })
-      .end((err,res)=>{
-        if (err) {
-          return done(err);
-        }
-        Community.find({
-          name:'Relative Physics'
-        }).then((comms)=>{
-          expect(comms.length).toBe(1);
-          done();
-        }).catch((e)=>done(e));
-      });
-  });
-
-  it('should not create community with invalid body data', (done) =>{
-    request(app)
-      .post('/community-create')
-      .send({})
-      .expect(400)
-      .end((err,res)=>{
-        if (err) {
-          return done(err);
-        }
-
-        Community.find().then((comms)=>{
-          expect(comms.length).toBe(2); //2 comms in seed data
-          done();
-        }).catch((e)=>done(e));
-      });
-  });
-});
-
-describe('GET /communities', ()=>{
-  it('should return all communities', (done)=> {
-    request(app)
-      .get('/communities')
-      .expect(200)
-      .expect((res)=>{
-        expect(res.body.comms.length).toBe(2);
-      })
-      .end(done);
-  });
-});
-
-describe('GET /community/:id', ()=> {
-  it('should return community', (done) =>{
-    request(app)
-      .get(`/community/${communities[0]._id.toHexString()}`)
-      .expect(200)
-      .expect((res)=>{
-        expect(res.body.comm.name).toBe(communities[0].name);
-        expect(res.body.comm.description).toBe(communities[0].description);
-        expect(res.body.comm.createdAt).toBe(communities[0].createdAt);
-        expect(res.body.comm.material).toEqual(communities[0].material);
-      })
-      .end(done);
-  });
-});
-
-describe('PATCH /community/:id', ()=> {
-  it('should update the todo', (done)=> {
-    var id = communities[0]._id.toHexString();
-    var name = 'Update name';
-    var description = 'Update name';
-    var material = ['https://calendar.google.com/','https://www.facebook.com/'];
-
-    request(app)
-      .patch(`/community/${id}`)
-      .send({
-        name,
-        description,
-        material
-      })
-      .expect(200)
-      .expect((res)=>{
-        expect(res.body.comm.name).toBe(name);
-        expect(res.body.comm.description).toBe(description);
-        expect(res.body.comm.material).toEqual(material);
-      })
-      .end(done)
-  });
-});
-
-describe('DELETE /community/:id', ()=> {
-  it('should remove a community', (done) =>{
-    var id = communities[0]._id.toHexString();
-
-    request(app)
-      .delete(`/community/${id}`)
-      .expect(200)
-      .expect((res)=>{
-        expect(res.body.comm._id).toBe(id)
-      })
-      .end((err,res)=>{
-        if (err) {
-          return done(err);
-        }
-        Community.findById(id).then((comm)=>{
-          expect(comm).toBeFalsy();
-          done();
-        }).catch((e)=>done(e));
-      });
-  });
-
-  it('should return a 404 if community not found', (done) =>{
-    var id = new ObjectID().toHexString();
-    request(app)
-      .delete(`/community/${id}`)
-      .expect(404)
-      .end(done);
-  });
-
-  it('should return a 404 if object is invalid', (done) =>{
-    request(app)
-      .delete('/community/12344')
-      .expect(404)
-      .end(done);
-  });
-});
-
-// POST
-
-describe('POST /post', ()=> {
-  it('should create a new post', (done)=> {
-    request(app)
-      .post('/post')
-      .send({message:"New message!"})
-      .expect(200)
-      .expect((res)=>{
-        expect(res.body.message).toBe('New message!')
-      })
-      .end((err,res)=>{
-        if (err) {
-          return done(err);
-        };
         done();
       });
   });

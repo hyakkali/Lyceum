@@ -32,6 +32,7 @@
     "expect": "^21.2.1",
     "mocha": "^4.0.1",
     "nodemon": "^1.12.1",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "supertest-session": "^3.1.0"
   }
 }
