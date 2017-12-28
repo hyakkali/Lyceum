@@ -8,6 +8,8 @@ const {Community} = require('./../models/community');
 const {Topic} = require('./../models/topic');
 const {User} = require('./../models/user');
 const {Post} = require('./../models/post');
+const {Resource} = require('./../models/resource');
+
 
 const {
   communities,
@@ -84,10 +86,8 @@ describe('After logging in', ()=> {
           }
           Community.find({name:'Relative Physics'}).then((comms)=>{
             expect(comms.length).toBe(1);
-          }).catch((e)=>done(e));
-          Community.findOne({name:'Relative Physics'}).then((comm)=>{
-            expect(comm.name).toBe('Relative Physics');
-            expect(comm.description).toBe('Generic description');
+            expect(comms[0].name).toBe('Relative Physics');
+            expect(comms[0].description).toBe('Generic description');
             done();
           }).catch((e)=>done(e));
         });
@@ -115,27 +115,6 @@ describe('After logging in', ()=> {
         testSession.get(`/community/${communities[0]._id.toHexString()}`)
         .expect(200)
         .end(done);
-    });
-  });
-
-  describe('POST /post', ()=> {
-    it('should create a new post', (done)=> {
-      var id = communities[0]._id.toHexString();
-      testSession.post(`/post/${id}`)
-        .send({message:"New message!"})
-        .expect(302)
-        .end((err,res)=>{
-          if (err) {
-            return done(err);
-          }
-          Post.find({community:id}).then((post)=>{
-            expect(post.length).toBe(1);
-          }).catch((e)=>done(e));
-          Post.findOne({community:id}).then((post)=>{
-            expect(post.message).toBe("New message!")
-            done();
-          }).catch((e)=>done(e));
-        });
     });
   });
 
@@ -211,7 +190,90 @@ describe('After logging in', ()=> {
     });
   });
 
+  describe('POST /post/:id', ()=> {
+    it('should create a new post', (done)=> {
+      var id = communities[0]._id.toHexString();
+      testSession.post(`/post/${id}`)
+        .send({message:"New message!"})
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Post.find({community:id}).then((post)=>{
+            expect(post.length).toBe(1);
+            expect(post[0].message).toBe("New message!")
+            done();
+          }).catch((e)=>done(e));
+        });
+    });
+  });
 
+  describe('POST /resource/:id', ()=>{
+    it('should create a new resource',(done)=>{
+      var id = communities[0]._id.toHexString();
+      var name = 'Wikipedia entry on Quantum computing';
+      var link = 'https://en.wikipedia.org/wiki/Quantum_computing';
+      var description = 'Wikipedia entry on quantum computing';
+
+      testSession.post(`/resource/${id}`)
+        .send({name,link,description})
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Resource.find({community:id}).then((resource)=>{
+            expect(resource.length).toBe(2); //already one resource in community
+            expect(resource[1].name).toBe(name);
+            expect(resource[1].link).toBe(link);
+            expect(resource[1].description).toBe(description);
+            done();
+          }).catch((e)=>done(e));
+        })
+    })
+  })
+
+  describe('POST /like/:id/:commid',()=>{
+    it('should like resource',(done)=>{
+      var id = resources[0]._id.toHexString();
+      var commid = communities[0]._id.toHexString();
+
+      testSession.post(`/like/${id}/${commid}`)
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Resource.findById(id).then((resource)=>{
+            expect(resource.likes).toBe(5) //originally 4
+            expect(resource.dislikes).toBe(14) //originally 14
+            done();
+          }).catch((e)=>done(e));
+        });
+    });
+  })
+
+  describe('POST /dislike/:id/:commid',()=>{
+    it('should dislike resource',(done)=>{
+      var id = resources[0]._id.toHexString();
+      var commid = communities[0]._id.toHexString();
+
+      testSession.post(`/dislike/${id}/${commid}`)
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Resource.findById(id).then((resource)=>{
+            expect(resource.likes).toBe(4) //originally 4
+            expect(resource.dislikes).toBe(15) //originally 14
+            done();
+          }).catch((e)=>done(e));
+        });
+    });
+  })
+//add more authentication-required tests here
 });
 
 // USER

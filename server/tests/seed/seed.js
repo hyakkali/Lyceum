@@ -33,8 +33,8 @@ const resources = [{
   name:'Wikipedia on Quantum Computing',
   link:'https://en.wikipedia.org/wiki/Quantum_computing',
   description:'Wikipedia entry on quantum computing.',
-  likes:0,
-  dislikes:0,
+  likes:4,
+  dislikes:14,
   createdBy:userOneId,
   createdAt:'4:18 pm',
   community:commOneId
