@@ -9,15 +9,28 @@ const {Topic} = require('./../models/topic');
 const {User} = require('./../models/user');
 const {Post} = require('./../models/post');
 
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost:27017/CommunityTest');
 
-const {communities,populateComms,topics,populateTopics,users,populateUsers} = require('./seed/seed');
-
-beforeEach(populateComms);
-beforeEach(populateTopics);
-beforeEach(populateUsers);
+const {
+  communities,
+  populateComms,
+  // topics,
+  // populateTopics,
+  users,
+  populateUsers,
+  resources,
+  populateResources
+} = require('./seed/seed');
 
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/CommunityTest');
+
+beforeEach(populateComms);
+// beforeEach(populateTopics);
+beforeEach(populateUsers);
+beforeEach(populateResources);
+
 
 // USER
 
@@ -295,81 +308,81 @@ describe('POST /post', ()=> {
 
 // TOPIC
 
-describe('POST /topic-create', ()=> {
-  it('should create a new topic', (done) =>{
-    request(app)
-      .post('/topic-create')
-      .send({
-        name:'Relative Physics',
-        description: 'Generic description',
-        material:[
-          'https://thenounproject.com/',
-          'https://en.wikipedia.org/wiki/Quantum_computing'
-        ]
-      })
-      .expect(302)
-      // .expect((res)=>{
-      //   expect(res.body.name).toBe('Relative Physics');
-      //   expect(res.body.description).toBe('Generic description');
-      //   expect(res.body.material).toEqual([
-      //     'https://thenounproject.com/',
-      //     'https://en.wikipedia.org/wiki/Quantum_computing'
-      //   ]);
-      // })
-      .end((err,res)=>{
-        if (err) {
-          return done(err);
-        }
-        Topic.find({
-          name:'Relative Physics'
-        }).then((topics)=>{
-          expect(topics.length).toBe(1);
-          done();
-        }).catch((e)=>done(e));
-      });
-  });
-
-  it('should not create topic with invalid body data', (done) =>{
-    request(app)
-      .post('/topic-create')
-      .send({})
-      .expect(400)
-      .end((err,res)=>{
-        if (err) {
-          return done(err);
-        }
-
-        Topic.find().then((topics)=>{
-          expect(topics.length).toBe(2); //2 comms in seed data
-          done();
-        }).catch((e)=>done(e));
-      });
-  });
-});
-
-describe('GET /topics', ()=>{
-  it('should return all topics', (done)=> {
-    request(app)
-      .get('/topics')
-      .expect(200)
-      .expect((res)=>{
-        expect(res.body.topics.length).toBe(2);
-      })
-      .end(done);
-  });
-});
-
-describe('GET /topic/:id', ()=> {
-  it('should return topic', (done) =>{
-    request(app)
-      .get(`/topic/${topics[0]._id.toHexString()}`)
-      .expect(200)
-      .expect((res)=>{
-        expect(res.body.topic.name).toBe(topics[0].name);
-        expect(res.body.topic.description).toBe(topics[0].description);
-        expect(res.body.topic.createdAt).toBe(topics[0].createdAt);
-        expect(res.body.topic.material).toEqual(topics[0].material);
-      })
-      .end(done);
-  });
-});
+// describe('POST /topic-create', ()=> {
+//   it('should create a new topic', (done) =>{
+//     request(app)
+//       .post('/topic-create')
+//       .send({
+//         name:'Relative Physics',
+//         description: 'Generic description',
+//         material:[
+//           'https://thenounproject.com/',
+//           'https://en.wikipedia.org/wiki/Quantum_computing'
+//         ]
+//       })
+//       .expect(302)
+//       // .expect((res)=>{
+//       //   expect(res.body.name).toBe('Relative Physics');
+//       //   expect(res.body.description).toBe('Generic description');
+//       //   expect(res.body.material).toEqual([
+//       //     'https://thenounproject.com/',
+//       //     'https://en.wikipedia.org/wiki/Quantum_computing'
+//       //   ]);
+//       // })
+//       .end((err,res)=>{
+//         if (err) {
+//           return done(err);
+//         }
+//         Topic.find({
+//           name:'Relative Physics'
+//         }).then((topics)=>{
+//           expect(topics.length).toBe(1);
+//           done();
+//         }).catch((e)=>done(e));
+//       });
+//   });
+//
+//   it('should not create topic with invalid body data', (done) =>{
+//     request(app)
+//       .post('/topic-create')
+//       .send({})
+//       .expect(400)
+//       .end((err,res)=>{
+//         if (err) {
+//           return done(err);
+//         }
+//
+//         Topic.find().then((topics)=>{
+//           expect(topics.length).toBe(2); //2 comms in seed data
+//           done();
+//         }).catch((e)=>done(e));
+//       });
+//   });
+// });
+//
+// describe('GET /topics', ()=>{
+//   it('should return all topics', (done)=> {
+//     request(app)
+//       .get('/topics')
+//       .expect(200)
+//       .expect((res)=>{
+//         expect(res.body.topics.length).toBe(2);
+//       })
+//       .end(done);
+//   });
+// });
+//
+// describe('GET /topic/:id', ()=> {
+//   it('should return topic', (done) =>{
+//     request(app)
+//       .get(`/topic/${topics[0]._id.toHexString()}`)
+//       .expect(200)
+//       .expect((res)=>{
+//         expect(res.body.topic.name).toBe(topics[0].name);
+//         expect(res.body.topic.description).toBe(topics[0].description);
+//         expect(res.body.topic.createdAt).toBe(topics[0].createdAt);
+//         expect(res.body.topic.material).toEqual(topics[0].material);
+//       })
+//       .end(done);
+//   });
+// });
