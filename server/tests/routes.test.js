@@ -1,16 +1,12 @@
 const expect = require('expect');
 const request = require('supertest');
 const {ObjectID} = require('mongodb');
-const mongoose = require('mongoose');
 
 const {app} = require('./../server');
 const {Community} = require('./../models/community');
 const {Topic} = require('./../models/topic');
 const {User} = require('./../models/user');
 const {Post} = require('./../models/post');
-
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/CommunityTest');
 
 const {
   communities,
