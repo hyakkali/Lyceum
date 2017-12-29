@@ -9,7 +9,7 @@ const {Topic} = require('./../models/topic');
 const {User} = require('./../models/user');
 const {Post} = require('./../models/post');
 const {Resource} = require('./../models/resource');
-
+const {Review} = require('./../models/review');
 
 const {
   communities,
@@ -234,12 +234,16 @@ describe('After logging in', ()=> {
     })
   })
 
-  describe('POST /like/:id/:commid',()=>{
-    it('should like resource',(done)=>{
+  describe('POST /review/:id/:commid',()=>{
+    it('should add like to and post review of the resource',(done)=>{
       var id = resources[0]._id.toHexString();
       var commid = communities[0]._id.toHexString();
 
-      testSession.post(`/like/${id}/${commid}`)
+      testSession.post(`/review/${id}/${commid}`)
+        .send({
+          message:'This resource is great!',
+          rating:'like'
+        })
         .expect(302)
         .end((err,res)=>{
           if (err) {
@@ -248,18 +252,26 @@ describe('After logging in', ()=> {
           Resource.findById(id).then((resource)=>{
             expect(resource.likes).toBe(5) //originally 4
             expect(resource.dislikes).toBe(14) //originally 14
+          }).catch((e)=>done(e));
+          Review.find({resource:id}).then((reviews)=>{
+            expect(reviews.length).toBe(1);
+            expect(reviews[0].message).toBe('This resource is great!');
+            expect(reviews[0].liked).toBe(true);
+            expect(reviews[0].disliked).toBe(false);
             done();
           }).catch((e)=>done(e));
         });
     });
-  })
 
-  describe('POST /dislike/:id/:commid',()=>{
-    it('should dislike resource',(done)=>{
+    it('should add dislike to and post review of the resource',(done)=>{
       var id = resources[0]._id.toHexString();
       var commid = communities[0]._id.toHexString();
 
-      testSession.post(`/dislike/${id}/${commid}`)
+      testSession.post(`/review/${id}/${commid}`)
+        .send({
+          message:'This resource sucks!',
+          rating:'dislike'
+        })
         .expect(302)
         .end((err,res)=>{
           if (err) {
@@ -268,12 +280,17 @@ describe('After logging in', ()=> {
           Resource.findById(id).then((resource)=>{
             expect(resource.likes).toBe(4) //originally 4
             expect(resource.dislikes).toBe(15) //originally 14
+          }).catch((e)=>done(e));
+          Review.find({resource:id}).then((reviews)=>{
+            expect(reviews.length).toBe(2); //2 because of review from above test
+            expect(reviews[1].message).toBe('This resource sucks!');
+            expect(reviews[1].liked).toBe(false);
+            expect(reviews[1].disliked).toBe(true);
             done();
           }).catch((e)=>done(e));
         });
     });
-  })
-//add more authentication-required tests here
+  });
 });
 
 // USER
