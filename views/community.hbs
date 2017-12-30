@@ -18,10 +18,10 @@
       <div class="col-sm-6 col-sm-offset-3">
         <h1>{{community.name}}</h1>
         <h4>{{community.description}}</h4>
-        <br>
         <div class="resources">
+          <h3>Resources</h3>
           {{#each resources}}
-            <a href="/resource/{{this._id}}">{{this.name}}</a>
+            {{inc @index}}. <a href="/resource/{{this._id}}">{{this.name}}</a>
             <br>
             {{this.link}}
             <br>
@@ -51,21 +51,20 @@
           $(".resources").linkify();
         </script>
 
-
+        <h3>Post a New Resource</h3>
         <div id="errors"></div>
-
         <form class="" action="/resource/{{community._id}}" method="post" onsubmit="return validateForm()">
           <div class="form-group">
             <label>Name</label>
             <input type="text" class="form-control" id="name" name="name">
           </div> <!-- end div form-group -->
           <div class="form-group">
-            <label>Link</label>
-            <input type="text" class="form-control" id="link" name="link">
-          </div> <!-- end div form-group -->
-          <div class="form-group">
             <label>Description</label>
             <input type="text" class="form-control" id="description" name="description">
+          </div> <!-- end div form-group -->
+          <div class="form-group">
+            <label>Link</label>
+            <input type="text" class="form-control" id="link" name="link">
           </div> <!-- end div form-group -->
           <script>
             function validateForm() {
@@ -92,11 +91,11 @@
               return true;
             }
           </script>
-          <button type="submit" class="btn btn-warning btn-md">Post Link</button>
+          <button type="submit" class="btn btn-warning btn-md">Post Resource</button>
         </form> <!-- add validation for valid URL's -->
 
         <br>
-        {{#each posts}}
+        <!-- {{#each posts}}
           {{this.message}}
           {{this.createdAt}}
           {{this.createdBy}}
@@ -105,13 +104,13 @@
           <p>No posts yet!</p>
         {{/each}}
 
-        <div id="errors2"></div>
+        <div id="errors2"></div> -->
 
-        <form class="" action="/post/{{community._id}}" method="post" onsubmit="return validateForm2()">
+        <!-- <form class="" action="/post/{{community._id}}" method="post" onsubmit="return validateForm2()">
           <div class="form-group">
             <label>Post a message</label>
             <input type="text" class="form-control"  id="message" name="message">
-          </div> <!-- end div form-group -->
+          </div>
           <script>
             function validateForm2() {
               var message = document.getElementById('message');
@@ -128,11 +127,11 @@
             }
           </script>
           <button type="submit" class="btn btn-warning btn-md">Post Message</button>
-        </form> <!-- add validation for no empty messages -->
+        </form> -->
         {{#if owner}}
-          <a href="/community-update/{{community._id}}">Update</a>
+          <a href="/community-update/{{community._id}}">Update Community</a>
           <br>
-          <a href="/community-delete/{{community._id}}">Delete</a>
+          <a href="/community-delete/{{community._id}}">Delete Community</a>
         {{/if}}
       </div> <!-- end div col-sm-6 col-sm-offset-3 -->
     </div> <!-- end div container -->

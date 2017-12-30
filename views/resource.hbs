@@ -14,17 +14,24 @@
       <div class="col-sm-6 col-sm-offset-3">
         <h1>{{resource.name}}</h1>
         <h4>{{resource.description}}</h4>
-        <h4>Created By: {{resource.createdBy}}</h4>
+        <h4>Created by {{resource.createdBy}} at {{resource.createdAt}}</h4>
         <h4>Likes: {{resource.likes}}</h4>
         <h4>Dislikes: {{resource.dislikes}}</h4>
 
+        <h5>Reviews</h5>
         {{#each reviews}}
           {{#if this.message}}
             {{this.message}}
             <br>
             {{this.createdBy}}
+            {{#if this.liked}}
+              liked it.
+            {{else}}
+              disliked it.
+            {{/if}}
             <br>
             {{this.createdAt}}
+            <br>
             <br>
           {{/if}}
         {{else}}

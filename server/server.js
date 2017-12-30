@@ -33,6 +33,9 @@ app.use(bodyParser.urlencoded({ //allows form submission to be read
 }));
 
 hbs.registerPartials('./../views/partials');
+hbs.registerHelper("inc",(value,options)=>{
+  return parseInt(value)+1;
+});
 app.set('view engine','hbs');
 
 require('./routes.js')(app);
