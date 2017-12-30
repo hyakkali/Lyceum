@@ -11,8 +11,11 @@ const commTwoId = new ObjectID();
 // const topicTwoId = new ObjectID();
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
+
 const resOneId = new ObjectID();
 const resTwoId = new ObjectID();
+const resThreeId = new ObjectID();
+
 
 const communities = [{
   _id:commOneId,
@@ -35,9 +38,10 @@ const resources = [{
   description:'Wikipedia entry on quantum computing.',
   likes:4,
   dislikes:14,
-  createdBy:userOneId,
+  createdBy:'hyakkali',
   createdAt:'4:18 pm',
-  community:commOneId
+  community:commOneId,
+  postedUsers:['randomusername','spencer']
 },{
   _id:resTwoId,
   name:'Wikipedia on Hyperloop',
@@ -45,9 +49,21 @@ const resources = [{
   description:'Wikipedia entry on hyperloop.',
   likes:5,
   dislikes:3,
-  createdBy:userTwoId,
+  createdBy:'spencer',
   createdAt:'3:14 pm',
-  community:commTwoId
+  community:commTwoId,
+  postedUsers:[]
+},{
+  _id:resThreeId,
+  name:'Facebook group on Hyperloop',
+  link:'facebook.com',
+  description:'Facebook group on hyperloop.',
+  likes:4,
+  dislikes:14,
+  createdBy:'hyakkali',
+  createdAt:'3:14 pm',
+  community:commTwoId,
+  postedUsers:['randomusername']
 }];
 
 // const topics = [{
@@ -108,8 +124,9 @@ const populateResources = (done)=>{
   Resource.remove({}).then(()=>{
     var resOne = new Resource(resources[0]).save();
     var resTwo = new Resource(resources[1]).save();
+    var resThree = new Resource(resources[2]).save();
 
-    return Promise.all([resOne,resTwo])
+    return Promise.all([resOne,resTwo,resThree])
   }).then(()=>done());
 };
 

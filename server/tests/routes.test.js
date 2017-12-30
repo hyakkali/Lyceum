@@ -236,8 +236,8 @@ describe('After logging in', ()=> {
 
   describe('POST /review/:id/:commid',()=>{
     it('should add like to and post review of the resource',(done)=>{
-      var id = resources[0]._id.toHexString();
-      var commid = communities[0]._id.toHexString();
+      var id = resources[2]._id.toHexString();
+      var commid = communities[1]._id.toHexString();
 
       testSession.post(`/review/${id}/${commid}`)
         .send({
@@ -264,8 +264,8 @@ describe('After logging in', ()=> {
     });
 
     it('should add dislike to and post review of the resource',(done)=>{
-      var id = resources[0]._id.toHexString();
-      var commid = communities[0]._id.toHexString();
+      var id = resources[2]._id.toHexString();
+      var commid = communities[1]._id.toHexString();
 
       testSession.post(`/review/${id}/${commid}`)
         .send({
@@ -290,6 +290,34 @@ describe('After logging in', ()=> {
           }).catch((e)=>done(e));
         });
     });
+
+    it('should not add review if user already posted one', (done)=> {
+      var id = resources[0]._id.toHexString();
+      var commid = communities[0]._id.toHexString();
+
+      testSession.post(`/review/${id}/${commid}`)
+      .send({
+        message:'This resource sucks!',
+        rating:'dislike'
+      })
+      .expect(401)
+      .end(done)
+    });
+
+    it('should not allow owner of resource to post review', (done)=> {
+      var id = resources[1]._id.toHexString();
+      var commid = communities[1]._id.toHexString();
+
+      testSession.post(`/review/${id}/${commid}`)
+      .send({
+        message:'This resource sucks!',
+        rating:'dislike'
+      })
+      .expect(401)
+      .end(done)
+    });
+
+
   });
 });
 

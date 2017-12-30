@@ -5,7 +5,7 @@ var {Post} = require('./models/post');
 var {Resource} = require('./models/resource');
 var {Review} = require('./models/review');
 
-var {requiresLogin,isAuthenticated,requiresOwner,isOwner} = require('./middleware/loginRequired');
+var {requiresLogin,isAuthenticated,requiresOwner,isOwner,isReviewOwner,isResourceOwner} = require('./middleware/middleware');
 
 const moment = require('moment');
 const {ObjectID} = require('mongodb');
@@ -240,21 +240,19 @@ module.exports = (app)=>{
       })
   });
 
-  app.post('/review/:id/:commid',requiresLogin,(req,res)=>{
+  app.post('/review/:id/:commid',[requiresLogin,isReviewOwner,isResourceOwner],(req,res)=>{
     var id = req.params.id; //resource id
     var commid = req.params.commid; //community id
     var rating = req.body.rating;
 
     if (rating==='like') {
-      //findOneAndUpdate resource for likes
-      Resource.findOneAndUpdate({_id:id},{$inc:{likes:1}},{new:true}).then((resource)=>{
-        if (!resource) {
-          return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+      User.findById(req.session.userId).then((user)=>{
+        if (!user) {
+          return res.status(404).render('error.hbs',{error:'User could not be found.'});
         }
-        //create review with liked set to true
-        User.findById(req.session.userId).then((user)=>{
-          if (!user) {
-            return res.status(404).render('error.hbs',{error:'User could not be found.'});
+        Resource.findOneAndUpdate({_id:id},{$inc:{likes:1},$push:{postedUsers:user.username}},{new:true}).then((resource)=>{
+          if (!resource) {
+            return res.status(404).render('error.hbs',{error:e});
           }
           var time = new Date().getTime();
           var review = new Review({
@@ -269,12 +267,15 @@ module.exports = (app)=>{
             //return to resource page
             return res.status(200).redirect('/resource/'+id);
           },(e)=>res.status(400).render('error.hbs',{error:e}));
-        }).catch((e)=>res.status(400).render('error.hbs',{error:'Error with finding user.'}))
-      }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+        }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+      }).catch((e)=>res.status(400).render('error.hbs',{error:'Error with finding user.'}))
+      //findOneAndUpdate resource for likes and push userId to array
+
+        //create review with liked set to true
     }
     if (rating==='dislike') {
-      //findOneAndUpdate resource for Dislikes
-      Resource.findOneAndUpdate({_id:id},{$inc:{dislikes:1}},{new:true}).then((resource)=>{
+      //findOneAndUpdate resource for Dislikes and push userId to array
+      Resource.findOneAndUpdate({_id:id},{$inc:{dislikes:1},$push:{postedUsers:req.session.user}},{new:true}).then((resource)=>{
         if (!resource) {
           return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
         }

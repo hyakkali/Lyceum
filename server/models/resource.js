@@ -1,26 +1,5 @@
 const mongoose  = require('mongoose');
 
-// var PostSchema = mongoose.Schema({
-//   message:{
-//     type:String,
-//     required:true,
-//     trim:true,
-//     minlength:1,
-//     unique:false
-//   },
-//   createdBy:{
-//     type:String,
-//     required:true,
-//     trim:true,
-//     minlength:1,
-//     unique:false
-//   },
-//   createdAt:{
-//     type:String,
-//     required:true
-//   }
-// });
-
 var ResourceSchema = mongoose.Schema({
   name:{
     type:String,
@@ -51,7 +30,6 @@ var ResourceSchema = mongoose.Schema({
     type:Number,
     required:true
   },
-  // reviews:[PostSchema],
   createdBy:{
     type:String,
     required:true,
@@ -66,7 +44,13 @@ var ResourceSchema = mongoose.Schema({
   community:{
     type:mongoose.Schema.Types.ObjectId,
     required:true,
-  }
+  },
+  postedUsers:[{
+    type:String,
+    trim:true,
+    minlength:1,
+    required:false,
+  }]
 });
 
 var Resource = mongoose.model('Resource',ResourceSchema);
