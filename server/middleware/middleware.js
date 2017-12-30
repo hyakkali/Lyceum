@@ -49,7 +49,7 @@ var isOwner = (req,res,next)=>{
   }).catch((e)=>res.status(400).render('error.hbs',{error:"Community could not be found."}));
 }
 
-var isReviewOwner = (req,res,next)=>{
+var hasPostedReview = (req,res,next)=>{
   id = req.params.id; //resource id
   //find resource with that id
   Resource.findById(id).then((resource)=>{
@@ -88,4 +88,4 @@ var isResourceOwner = (req,res,next)=>{
   }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
 }
 
-module.exports = {requiresLogin,isAuthenticated,requiresOwner,isOwner,isReviewOwner,isResourceOwner};
+module.exports = {requiresLogin,isAuthenticated,requiresOwner,isOwner,hasPostedReview,isResourceOwner};
