@@ -3,28 +3,240 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <style>
-      body {padding-top: 80px;}
-    </style>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="https://decorator.io/tools/modulr.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script>
   </head>
   <body>
-    <div class="container">
-      <div class="jumbotron text-center">
-        <h1>Welcome to Lyceum!</h1>
-        <a href="/communities">View Communities</a>
-        <br>
-        <a href="/community-create">Create a community!</a>
-        <br>
-        {{#if user}}
-          <a href="/logout">Logout</a>
-        {{else}}
-          <a href="/register">Signup</a>
-          <br>
-          <a href="/login">Login</a>
-        {{/if}}
+    <!-- Header Start -->
+    <div class="row header">
+      <!-- Navbar Start -->
+      <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
+        <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
+        <ul class="pull-right menu href-text-white">
+          <li><a href="#">Help</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a class="" href="/login">Login</a></li>
+          <li><a class="fill-purple" href="/register">Sign up</a></li>
+        </ul>
       </div>
+      <!-- Navbar End -->
+
+      <!-- Row Intro Start -->
+      <div class="row text-center padding-bottom-40 push-top">
+        <h2 class="text-white pull-left width-100">Find the Right Resources to Learn Anything</h2>
+        <!-- <p class="text-white">
+          It is now easier than ever to find the right resources to learn about any topic you want
+        </p> -->
+      </div>
+      <!-- Row Intro End -->
+
+      <!-- Search Form Start -->
+      <div class="wrapper960 center">
+        <form class="form l padding-10 cf" action="/search" method="post" name="searchForm" onsubmit="return setAction()">
+          <div class="col-10">
+            <input class="border-white -rounded" id="query" name="query" type="text" placeholder="Search for a topic...">
+          </div>
+          <div class="col-2">
+            <button type="submit" class="btn purple width-100">Search</button>
+          </div>
+          <script>
+            function setAction() {
+              var query = document.getElementById('query');
+              document.searchForm.action = "/search/"+query.value;
+              return true;
+            }
+          </script>
+        </form>
+      </div>
+      <!-- Search Form End -->
+
     </div>
+    <!-- Header End -->
+
+
+    <!-- Content Start -->
+
+    <div class="wrapper960 center padding-v-40 tablet-padding">
+      <!-- First Row Start -->
+      <div class="row flex padding-bottom-20">
+        <div class="col-7">
+          <img class="pull-left width-100" src="https://decorator.io/media/placeholder.jpg" />
+        </div>
+        <div class="col-5 light-silver flex middle">
+          <div class="padding-40">
+            <h5 class="padding-v-10 text600">Lorem Ipsum is simply dummy text?</h5>
+            <p class="text-16 margin-bottom">
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            </p>
+
+            <a class="btn l purple width-100 margin-top">Explore Now</a>
+          </div>
+        </div>
+      </div>
+      <!-- First Row End -->
+
+      <!-- Second Row Start -->
+      <div class="row padding-v-40 tablet-padding-top col-gutter-20">
+
+        <h3 class="text-center padding-bottom">Explore Rentals</h3>
+
+        <p class="padding-bottom-20 text-center text-16">
+          Lorem Ipsum is simply dummy text of the printing
+        </p>
+
+        <!-- Item Start -->
+        <div class="col-4">
+          <a href="#" class="pull-left width-100 silver">
+            <h5 class="absolute-bottom padding-20">RENTAL ONE</h5>
+            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
+          </a>
+        </div>
+        <!-- Item End -->
+
+        <!-- Item Start -->
+        <div class="col-4">
+          <a href="#" class="pull-left width-100 silver">
+            <h5 class="absolute-bottom padding-20">RENTAL TWO</h5>
+            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
+          </a>
+        </div>
+        <!-- Item End -->
+
+
+        <!-- Item Start -->
+        <div class="col-4">
+          <a href="#" class="pull-left width-100 silver">
+            <h5 class="absolute-bottom padding-20">RENTAL THREE</h5>
+            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
+          </a>
+        </div>
+        <!-- Item End -->
+
+        <div class="row flex center padding-top-30 tablet-padding-top">
+          <div class="col-4 padding-left-20">
+            <a href="#" class="btn l purple width-100">Explore More</a>
+          </div>
+        </div>
+
+      </div>
+      <!-- Second Row End -->
+
+
+      <!-- Third Row Start -->
+      <div class="row padding-top-40 tablet-padding-top col-gutter-20">
+
+        <h3 class="text-center padding-bottom">Promoted</h3>
+
+        <p class="padding-bottom-20 text-center text-16">
+          Lorem Ipsum is simply dummy text of the printing
+        </p>
+
+        <!-- Item Start -->
+        <div class="col-8">
+          <a href="#" class="pull-left width-100 silver">
+            <h5 class="absolute-bottom padding-20">PROMO BIG</h5>
+            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
+          </a>
+        </div>
+        <!-- Item End -->
+
+        <!-- Item Start -->
+        <div class="col-4">
+          <a href="#" class="pull-left width-100 silver">
+            <h5 class="absolute-bottom padding-20">PROMO ONE</h5>
+            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
+          </a>
+        </div>
+        <!-- Item End -->
+
+        <!-- Item Start -->
+        <div class="col-4">
+          <a href="#" class="pull-left width-100 silver">
+            <h5 class="absolute-bottom padding-20">PROMO TWO</h5>
+            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
+          </a>
+        </div>
+        <!-- Item End -->
+
+      </div>
+      <!-- Third Row End -->
+    </div>
+    <!-- Content End -->
+
+    <!-- Forth Row Start -->
+    <div class="row footer">
+
+      <!-- Row Rgba Start -->
+      <div class="row rgba padding-top-20">
+
+        <!-- Wrapper Start -->
+        <div class="wrapper960 center">
+
+          <!-- About Row Start -->
+          <div class="row padding-v-40 tablet-padding">
+
+            <!-- Item Start -->
+            <div class="col-3">
+              <h4 class="text-purple text300 padding-bottom-10">Company</h4>
+              <ul class="href-text-gray hover-href-text-underline">
+                <li><a href="#">About</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Press</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Policies</a></li>
+                <li><a href="#">Terms & Privacy</a></li>
+              </ul>
+            </div>
+            <!-- Item End  -->
+
+            <!-- Item Start -->
+            <div class="col-3">
+              <h4 class="text-purple text300 padding-bottom-10">Support</h4>
+              <ul class="href-text-gray hover-href-text-underline">
+                <li><a href="#">Contact Us</a></li>
+              </ul>
+            </div>
+
+            <div class="col-6">
+              <h4 class="text-gray text-center text300 padding-bottom-10">Follow Us</h4>
+              <div class=" button-center padding-v-20">
+                <a href="#" class="btn icon border purple round margin-right">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="btn icon border purple round hover-tooltip margin-right">
+                  <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="btn icon border purple round hover-tooltip margin-right">
+                  <i class="fab fa-angellist"></i>
+                </a>
+                <a href="#" class="btn icon border purple round hover-tooltip margin-right">
+                  <i class="fab fa-slack"></i>
+                </a>
+              </div>
+            </div>
+            <!-- Item End -->
+          </div>
+          <!-- About Row End -->
+
+          <!-- Social Start -->
+          <div class="row social button-center padding-v-20">
+            <div class="col-12">
+              <p class="text-gray padding-v-20">
+                <i class="far fa-copyright"></i>
+                2018 Lyceum
+              </p>
+            </div>
+          </div>
+          <!-- Social End -->
+
+        </div>
+        <!-- Wrapper End -->
+
+      </div>
+      <!-- Row Rgba End -->
+
+    </div>
+    <!-- Forth Row End -->
   </body>
 </html>

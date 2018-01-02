@@ -1,0 +1,69 @@
+/*
+  Modulr.css
+  ---------------------
+  @desc: Modular CSS Framework
+  @author: Decorator.io
+  @twitter: https://www.twitter.com/_uloga
+  @source: http://www.decorator.io/modulr
+\--------------------------------------------*/
+
+/* Inspired by AIRBNB */
+
+/* __ extra edits __ */
+
+.header,
+.footer{
+  min-height: 560px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  /* background: url("https://decorator.io/media/cover-2.jpg") no-repeat center center fixed; */
+  background-color: #8342f4;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+.footer{
+  min-height: 380px;
+}
+.form{
+  background: rgba(0,0,0,0.5) !important;
+}
+.form > div{
+  margin-bottom: 0;
+}
+.form *{
+  transition: none;
+}
+.form select{
+  border-left-color: #dedede !important;
+}
+.push-top{
+  margin-top: 90px;
+}
+.addon-append input,
+.addon-append .btn{
+  border-radius: 0;
+  font-size: 17px !important;
+}
+.social{
+  border-top: 1px solid rgba(255,255,255,0.16);
+}
+
+/* __ colors __ */
+
+.light-silver{
+  background: #e8e8e8;
+}
+
+.rgba{
+  background: rgba(0,0,0,0.7);
+  min-height: 380px;
+}
+
+@media (max-width: 800px){
+  .navbar{
+    background: #2196F3;
+  }
+}
+.copyright{
+}
