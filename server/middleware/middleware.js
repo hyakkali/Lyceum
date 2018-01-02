@@ -12,13 +12,6 @@ var requiresLogin = (req,res,next)=>{
   res.status(401).render('login_required.hbs');
 }
 
-var isAuthenticated = (req,res,next)=>{
-  if (req.session && req.session.userId) {
-    return next();
-  }
-  return res.render('index.hbs');
-}
-
 var requiresOwner = (req,res,next)=>{
   //already logged in from requiresLogin middleware
   Community.findById(req.params.id).then((comm)=>{
@@ -88,4 +81,4 @@ var isResourceOwner = (req,res,next)=>{
   }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
 }
 
-module.exports = {requiresLogin,isAuthenticated,requiresOwner,isOwner,hasPostedReview,isResourceOwner};
+module.exports = {requiresLogin,requiresOwner,isOwner,hasPostedReview,isResourceOwner};

@@ -14,10 +14,12 @@
       <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
         <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
         <ul class="pull-right menu href-text-white">
-          <li><a href="#">Help</a></li>
-          <li><a href="#">About Us</a></li>
-          <li><a class="" href="/login">Login</a></li>
-          <li><a class="fill-purple" href="/register">Sign up</a></li>
+          {{# if user}}
+            <li><a href="/logout">Logout</a></li>
+          {{else}}
+            <li><a href="/login">Login</a></li>
+            <li><a class="fill-purple" href="/register">Sign up</a></li>
+          {{/if}}
         </ul>
       </div>
       <!-- Navbar End -->
@@ -43,6 +45,10 @@
           <script>
             function setAction() {
               var query = document.getElementById('query');
+              if (query.value.trim()==='') {
+                document.searchForm.action = "/search/"+'comms';
+                return true;
+              }
               document.searchForm.action = "/search/"+query.value;
               return true;
             }
@@ -59,7 +65,7 @@
 
     <div class="wrapper960 center padding-v-40 tablet-padding">
       <!-- First Row Start -->
-      <div class="row flex padding-bottom-20">
+      <!-- <div class="row flex padding-bottom-20">
         <div class="col-7">
           <img class="pull-left width-100" src="https://decorator.io/media/placeholder.jpg" />
         </div>
@@ -73,94 +79,40 @@
             <a class="btn l purple width-100 margin-top">Explore Now</a>
           </div>
         </div>
-      </div>
+      </div> -->
       <!-- First Row End -->
 
       <!-- Second Row Start -->
       <div class="row padding-v-40 tablet-padding-top col-gutter-20">
 
-        <h3 class="text-center padding-bottom">Explore Rentals</h3>
+        <h3 class="text-center padding-bottom">Explore Topics</h3>
 
         <p class="padding-bottom-20 text-center text-16">
           Lorem Ipsum is simply dummy text of the printing
         </p>
 
-        <!-- Item Start -->
-        <div class="col-4">
-          <a href="#" class="pull-left width-100 silver">
-            <h5 class="absolute-bottom padding-20">RENTAL ONE</h5>
-            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
-          </a>
+        <div class="col-12">
+          {{#each comms}}
+            <a href="/community/{{this._id}}">
+              <h5 class="pull-left">{{this.name}}</h5>
+            </a>
+          {{/each}}
         </div>
-        <!-- Item End -->
-
-        <!-- Item Start -->
-        <div class="col-4">
-          <a href="#" class="pull-left width-100 silver">
-            <h5 class="absolute-bottom padding-20">RENTAL TWO</h5>
-            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
-          </a>
-        </div>
-        <!-- Item End -->
 
 
-        <!-- Item Start -->
-        <div class="col-4">
-          <a href="#" class="pull-left width-100 silver">
-            <h5 class="absolute-bottom padding-20">RENTAL THREE</h5>
-            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
-          </a>
-        </div>
-        <!-- Item End -->
 
-        <div class="row flex center padding-top-30 tablet-padding-top">
-          <div class="col-4 padding-left-20">
-            <a href="#" class="btn l purple width-100">Explore More</a>
+        <div class="row flex padding-top-30 tablet-padding-top">
+          <div class="col-12">
+            <h6>Can't find what you're looking for? Make one <a href="/community-create">here!</a></h6>
+          </div>
+          <div class="col-4">
+            <a href="/communities" class="btn l purple width-100">Explore More</a>
           </div>
         </div>
 
       </div>
       <!-- Second Row End -->
 
-
-      <!-- Third Row Start -->
-      <div class="row padding-top-40 tablet-padding-top col-gutter-20">
-
-        <h3 class="text-center padding-bottom">Promoted</h3>
-
-        <p class="padding-bottom-20 text-center text-16">
-          Lorem Ipsum is simply dummy text of the printing
-        </p>
-
-        <!-- Item Start -->
-        <div class="col-8">
-          <a href="#" class="pull-left width-100 silver">
-            <h5 class="absolute-bottom padding-20">PROMO BIG</h5>
-            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
-          </a>
-        </div>
-        <!-- Item End -->
-
-        <!-- Item Start -->
-        <div class="col-4">
-          <a href="#" class="pull-left width-100 silver">
-            <h5 class="absolute-bottom padding-20">PROMO ONE</h5>
-            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
-          </a>
-        </div>
-        <!-- Item End -->
-
-        <!-- Item Start -->
-        <div class="col-4">
-          <a href="#" class="pull-left width-100 silver">
-            <h5 class="absolute-bottom padding-20">PROMO TWO</h5>
-            <img class="pull-left width-100" src="https://decorator.io/media/placeholder.png" />
-          </a>
-        </div>
-        <!-- Item End -->
-
-      </div>
-      <!-- Third Row End -->
     </div>
     <!-- Content End -->
 

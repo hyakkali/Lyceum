@@ -5,7 +5,7 @@ var {Post} = require('./models/post');
 var {Resource} = require('./models/resource');
 var {Review} = require('./models/review');
 
-var {requiresLogin,isAuthenticated,requiresOwner,isOwner,hasPostedReview,isResourceOwner} = require('./middleware/middleware');
+var {requiresLogin,requiresOwner,isOwner,hasPostedReview,isResourceOwner} = require('./middleware/middleware');
 
 const moment = require('moment');
 const {ObjectID} = require('mongodb');
@@ -13,8 +13,17 @@ const _ = require('lodash');
 
 module.exports = (app)=>{
 
-  app.get('/',isAuthenticated,(req,res)=>{
-    return res.render('index.hbs',{user:true});
+  app.get('/',(req,res)=>{
+    Community.find().then((comms)=>{
+      if (req.session && req.session.userId) {
+        return res.status(200).render('index.hbs',{comms:comms,user:true});
+      }
+      return res.status(200).render('index.hbs',{comms:comms});
+    },(e)=>{
+      if (e) {
+        res.status(400).render('error.hbs',{error:'Communities could not be found.'})
+      }
+    });
   });
 
 // USER
@@ -170,6 +179,9 @@ module.exports = (app)=>{
   app.post('/search/:query',(req,res)=>{
     var query = req.params.query;
     var regex = new RegExp(query,'i');
+    if (query==='comms') {
+      return res.redirect('/communities');
+    }
     Community.find({name:regex},(err,comms)=>{
       if (comms.length===0) {
         return res.status(400).render('error.hbs',{error:'No communities found!'})
