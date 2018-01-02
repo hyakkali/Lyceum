@@ -159,7 +159,7 @@ module.exports = (app)=>{
 
   app.get('/communities',(req,res)=>{ //GET all communities
     Community.find().then((comms)=>{
-      res.status(200).render('community_list.hbs',{comms:comms})
+      res.status(200).render('community-list.hbs',{comms:comms})
     },(e)=>{
       if (e) {
         res.status(400).render('error.hbs',{error:'Communities could not be found.'})
@@ -167,7 +167,18 @@ module.exports = (app)=>{
     });
   });
 
-  app.get('/community/:id',[requiresLogin,isOwner],(req,res)=>{ //GET specific community page
+  app.post('/search/:query',(req,res)=>{
+    var query = req.params.query;
+    var regex = new RegExp(query,'i');
+    Community.find({name:regex},(err,comms)=>{
+      if (comms.length===0) {
+        return res.status(400).render('error.hbs',{error:'No communities found!'})
+      }
+      return res.status(200).render('community-search.hbs',{comms:comms,query:query});
+    })
+  })
+
+  app.get('/community/:id',isOwner,(req,res)=>{ //GET specific community page
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
