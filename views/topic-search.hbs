@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="/js/libs/jquery-3.2.1.slim.min.js" charset="utf-8"></script>
+    <script src="/js/libs/validator.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="/css/topic.css">
+    <link rel="stylesheet" href="https://decorator.io/tools/modulr.min.css">
+    <title></title>
+  </head>
+  <body>
+
+    <div class="row header">
+      <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
+        <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
+        <ul class="pull-right menu href-text-white">
+          {{# if user}}
+            <li><a href="/logout">Logout</a></li>
+          {{else}}
+            <li><a href="/login">Login</a></li>
+            <li><a class="fill-purple" href="/register">Sign up</a></li>
+          {{/if}}
+        </ul>
+      </div>
+    </div>
+
+    <div class="wrapper960 center">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h1>Search results for "{{query}}"</h1>
+        <br>
+        {{#each topics}}
+          <li><a href="/topic/{{this._id}}">{{this.name}}</a></li>
+        {{else}}
+          <p>No Topics!</p>
+        {{/each}}
+        <br>
+        <a href="/">Go Back Home</a>
+        <h5>Search for another topic</h5>
+        <form action="/search" method="post" onsubmit="return setAction()" name="searchForm">
+          <div class="form-group">
+            <input type="text" class="form-control" id="query" name="query">
+          </div> <!-- end div form-group -->
+          <script>
+            function setAction() {
+              var query = document.getElementById('query');
+              if (query.value.trim()==='') {
+                document.searchForm.action = "/search/"+'topics';
+                return true;
+              }
+              document.searchForm.action = "/search/"+query.value;
+              return true;
+            }
+          </script>
+          <button type="submit" class="btn btn-warning btn-md">Search</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+topic<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="/css/topic.css">
+    <link rel="stylesheet" href="https://decorator.io/tools/modulr.min.css">
+  </head>
+  <body>
+
+    <div class="row header">
+      <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
+        <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
+        <ul class="pull-right menu href-text-white">
+          {{# if user}}
+            <li><a href="/logout">Logout</a></li>
+          {{else}}
+            <li><a href="/login">Login</a></li>
+            <li><a class="fill-purple" href="/register">Sign up</a></li>
+          {{/if}}
+        </ul>
+      </div>
+    </div>
+
+    <div class="wrapper960 center">
+      <div class="col-sm-6 col-sm-offset-3">
+        <form action="/topic-delete/{{topic._id}}" method="post">
+          <div class="form-group">
+            <label>Are you sure you want to delete this topic?</label>
+            <button type="submit" name="button">Yes,Delete</button>
+          </div> <!-- end div form-group -->
+        </form>
+      </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+    </div> <!-- end div container -->
+  </body>
+</html>
