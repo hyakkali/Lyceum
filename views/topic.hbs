@@ -2,14 +2,150 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="/js/libs/jquery-3.2.1.slim.min.js" charset="utf-8"></script>
+    <script src="/js/libs/validator.min.js" charset="utf-8"></script>
+    <script src="/js/libs/linkify.min.js" charset="utf-8"></script>
+    <script src="/js/libs/linkify-jquery.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="/css/topic.css">
+    <link rel="stylesheet" href="https://decorator.io/tools/modulr.min.css">
     <title></title>
   </head>
   <body>
-    <p>{{topic.name}}</p>
-    {{#each topic.material}}
-      <li><a href="{{this}}">{{this}}</a></li>
-    {{else}}
-      <p>No links yet!</p>
-    {{/each}}
+    <div class="row header">
+      <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
+        <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
+        <ul class="pull-right menu href-text-white">
+          {{# if user}}
+            <li><a href="/logout">Logout</a></li>
+          {{else}}
+            <li><a href="/login">Login</a></li>
+            <li><a class="fill-purple" href="/register">Sign up</a></li>
+          {{/if}}
+        </ul>
+      </div>
+    </div>
+    <div class="container">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h1>{{topic.name}}</h1>
+        <h4>{{topic.description}}</h4>
+        <div class="resources">
+          <h3>Resources</h3>
+          {{#each resources}}
+            {{inc @index}}. <a href="/resource/{{this._id}}">{{this.name}}</a>
+            <br>
+            {{this.link}}
+            <br>
+            {{this.description}}
+            <br>
+            Likes: {{this.likes}}
+            <br>
+            Dislikes: {{this.dislikes}}
+            <br>
+            Created by {{this.createdBy}} at
+            {{this.createdAt}}
+            <br>
+            <form action="/review/{{this._id}}/{{../topic._id}}" method="post">
+              <input type="radio" name="rating" value="like" checked> Like
+              <input type="radio" name="rating" value="dislike"> Dislike <br>
+              <input type="text" name="message" value="">
+              <button type="submit" class="btn btn-warning btn-sm" name="button">Post Review</button>
+            </form>
+            <br>
+
+          {{else}}
+            <p>No links yet!</p>
+          {{/each}}
+        </div>
+
+        <script>
+          $(".resources").linkify();
+        </script>
+
+        <h3>Post a New Resource</h3>
+        <div id="errors"></div>
+        <form class="" action="/resource/{{topic._id}}" method="post" onsubmit="return validateForm()">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+          </div> <!-- end div form-group -->
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" class="form-control" id="description" name="description">
+          </div> <!-- end div form-group -->
+          <div class="form-group">
+            <label>Link</label>
+            <input type="text" class="form-control" id="link" name="link">
+          </div> <!-- end div form-group -->
+          <script>
+            function validateForm() {
+              var name = document.getElementById('name');
+              var link = document.getElementById('link');
+              var description = document.getElementById('description');
+              var div = document.getElementById('errors');
+              div.className = '';
+              div.innerHTML = '';
+              if (name.value.trim()===''||link.value.trim()===''||description.value.trim()==='') {
+                name.style.borderColor = "#E34234";
+                link.style.borderColor = "#E34234";
+                description.style.borderColor = "#E34234";
+                div.className += 'alert alert-danger';
+                div.innerHTML += 'All fields must be filled out!';
+                return false;
+              }
+              if (!validator.isURL(link.value.trim())) {
+                link.style.borderColor = "#E34234";
+                div.className += 'alert alert-danger';
+                div.innerHTML += 'Must be a valid URL!';
+                return false;
+              }
+              return true;
+            }
+          </script>
+          <button type="submit" class="btn btn-warning btn-md">Post Resource</button>
+        </form> <!-- add validation for valid URL's -->
+
+        <br>
+        <!-- {{#each posts}}
+          {{this.message}}
+          {{this.createdAt}}
+          {{this.createdBy}}
+          <br>
+        {{else}}
+          <p>No posts yet!</p>
+        {{/each}}
+
+        <div id="errors2"></div> -->
+
+        <!-- <form class="" action="/post/{{topic._id}}" method="post" onsubmit="return validateForm2()">
+          <div class="form-group">
+            <label>Post a message</label>
+            <input type="text" class="form-control"  id="message" name="message">
+          </div>
+          <script>
+            function validateForm2() {
+              var message = document.getElementById('message');
+              var div = document.getElementById('errors2');
+              div.className = '';
+              div.innerHTML = '';
+              if (message.value.trim()==='') {
+                message.style.borderColor = "#E34234";
+                div.className += 'alert alert-danger';
+                div.innerHTML += 'Post cannot be empty';
+                return false;
+              }
+              return true;
+            }
+          </script>
+          <button type="submit" class="btn btn-warning btn-md">Post Message</button>
+        </form> -->
+        {{#if owner}}
+          <a href="/topic-update/{{topic._id}}">Update Topic</a>
+          <br>
+          <a href="/topic-delete/{{topic._id}}">Delete Topic</a>
+        {{/if}}
+      </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+    </div> <!-- end div container -->
   </body>
 </html>

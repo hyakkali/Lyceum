@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose  = require('mongoose');
 
 var TopicSchema = mongoose.Schema({
   name:{
@@ -6,7 +6,7 @@ var TopicSchema = mongoose.Schema({
     required:true,
     trim:true,
     minlength:1,
-    unique:false
+    unique:true
   },
   description:{
     type:String,
@@ -16,15 +16,12 @@ var TopicSchema = mongoose.Schema({
   },
   createdBy:{
     type:mongoose.Schema.Types.ObjectId,
-    required:false
+    required:true,
   },
   createdAt:{
     type:Number,
     required:true
   },
-  material:[{
-    type:String,
-  }]
 });
 
 var Topic = mongoose.model('Topic',TopicSchema);

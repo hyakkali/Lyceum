@@ -46,7 +46,7 @@
             function setAction() {
               var query = document.getElementById('query');
               if (query.value.trim()==='') {
-                document.searchForm.action = "/search/"+'comms';
+                document.searchForm.action = "/search/"+'topics';
                 return true;
               }
               document.searchForm.action = "/search/"+query.value;
@@ -92,8 +92,8 @@
         </p>
 
         <div class="col-12">
-          {{#each comms}}
-            <a href="/community/{{this._id}}">
+          {{#each topics}}
+            <a href="/topic/{{this._id}}">
               <h5 class="pull-left">{{this.name}}</h5>
             </a>
           {{/each}}
@@ -103,10 +103,10 @@
 
         <div class="row flex padding-top-30 tablet-padding-top">
           <div class="col-12">
-            <h6>Can't find what you're looking for? Make one <a href="/community-create">here!</a></h6>
+            <h6>Can't find what you're looking for? Make one <a href="/topic-create">here!</a></h6>
           </div>
           <div class="col-4">
-            <a href="/communities" class="btn l purple width-100">Explore More</a>
+            <a href="/topics" class="btn l purple width-100">Explore More</a>
           </div>
         </div>
 

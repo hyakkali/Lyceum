@@ -2,15 +2,27 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <title></title>
-    <style>
-      body {padding-top: 80px;}
-    </style>
+    <link rel="stylesheet" href="/css/topic.css">
+    <link rel="stylesheet" href="https://decorator.io/tools/modulr.min.css">
   </head>
   <body>
-    <div class="container">
+
+    <div class="row header">
+      <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
+        <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
+        <ul class="pull-right menu href-text-white">
+          {{# if user}}
+            <li><a href="/logout">Logout</a></li>
+          {{else}}
+            <li><a href="/login">Login</a></li>
+            <li><a class="fill-purple" href="/register">Sign up</a></li>
+          {{/if}}
+        </ul>
+      </div>
+    </div>
+
+    <div class="wrapper960 center">
       <div class="col-sm-6 col-sm-offset-3">
         <h1>{{resource.name}}</h1>
         <h4>{{resource.description}}</h4>

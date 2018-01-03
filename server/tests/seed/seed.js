@@ -1,14 +1,11 @@
 const {ObjectID} = require('mongodb');
 
-const {Community} = require('./../../models/community');
-// const {Topic} = require('./../../models/topic');
+const {Topic} = require('./../../models/topic');
 const {User} = require('./../../models/user');
 const {Resource} = require('./../../models/resource');
 
-const commOneId = new ObjectID();
-const commTwoId = new ObjectID();
-// const topicOneId = new ObjectID();
-// const topicTwoId = new ObjectID();
+const topicOneId = new ObjectID();
+const topicTwoId = new ObjectID();
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
 
@@ -17,14 +14,14 @@ const resTwoId = new ObjectID();
 const resThreeId = new ObjectID();
 
 
-const communities = [{
-  _id:commOneId,
+const topics = [{
+  _id:topicOneId,
   name:'Quantum Computing',
   description:'Seed database description',
   createdBy:userOneId,
   createdAt:10000,
 },{
-  _id:commTwoId,
+  _id:topicTwoId,
   name:'Hyperloop',
   description:'Seed database description 2',
   createdBy:userTwoId,
@@ -40,7 +37,7 @@ const resources = [{
   dislikes:14,
   createdBy:'hyakkali',
   createdAt:'4:18 pm',
-  community:commOneId,
+  topic:topicOneId,
   postedUsers:['randomusername','spencer']
 },{
   _id:resTwoId,
@@ -51,7 +48,7 @@ const resources = [{
   dislikes:3,
   createdBy:'spencer',
   createdAt:'3:14 pm',
-  community:commTwoId,
+  topic:topicOneId,
   postedUsers:[]
 },{
   _id:resThreeId,
@@ -62,29 +59,9 @@ const resources = [{
   dislikes:14,
   createdBy:'hyakkali',
   createdAt:'3:14 pm',
-  community:commTwoId,
+  topic:topicTwoId,
   postedUsers:['randomusername']
 }];
-
-// const topics = [{
-//   _id:topicOneId,
-//   name:'Quantum Physics',
-//   description:'Seed database description for topic',
-//   createdAt:10000,
-//   material:[
-//     'https://thenounproject.com/',
-//     'https://en.wikipedia.org/wiki/Quantum_computing'
-//   ]
-// },{
-//   _id:topicTwoId,
-//   name:'Loop Physics',
-//   description:'Seed database description 2 for topic',
-//   createdAt:150000,
-//   material:[
-//     'https://thenounproject.com/',
-//     'https://en.wikipedia.org/wiki/Quantum_computing'
-//   ]
-// }];
 
 const users = [{
   _id:userOneId,
@@ -102,23 +79,14 @@ const users = [{
   password:'testanotherpassword',
 }];
 
-const populateComms = (done)=>{
-  Community.remove({}).then(()=>{
-    var commOne = new Community(communities[0]).save();
-    var commTwo = new Community(communities[1]).save();
+const populateTopics = (done)=>{
+  Topic.remove({}).then(()=>{
+    var topicOne = new Topic(topics[0]).save();
+    var topicTwo = new Topic(topics[1]).save();
 
-  return Promise.all([commOne,commTwo])
+  return Promise.all([topicOne,topicTwo])
 }).then(()=>done());
 };
-
-// const populateTopics = (done)=>{
-//   Topic.remove({}).then(()=>{
-//     var topicOne = new Topic(topics[0]).save();
-//     var topicTwo = new Topic(topics[1]).save();
-//
-//   return Promise.all([topicOne,topicTwo])
-// }).then(()=>done());
-// };
 
 const populateResources = (done)=>{
   Resource.remove({}).then(()=>{
@@ -140,10 +108,8 @@ const populateUsers = (done)=>{
 };
 
 module.exports = {
-  communities,
-  populateComms,
-  // topics,
-  // populateTopics,
+  topics,
+  populateTopics,
   users,
   populateUsers,
   resources,

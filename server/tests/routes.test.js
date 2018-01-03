@@ -4,7 +4,6 @@ const {ObjectID} = require('mongodb');
 const session = require('supertest-session');
 
 const {app} = require('./../server');
-const {Community} = require('./../models/community');
 const {Topic} = require('./../models/topic');
 const {User} = require('./../models/user');
 const {Post} = require('./../models/post');
@@ -12,10 +11,8 @@ const {Resource} = require('./../models/resource');
 const {Review} = require('./../models/review');
 
 const {
-  communities,
-  populateComms,
-  // topics,
-  // populateTopics,
+  topics,
+  populateTopics,
   users,
   populateUsers,
   resources,
@@ -28,8 +25,7 @@ beforeEach(()=>{
   testSession = session(app);
 })
 
-beforeEach(populateComms);
-// beforeEach(populateTopics);
+beforeEach(populateTopics);
 beforeEach(populateUsers);
 beforeEach(populateResources);
 
@@ -72,9 +68,9 @@ describe('After logging in', ()=> {
     });
   });
 
-  describe('POST /community-create', ()=> {
-    it('should create a new community', (done) =>{
-        testSession.post('/community-create')
+  describe('POST /topic-create', ()=> {
+    it('should create a new topic', (done) =>{
+        testSession.post('/topic-create')
         .send({
           name:'Relative Physics',
           description:'Generic description',
@@ -84,7 +80,7 @@ describe('After logging in', ()=> {
           if (err) {
             return done(err);
           }
-          Community.find({name:'Relative Physics'}).then((comms)=>{
+          Topic.find({name:'Relative Physics'}).then((comms)=>{
             expect(comms.length).toBe(1);
             expect(comms[0].name).toBe('Relative Physics');
             expect(comms[0].description).toBe('Generic description');
@@ -93,8 +89,8 @@ describe('After logging in', ()=> {
         });
     });
 
-    it('should not create community with invalid body data', (done) =>{
-        testSession.post('/community-create')
+    it('should not create topic with invalid body data', (done) =>{
+        testSession.post('/topic-create')
         .send({})
         .expect(400)
         .end((err,res)=>{
@@ -102,7 +98,7 @@ describe('After logging in', ()=> {
             return done(err);
           }
 
-          Community.find().then((comms)=>{
+          Topic.find().then((comms)=>{
             expect(comms.length).toBe(2); //2 comms in seed data
             done();
           }).catch((e)=>done(e));
@@ -110,21 +106,21 @@ describe('After logging in', ()=> {
     });
   });
 
-  describe('GET /community/:id', ()=> {
-    it('should return community', (done) =>{
-        testSession.get(`/community/${communities[0]._id.toHexString()}`)
+  describe('GET /topic/:id', ()=> {
+    it('should return topic', (done) =>{
+        testSession.get(`/topic/${topics[0]._id.toHexString()}`)
         .expect(200)
         .end(done);
     });
   });
 
-  describe('POST /community-update/:id', ()=> {
-    it('should update the community if owner', (done)=> {
-      var id = communities[1]._id.toHexString();
+  describe('POST /topic-update/:id', ()=> {
+    it('should update the topic if owner', (done)=> {
+      var id = topics[1]._id.toHexString();
       var name = 'Update name';
       var description = 'Update name';
 
-      testSession.post(`/community-update/${id}`)
+      testSession.post(`/topic-update/${id}`)
         .send({
           name,
           description,
@@ -134,7 +130,7 @@ describe('After logging in', ()=> {
           if (err) {
             return done(err);
           }
-          Community.findById(id).then((comm)=>{
+          Topic.findById(id).then((comm)=>{
             expect(comm.name).toBe(name);
             expect(comm.description).toBe(description);
             done();
@@ -142,12 +138,12 @@ describe('After logging in', ()=> {
         })
     });
 
-    it('should not update the community if not owner', (done)=> {
-      var id = communities[0]._id.toHexString();
+    it('should not update the topic if not owner', (done)=> {
+      var id = topics[0]._id.toHexString();
       var name = 'Update name';
       var description = 'Update name';
 
-      testSession.post(`/community-update/${id}`)
+      testSession.post(`/topic-update/${id}`)
         .send({
           name,
           description,
@@ -157,34 +153,34 @@ describe('After logging in', ()=> {
     });
   });
 
-  describe('POST /community-delete/:id', ()=> {
-    it('should remove a community if owner', (done) =>{
-      var id = communities[1]._id.toHexString();
+  describe('POST /topic-delete/:id', ()=> {
+    it('should remove a topic if owner', (done) =>{
+      var id = topics[1]._id.toHexString();
 
-      testSession.post(`/community-delete/${id}`)
+      testSession.post(`/topic-delete/${id}`)
         .expect(302)
         .end((err,res)=>{
           if (err) {
             return done(err);
           }
-          Community.findById(id).then((comm)=>{
+          Topic.findById(id).then((comm)=>{
             expect(comm).toBeFalsy();
             done();
           }).catch((e)=>done(e));
         });
     });
 
-    it('should not remove a community if not owner', (done) =>{
-      var id = communities[0]._id.toHexString();
+    it('should not remove a topic if not owner', (done) =>{
+      var id = topics[0]._id.toHexString();
 
-      testSession.post(`/community-delete/${id}`)
+      testSession.post(`/topic-delete/${id}`)
         .expect(401)
         .end(done)
     });
 
-    it('should return a 404 if community not found', (done) =>{
+    it('should return a 404 if topic not found', (done) =>{
       var id = new ObjectID().toHexString();
-      testSession.post(`/community-delete/${id}`)
+      testSession.post(`/topic-delete/${id}`)
         .expect(404)
         .end(done);
     });
@@ -192,7 +188,7 @@ describe('After logging in', ()=> {
 
   describe('POST /post/:id', ()=> {
     it('should create a new post', (done)=> {
-      var id = communities[0]._id.toHexString();
+      var id = topics[0]._id.toHexString();
       testSession.post(`/post/${id}`)
         .send({message:"New message!"})
         .expect(302)
@@ -200,7 +196,7 @@ describe('After logging in', ()=> {
           if (err) {
             return done(err);
           }
-          Post.find({community:id}).then((post)=>{
+          Post.find({topic:id}).then((post)=>{
             expect(post.length).toBe(1);
             expect(post[0].message).toBe("New message!")
             done();
@@ -211,7 +207,7 @@ describe('After logging in', ()=> {
 
   describe('POST /resource/:id', ()=>{
     it('should create a new resource',(done)=>{
-      var id = communities[0]._id.toHexString();
+      var id = topics[0]._id.toHexString();
       var name = 'Wikipedia entry on Quantum computing';
       var link = 'https://en.wikipedia.org/wiki/Quantum_computing';
       var description = 'Wikipedia entry on quantum computing';
@@ -223,11 +219,11 @@ describe('After logging in', ()=> {
           if (err) {
             return done(err);
           }
-          Resource.find({community:id}).then((resource)=>{
-            expect(resource.length).toBe(2); //already one resource in community
-            expect(resource[1].name).toBe(name);
-            expect(resource[1].link).toBe(link);
-            expect(resource[1].description).toBe(description);
+          Resource.find({topic:id}).then((resource)=>{
+            expect(resource.length).toBe(3); //already two resources in topic from seed
+            expect(resource[2].name).toBe(name);
+            expect(resource[2].link).toBe(link);
+            expect(resource[2].description).toBe(description);
             done();
           }).catch((e)=>done(e));
         })
@@ -237,7 +233,7 @@ describe('After logging in', ()=> {
   describe('POST /review/:id/:commid',()=>{
     it('should add like to and post review of the resource',(done)=>{
       var id = resources[2]._id.toHexString();
-      var commid = communities[1]._id.toHexString();
+      var commid = topics[1]._id.toHexString();
 
       testSession.post(`/review/${id}/${commid}`)
         .send({
@@ -265,7 +261,7 @@ describe('After logging in', ()=> {
 
     it('should add dislike to and post review of the resource',(done)=>{
       var id = resources[2]._id.toHexString();
-      var commid = communities[1]._id.toHexString();
+      var commid = topics[1]._id.toHexString();
 
       testSession.post(`/review/${id}/${commid}`)
         .send({
@@ -293,7 +289,7 @@ describe('After logging in', ()=> {
 
     it('should not add review if user already posted one', (done)=> {
       var id = resources[0]._id.toHexString();
-      var commid = communities[0]._id.toHexString();
+      var commid = topics[0]._id.toHexString();
 
       testSession.post(`/review/${id}/${commid}`)
       .send({
@@ -306,7 +302,7 @@ describe('After logging in', ()=> {
 
     it('should not allow owner of resource to post review', (done)=> {
       var id = resources[1]._id.toHexString();
-      var commid = communities[1]._id.toHexString();
+      var commid = topics[1]._id.toHexString();
 
       testSession.post(`/review/${id}/${commid}`)
       .send({

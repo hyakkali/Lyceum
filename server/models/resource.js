@@ -41,7 +41,7 @@ var ResourceSchema = mongoose.Schema({
     type:String,
     required:true
   },
-  community:{
+  topic:{
     type:mongoose.Schema.Types.ObjectId,
     required:true,
   },

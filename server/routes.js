@@ -1,4 +1,3 @@
-var {Community} = require('./models/community');
 var {Topic} = require('./models/topic');
 var {User} = require('./models/user');
 var {Post} = require('./models/post');
@@ -14,14 +13,14 @@ const _ = require('lodash');
 module.exports = (app)=>{
 
   app.get('/',(req,res)=>{
-    Community.find().then((comms)=>{
+    Topic.find().then((topics)=>{
       if (req.session && req.session.userId) {
-        return res.status(200).render('index.hbs',{comms:comms,user:true});
+        return res.status(200).render('index.hbs',{topics:topics,user:true});
       }
-      return res.status(200).render('index.hbs',{comms:comms});
+      return res.status(200).render('index.hbs',{topics:topics});
     },(e)=>{
       if (e) {
-        res.status(400).render('error.hbs',{error:'Communities could not be found.'})
+        res.status(400).render('error.hbs',{error:'Topics could not be found.'})
       }
     });
   });
@@ -90,39 +89,42 @@ module.exports = (app)=>{
     }
   });
 
-// COMMUNITY
+// Topic
 
-  app.get('/community-create',(req,res)=>{
-    return res.render('community-create.hbs');
+  app.get('/topic-create',(req,res)=>{
+    if (req.session && req.session.userId) {
+      return res.render('topic-create.hbs',{user:true});
+    }
+    return res.render('topic-create.hbs');
   });
 
-  app.post('/community-create',requiresLogin,(req,res)=>{
-    var comm = new Community({
+  app.post('/topic-create',requiresLogin,(req,res)=>{
+    var topic = new Topic({
       name:req.body.name,
       description:req.body.description,
       createdAt: new Date().getTime(),
       createdBy:req.session.userId
     });
 
-    comm.save().then((doc)=>{
+    topic.save().then((doc)=>{
       // res.send(doc);
-      return res.redirect('/community/'+comm._id); //redirect to community page
+      return res.redirect('/topic/'+topic._id); //redirect to topic page
     },(e)=>{
-      return res.status(400).render('error.hbs',{error:'Community could not be saved.'});
+      return res.status(400).render('error.hbs',{error:'Topic could not be saved.'});
     });
   });
 
-  app.get('/community-update/:id',[requiresLogin,requiresOwner],(req,res)=>{
+  app.get('/topic-update/:id',[requiresLogin,requiresOwner],(req,res)=>{
     var id = req.params.id;
-    Community.findById(id).then((comm)=>{
-      if (!comm) {
-        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
+    Topic.findById(id).then((topic)=>{
+      if (!topic) {
+        return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
-      return res.render('community-update.hbs',{community:comm});
+      return res.render('topic-update.hbs',{topic:topic,user:true});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
   })
 
-  app.post('/community-update/:id',[requiresLogin,requiresOwner],(req,res)=>{
+  app.post('/topic-update/:id',[requiresLogin,requiresOwner],(req,res)=>{
     var id = req.params.id;
     var body = _.pick(req.body,['name','description']);
 
@@ -130,48 +132,51 @@ module.exports = (app)=>{
       return res.status(404).render('error.hbs',{error:'Invalid URL.'});
     }
 
-    Community.findOneAndUpdate({_id:id},{$set:body},{new:true}).then((comm)=>{
-      if (!comm) {
-        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
+    Topic.findOneAndUpdate({_id:id},{$set:body},{new:true}).then((topic)=>{
+      if (!topic) {
+        return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
-      return res.status(200).redirect('/community/'+comm._id);
+      return res.status(200).redirect('/topic/'+topic._id);
     }).catch((e)=>{
-      res.status(400).render('error.hbs',{error:'Community could not be updated.'});
+      res.status(400).render('error.hbs',{error:'Topic could not be updated.'});
     });
   });
 
-  app.get('/community-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
+  app.get('/topic-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
     var id = req.params.id;
-    Community.findById(id).then((comm)=>{
-      if (!comm) {
-        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
+    Topic.findById(id).then((topic)=>{
+      if (!topic) {
+        return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
-      return res.render('community-delete.hbs',{community:comm});
+      return res.render('topic-delete.hbs',{topic:topic,user:true});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))  })
 
-  app.post('/community-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
+  app.post('/topic-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
       return res.status(404).render('error.hbs',{error:'Invalid URL.'});
     }
 
-    Community.findOneAndRemove({
+    Topic.findOneAndRemove({
       _id:id
-    }).then((comm)=>{
-      if (!comm) {
-        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
+    }).then((topic)=>{
+      if (!topic) {
+        return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
-      return res.redirect('/communities');
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be deleted.'}));
+      return res.redirect('/topics');
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Topic could not be deleted.'}));
   });
 
-  app.get('/communities',(req,res)=>{ //GET all communities
-    Community.find().then((comms)=>{
-      res.status(200).render('community-list.hbs',{comms:comms})
+  app.get('/topics',(req,res)=>{ //GET all topics
+    Topic.find().then((topics)=>{
+      if (req.session && req.session.userId) {
+        return res.status(200).render('topic-list.hbs',{topics:topics,user:true});
+      }
+      res.status(200).render('topic-list.hbs',{topics:topics})
     },(e)=>{
       if (e) {
-        res.status(400).render('error.hbs',{error:'Communities could not be found.'})
+        res.status(400).render('error.hbs',{error:'Topics could not be found.'})
       }
     });
   });
@@ -179,40 +184,43 @@ module.exports = (app)=>{
   app.post('/search/:query',(req,res)=>{
     var query = req.params.query;
     var regex = new RegExp(query,'i');
-    if (query==='comms') {
-      return res.redirect('/communities');
+    if (query==='topics') {
+      return res.redirect('/topics');
     }
-    Community.find({name:regex},(err,comms)=>{
-      if (comms.length===0) {
-        return res.status(400).render('error.hbs',{error:'No communities found!'})
+    Topic.find({name:regex},(err,topics)=>{
+      if (topics.length===0) {
+        return res.status(400).render('error.hbs',{error:'No topics found!'})
       }
-      return res.status(200).render('community-search.hbs',{comms:comms,query:query});
+      return res.status(200).render('topic-search.hbs',{topics:topics,query:query});
     })
   })
 
-  app.get('/community/:id',isOwner,(req,res)=>{ //GET specific community page
+  app.get('/topic/:id',isOwner,(req,res)=>{ //GET specific topic page
     var id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
       return res.status(404).render('error.hbs',{error:'Invalid URL.'});
     };
 
-    Community.findById(id).then((comm)=>{
-      if (!comm) {
-        return res.status(404).render('error.hbs',{error:'Community could not be found.'});
+    Topic.findById(id).then((topic)=>{
+      if (!topic) {
+        return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
-      Resource.find({community:id}).then((resources)=>{
-        Post.find({community:id}).then((posts)=>{
-         res.render('community.hbs',{community:comm,posts:posts,resources:resources});
+      Resource.find({topic:id}).then((resources)=>{
+        Post.find({topic:id}).then((posts)=>{
+          if (req.session && req.session.userId) {
+            return res.render('topic.hbs',{topic:topic,posts:posts,resources:resources,user:true});
+          }
+         return res.render('topic.hbs',{topic:topic,posts:posts,resources:resources});
        },(e)=> res.status(400).render('error.hbs',{error:"Posts could not be found."}));
      },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Community could not be rendered.'}));
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Topic could not be rendered.'}));
   });
 
 // POST
 
   app.post('/post/:id',requiresLogin,(req,res)=>{
-    var id = req.params.id; // community id
+    var id = req.params.id; // topic id
     var time = new Date().getTime();
     User.findById(req.session.userId)
       .exec((err,user)=>{
@@ -226,17 +234,17 @@ module.exports = (app)=>{
           message:req.body.message,
           createdAt: moment(time).format('h:mm a'),
           createdBy:user.username,
-          community:id
+          topic:id
         });
 
         post.save().then((doc)=>{
-          return res.status(200).redirect('/community/'+id); //reload same page with new post saved
+          return res.status(200).redirect('/topic/'+id); //reload same page with new post saved
         },(e)=>res.status(400).render('error.hbs',{error:'Post could not be saved.'}));
       })
   });
 
   app.post('/resource/:id',requiresLogin,(req,res)=>{
-    var id = req.params.id; // community id
+    var id = req.params.id; // topic id
     var time = new Date().getTime();
     User.findById(req.session.userId)
       .exec((err,user)=>{
@@ -254,18 +262,18 @@ module.exports = (app)=>{
           dislikes:0,
           createdBy:user.username,
           createdAt:moment(time).format('h:mm a'),
-          community:id,
+          topic:id,
         })
 
         resource.save().then((doc)=>{
-          return res.status(200).redirect('/community/'+id);
+          return res.status(200).redirect('/topic/'+id);
         },(e)=>res.status(400).render('error.hbs',{error:'Resource could not be saved.'}));
       })
   });
 
-  app.post('/review/:id/:commid',[requiresLogin,hasPostedReview,isResourceOwner],(req,res)=>{
+  app.post('/review/:id/:topicid',[requiresLogin,hasPostedReview,isResourceOwner],(req,res)=>{
     var id = req.params.id; //resource id
-    var commid = req.params.commid; //community id
+    var topicid = req.params.topicid; //topic id
     var rating = req.body.rating;
 
     if (rating==='like') {
@@ -330,58 +338,9 @@ module.exports = (app)=>{
         return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
       }
       Review.find({resource:id}).then((reviews)=>{
-        return res.render('resource.hbs',{resource:resource,reviews:reviews})
+        return res.render('resource.hbs',{resource:resource,reviews:reviews,user:true})
       },(e)=> res.status(400).render('error.hbs',{error:"Reviews could not be found."}));
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be rendered.'}));
   })
-
-// TOPIC
-
-  app.get('/topic-create',(req,res)=>{
-    res.render('topic-create.hbs');
-  });
-
-  app.post('/topic-create',requiresLogin,(req,res)=>{
-    var topic = new Topic({
-      name:req.body.name,
-      description:req.body.description,
-      createdAt: new Date().getTime(),
-    });
-    if (req.body.material) { //if material is posted
-      topic.material=req.body.material
-    }
-    topic.save().then((doc)=>{
-      // res.send(doc);
-      res.redirect('/topic/'+topic._id); //redirect to community page
-    },(e)=>{
-      res.status(400).send(e);
-    });
-  });
-
-  app.get('/topics',(req,res)=>{ //GET all topics
-    Topic.find().then((topics)=>{
-      res.send({topics});
-    },(e)=>{
-      if (e) {
-        res.status(400).send(e)
-      }
-    });
-  });
-
-  app.get('/topic/:id',(req,res)=>{ //GET specific topic page
-    var id = req.params.id;
-
-    if (!ObjectID.isValid(id)) {
-      return res.status(404).send();
-    };
-
-    Topic.findById(id).then((topic)=>{
-      if (!topic) {
-        return res.status(404).send();
-      }
-
-      res.status(200).send({topic});
-    }).catch((e)=>res.status(400).send());
-  });
 
 }
