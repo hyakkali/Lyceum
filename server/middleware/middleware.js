@@ -2,8 +2,7 @@ var {Topic} = require('./../models/topic');
 var {Resource} = require('./../models/resource');
 var {Post} = require('./../models/post');
 var {User} = require('./../models/user');
-
-
+var {Review} = require('./../models/review');
 
 var requiresLogin = (req,res,next)=>{
   if (req.session && req.session.userId) {
@@ -27,17 +26,15 @@ var requiresOwner = (req,res,next)=>{
 
 var isOwner = (req,res,next)=>{
   id = req.params.id; //topic id
-  Topic.findById(id).then((comm)=>{
-    if (!comm) {
+  Topic.findById(id).then((topic)=>{
+    if (!topic) {
       return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
     }
-    if (!comm.createdBy.equals(req.session.userId)) {
+    if (!topic.createdBy.equals(req.session.userId)) {
       return next();
     }
     Resource.find({topic:id}).then((resources)=>{
-      Post.find({topic:id}).then((posts)=>{
-        return res.render('topic.hbs',{topic:comm,posts:posts,resources:resources,owner:true});
-      },(e)=> res.status(400).render('error.hbs',{error:"Posts could not be found."}));
+      return res.render('topic.hbs',{topic:topic,resources:resources,user:true,owner:true});
     },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
   }).catch((e)=>res.status(400).render('error.hbs',{error:"Topic could not be found."}));
 }
@@ -64,7 +61,7 @@ var hasPostedReview = (req,res,next)=>{
   }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
 }
 
-var isResourceOwner = (req,res,next)=>{
+var isResourceOwner = (req,res,next)=>{ //for making sure owner can't post review on created resource
   Resource.findById(req.params.id).then((resource)=>{ //resource id
     if (!resource) {
       return res.status(404).render('error.hbs',{error:'Resource could not be found.'});

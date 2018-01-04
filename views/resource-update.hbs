@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    {{> header}}
+  </head>
+  <body>
+
+    {{> navbar}}
+
+    <div class="wrapper960 center body">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h1>Update {{resource.name}}</h1>
+        <br>
+        <form action="/resource-update/{{resource._id}}" method="post" onsubmit="return validateForm()">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+          </div> <!-- end div form-group -->
+          <br>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" class="form-control" id="description" name="description">
+          </div> <!-- end div form-group -->
+          <br>
+          <div class="form-group">
+            <label>Link</label>
+            <input type="text" class="form-control" id="link" name="link">
+          </div> <!-- end div form-group -->
+          <br>
+          <script>
+            function validateForm() {
+              var name = document.getElementById('name');
+              var description = document.getElementById('description');
+              var link = document.getElementById('link');
+              var origName = "{{topic.name}}";
+              var origDesc = "{{topic.description}}";
+              var origLink = "{{topic.link}}";
+              if (name.value.trim()==='') {
+                name.value = origName;
+              }
+              if (description.value.trim()==='') {
+                description.value = origDesc;
+              }
+              if (link.value.trim()==='') {
+                link.value = origLink;
+              }
+              return true;
+            }
+          </script>
+          <br>
+          <button type="submit" class="btn purple">Update Topic</button>
+        </form>
+      </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+    </div> <!-- end div container -->
+
+    {{> footer}}
+
+  </body>
+</html>

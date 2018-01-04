@@ -14,7 +14,7 @@
     {{> navbar}}
 
     <div class="wrapper960 center body">
-      <div class="col-sm-6 col-sm-offset-3">
+      <div class="col-12">
         <h1>{{topic.name}}</h1>
         <br>
         <h4>{{topic.description}}</h4>
@@ -37,8 +37,10 @@
             {{this.createdAt}}
             <br>
             <form action="/review/{{this._id}}/{{../topic._id}}" method="post">
-              <input type="radio" name="rating" value="like" checked> Like
-              <input type="radio" name="rating" value="dislike"> Dislike <br>
+              <label>Like</label>
+              <input type="radio" name="rating" value="like" checked>
+              <label>Dislike</label>
+              <input type="radio" name="rating" value="dislike">
               <input type="text" name="message" value="">
               <button type="submit" class="btn purple" name="button">Post Review</button>
             </form>
@@ -53,55 +55,8 @@
           $(".resources").linkify();
         </script>
 
-        <h3>Post a New Resource</h3>
         <br>
-        <div id="errors"></div>
-        <form class="" action="/resource/{{topic._id}}" method="post" onsubmit="return validateForm()">
-          <div class="form-group">
-            <label>Name</label>
-            <input type="text" class="form-control" id="name" name="name">
-          </div> <!-- end div form-group -->
-          <br>
-          <div class="form-group">
-            <label>Description</label>
-            <input type="text" class="form-control" id="description" name="description">
-          </div> <!-- end div form-group -->
-          <br>
-          <div class="form-group">
-            <label>Link</label>
-            <input type="text" class="form-control" id="link" name="link">
-          </div> <!-- end div form-group -->
-          <br>
-          <script>
-            function validateForm() {
-              var name = document.getElementById('name');
-              var link = document.getElementById('link');
-              var description = document.getElementById('description');
-              var div = document.getElementById('errors');
-              div.className = '';
-              div.innerHTML = '';
-              if (name.value.trim()===''||link.value.trim()===''||description.value.trim()==='') {
-                name.style.borderColor = "#E34234";
-                link.style.borderColor = "#E34234";
-                description.style.borderColor = "#E34234";
-                div.className += 'alert alert-danger';
-                div.innerHTML += 'All fields must be filled out!';
-                return false;
-              }
-              if (!validator.isURL(link.value.trim())) {
-                link.style.borderColor = "#E34234";
-                div.className += 'alert alert-danger';
-                div.innerHTML += 'Must be a valid URL!';
-                return false;
-              }
-              return true;
-            }
-          </script>
-          <br>
-          <button type="submit" class="btn purple">Post Resource</button>
-        </form> <!-- add validation for valid URL's -->
-
-        <br>
+        <a href="/resource-create/{{topic._id}}">Post resource</a>
 
         {{#if owner}}
           <a href="/topic-update/{{topic._id}}">Update Topic</a>

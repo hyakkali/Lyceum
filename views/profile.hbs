@@ -11,8 +11,29 @@
 
     <div class="wrapper960 center body">
       <div class="col-sm-6 col-sm-offset-3">
-        <h1>{{user.first_name}} {{user.last_name}}</h1>
-        <h3>{{user.email}}</h3>
+        <h1>{{user.first_name}} {{user.last_name}}</h1> <br>
+        <h3>{{user.email}}</h3> <br>
+        <h3>{{user.username}}</h3> <br>
+        <h5>Your Topics:</h5>
+        <br>
+        {{#each topics}}
+        <a href="/topic/{{this._id}}"><h6>{{this.name}}</h6></a>
+        <br>
+        {{/each}}
+        <br>
+        <h5>Your Resources:</h5>
+        <br>
+        {{#each resources}}
+        <a href="/resource/{{this._id}}"><h6>{{this.name}}</h6></a>
+        <br>
+        {{/each}}
+        <br>
+        <h5>Your Reviews:</h5>
+        <br>
+        {{#each reviews}}
+        <a href="/review/{{this._id}}"><h6>{{this.message}}</h6></a>
+        <br>
+        {{/each}}
         <br>
         <a href="/">Go Back Home</a>
         <br>
