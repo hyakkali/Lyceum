@@ -195,7 +195,7 @@ module.exports = (app)=>{
       if (!topic) {
         return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
-      Resource.find({topic:id}).then((resources)=>{
+      Resource.find({topic:id}).sort({likes:-1}).then((resources)=>{
         if (req.session && req.session.userId) {
           return res.render('topic.hbs',{topic:topic,resources:resources,user:true});
         }
