@@ -6,6 +6,7 @@ const {Resource} = require('./../../models/resource');
 
 const topicOneId = new ObjectID();
 const topicTwoId = new ObjectID();
+
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
 
@@ -18,13 +19,13 @@ const topics = [{
   _id:topicOneId,
   name:'Quantum Computing',
   description:'Seed database description',
-  createdBy:userOneId,
+  createdBy:'hyakkali',
   createdAt:10000,
 },{
   _id:topicTwoId,
   name:'Hyperloop',
   description:'Seed database description 2',
-  createdBy:userTwoId,
+  createdBy:'spencer',
   createdAt:150000,
 }];
 
@@ -36,7 +37,7 @@ const resources = [{
   likes:4,
   dislikes:14,
   createdBy:'hyakkali',
-  createdAt:'4:18 pm',
+  createdAt:12801823,
   topic:topicOneId,
   postedUsers:['randomusername','spencer']
 },{
@@ -47,7 +48,7 @@ const resources = [{
   likes:5,
   dislikes:3,
   createdBy:'spencer',
-  createdAt:'3:14 pm',
+  createdAt:12801823,
   topic:topicOneId,
   postedUsers:[]
 },{
@@ -58,7 +59,7 @@ const resources = [{
   likes:4,
   dislikes:14,
   createdBy:'hyakkali',
-  createdAt:'3:14 pm',
+  createdAt:12831823,
   topic:topicTwoId,
   postedUsers:['randomusername']
 }];

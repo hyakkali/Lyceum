@@ -80,10 +80,10 @@ describe('After logging in', ()=> {
           if (err) {
             return done(err);
           }
-          Topic.find({name:'Relative Physics'}).then((comms)=>{
-            expect(comms.length).toBe(1);
-            expect(comms[0].name).toBe('Relative Physics');
-            expect(comms[0].description).toBe('Generic description');
+          Topic.find({name:'Relative Physics'}).then((topics)=>{
+            expect(topics.length).toBe(1);
+            expect(topics[0].name).toBe('Relative Physics');
+            expect(topics[0].description).toBe('Generic description');
             done();
           }).catch((e)=>done(e));
         });
@@ -98,8 +98,8 @@ describe('After logging in', ()=> {
             return done(err);
           }
 
-          Topic.find().then((comms)=>{
-            expect(comms.length).toBe(2); //2 comms in seed data
+          Topic.find().then((topics)=>{
+            expect(topics.length).toBe(2); //2 topics in seed data
             done();
           }).catch((e)=>done(e));
         });
@@ -130,9 +130,9 @@ describe('After logging in', ()=> {
           if (err) {
             return done(err);
           }
-          Topic.findById(id).then((comm)=>{
-            expect(comm.name).toBe(name);
-            expect(comm.description).toBe(description);
+          Topic.findById(id).then((topic)=>{
+            expect(topic.name).toBe(name);
+            expect(topic.description).toBe(description);
             done();
           }).catch((e)=>done(e));
         })
@@ -163,8 +163,8 @@ describe('After logging in', ()=> {
           if (err) {
             return done(err);
           }
-          Topic.findById(id).then((comm)=>{
-            expect(comm).toBeFalsy();
+          Topic.findById(id).then((topic)=>{
+            expect(topic).toBeFalsy();
             done();
           }).catch((e)=>done(e));
         });
@@ -209,7 +209,7 @@ describe('After logging in', ()=> {
     it('should create a new resource',(done)=>{
       var id = topics[0]._id.toHexString();
       var name = 'Wikipedia entry on Quantum computing';
-      var link = 'https://en.wikipedia.org/wiki/Quantum_computing';
+      var link = 'https://en.wikipedia.org/';
       var description = 'Wikipedia entry on quantum computing';
 
       testSession.post(`/resource/${id}`)
@@ -230,12 +230,12 @@ describe('After logging in', ()=> {
     })
   })
 
-  describe('POST /review/:id/:commid',()=>{
+  describe('POST /review/:id/:topicid',()=>{
     it('should add like to and post review of the resource',(done)=>{
       var id = resources[2]._id.toHexString();
-      var commid = topics[1]._id.toHexString();
+      var topicid = topics[1]._id.toHexString();
 
-      testSession.post(`/review/${id}/${commid}`)
+      testSession.post(`/review/${id}/${topicid}`)
         .send({
           message:'This resource is great!',
           rating:'like'
@@ -261,9 +261,9 @@ describe('After logging in', ()=> {
 
     it('should add dislike to and post review of the resource',(done)=>{
       var id = resources[2]._id.toHexString();
-      var commid = topics[1]._id.toHexString();
+      var topicid = topics[1]._id.toHexString();
 
-      testSession.post(`/review/${id}/${commid}`)
+      testSession.post(`/review/${id}/${topicid}`)
         .send({
           message:'This resource sucks!',
           rating:'dislike'
@@ -289,9 +289,9 @@ describe('After logging in', ()=> {
 
     it('should not add review if user already posted one', (done)=> {
       var id = resources[0]._id.toHexString();
-      var commid = topics[0]._id.toHexString();
+      var topicid = topics[0]._id.toHexString();
 
-      testSession.post(`/review/${id}/${commid}`)
+      testSession.post(`/review/${id}/${topicid}`)
       .send({
         message:'This resource sucks!',
         rating:'dislike'
@@ -302,9 +302,9 @@ describe('After logging in', ()=> {
 
     it('should not allow owner of resource to post review', (done)=> {
       var id = resources[1]._id.toHexString();
-      var commid = topics[1]._id.toHexString();
+      var topicid = topics[1]._id.toHexString();
 
-      testSession.post(`/review/${id}/${commid}`)
+      testSession.post(`/review/${id}/${topicid}`)
       .send({
         message:'This resource sucks!',
         rating:'dislike'
@@ -430,84 +430,3 @@ describe('POST /login', ()=> {
       });
   });
 });
-
-// TOPIC
-
-// describe('POST /topic-create', ()=> {
-//   it('should create a new topic', (done) =>{
-//     request(app)
-//       .post('/topic-create')
-//       .send({
-//         name:'Relative Physics',
-//         description: 'Generic description',
-//         material:[
-//           'https://thenounproject.com/',
-//           'https://en.wikipedia.org/wiki/Quantum_computing'
-//         ]
-//       })
-//       .expect(302)
-//       // .expect((res)=>{
-//       //   expect(res.body.name).toBe('Relative Physics');
-//       //   expect(res.body.description).toBe('Generic description');
-//       //   expect(res.body.material).toEqual([
-//       //     'https://thenounproject.com/',
-//       //     'https://en.wikipedia.org/wiki/Quantum_computing'
-//       //   ]);
-//       // })
-//       .end((err,res)=>{
-//         if (err) {
-//           return done(err);
-//         }
-//         Topic.find({
-//           name:'Relative Physics'
-//         }).then((topics)=>{
-//           expect(topics.length).toBe(1);
-//           done();
-//         }).catch((e)=>done(e));
-//       });
-//   });
-//
-//   it('should not create topic with invalid body data', (done) =>{
-//     request(app)
-//       .post('/topic-create')
-//       .send({})
-//       .expect(400)
-//       .end((err,res)=>{
-//         if (err) {
-//           return done(err);
-//         }
-//
-//         Topic.find().then((topics)=>{
-//           expect(topics.length).toBe(2); //2 comms in seed data
-//           done();
-//         }).catch((e)=>done(e));
-//       });
-//   });
-// });
-//
-// describe('GET /topics', ()=>{
-//   it('should return all topics', (done)=> {
-//     request(app)
-//       .get('/topics')
-//       .expect(200)
-//       .expect((res)=>{
-//         expect(res.body.topics.length).toBe(2);
-//       })
-//       .end(done);
-//   });
-// });
-//
-// describe('GET /topic/:id', ()=> {
-//   it('should return topic', (done) =>{
-//     request(app)
-//       .get(`/topic/${topics[0]._id.toHexString()}`)
-//       .expect(200)
-//       .expect((res)=>{
-//         expect(res.body.topic.name).toBe(topics[0].name);
-//         expect(res.body.topic.description).toBe(topics[0].description);
-//         expect(res.body.topic.createdAt).toBe(topics[0].createdAt);
-//         expect(res.body.topic.material).toEqual(topics[0].material);
-//       })
-//       .end(done);
-//   });
-// });

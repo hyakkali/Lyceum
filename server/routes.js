@@ -242,7 +242,7 @@ module.exports = (app)=>{
 
     resource.save().then((doc)=>{
       return res.status(200).redirect('/topic/'+id);
-    },(e)=>res.status(400).render('error.hbs',{error:'Resource could not be saved.'}));
+    },(e)=>res.status(400).render('error.hbs',{error:e}));
   });
 
   app.post('/review/:id/:topicid',[requiresLogin,hasPostedReview,isResourceOwner],(req,res)=>{

@@ -13,11 +13,11 @@ var requiresLogin = (req,res,next)=>{
 
 var requiresOwner = (req,res,next)=>{
   //already logged in from requiresLogin middleware
-  Topic.findById(req.params.id).then((comm)=>{
-    if (!comm) {
+  Topic.findById(req.params.id).then((topic)=>{
+    if (!topic) {
       return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
     }
-    if (comm.createdBy.equals(req.session.username)) {
+    if (topic.createdBy===req.session.username) {
       return next();
     }
     return res.status(401).render('error.hbs',{error:'Only owner of topic can access this page.'});
