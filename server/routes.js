@@ -161,7 +161,9 @@ module.exports = (app)=>{
       if (!topic) {
         return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
-      return res.redirect('/topics');
+      Resource.remove({topic:id}).then((resources)=>{
+        return res.redirect('/topics');
+      })
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Topic could not be deleted.'}));
   });
 
@@ -368,7 +370,9 @@ module.exports = (app)=>{
       if (!resource) {
         return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
       }
-      return res.redirect('/topic/'+resource.topic);
+      Review.remove({resource:id}).then((reviews)=>{
+        return res.redirect('/topic/'+resource.topic);
+      })
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be deleted.'}));
   });
 
