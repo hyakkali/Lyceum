@@ -38,7 +38,7 @@ var ResourceSchema = mongoose.Schema({
     unique:false
   },
   createdAt:{
-    type:String,
+    type:Number,
     required:true
   },
   topic:{

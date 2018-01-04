@@ -7,6 +7,7 @@ const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
 const helmet = require('helmet');
+const moment = require('moment');
 
 const {mongoose} = require('./db/mongoose');
 
@@ -37,6 +38,9 @@ hbs.registerPartials(viewsPath+'/partials');
 hbs.registerHelper("inc",(value,options)=>{
   return parseInt(value)+1;
 });
+hbs.registerHelper("date",(value,options)=>{
+  return moment(value).format('MM/DD/YYYY h:mm a')
+})
 app.set('view engine','hbs');
 
 require('./routes.js')(app);

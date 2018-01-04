@@ -15,7 +15,7 @@ var TopicSchema = mongoose.Schema({
     unique:false
   },
   createdBy:{
-    type:mongoose.Schema.Types.ObjectId,
+    type:String,
     required:true,
   },
   createdAt:{

@@ -23,12 +23,12 @@ var ReviewSchema = mongoose.Schema({
     unique:false
   },
   createdAt:{
-    type:String,
+    type:Number,
     required:true
   },
   resource:{
     type:mongoose.Schema.Types.ObjectId,
-    required:true,  
+    required:true,
   }
 })
 

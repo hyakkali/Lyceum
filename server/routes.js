@@ -107,7 +107,7 @@ module.exports = (app)=>{
       name:req.body.name,
       description:req.body.description,
       createdAt: new Date().getTime(),
-      createdBy:req.session.userId
+      createdBy:req.session.username
     });
 
     topic.save().then((doc)=>{
@@ -208,10 +208,9 @@ module.exports = (app)=>{
 
   app.post('/post/:id',requiresLogin,(req,res)=>{
     var id = req.params.id; // topic id
-    var time = new Date().getTime();
         var post = new Post({
           message:req.body.message,
-          createdAt: moment(time).format('h:mm a'),
+          createdAt: new Date().getTime(),
           createdBy:req.session.username,
           topic:id
         });
@@ -230,7 +229,6 @@ module.exports = (app)=>{
 
   app.post('/resource/:id',requiresLogin,(req,res)=>{
     var id = req.params.id; // topic id
-    var time = new Date().getTime();
     var resource = new Resource({
       name:req.body.name,
       link:req.body.link,
@@ -238,7 +236,7 @@ module.exports = (app)=>{
       likes:0,
       dislikes:0,
       createdBy:req.session.username,
-      createdAt:moment(time).format('h:mm a'),
+      createdAt:new Date().getTime(),
       topic:id,
     })
 
@@ -257,13 +255,12 @@ module.exports = (app)=>{
           if (!resource) {
             return res.status(404).render('error.hbs',{error:e});
           }
-          var time = new Date().getTime();
           var review = new Review({
             message:req.body.message,
             liked:true,
             disliked:false,
             createdBy:req.session.username,
-            createdAt:moment(time).format('h:mm a'),
+            createdAt:new Date().getTime(),
             resource:id
           })
           review.save().then((review)=>{
@@ -276,13 +273,12 @@ module.exports = (app)=>{
           if (!resource) {
             return res.status(404).render('error.hbs',{error:e});
           }
-          var time = new Date().getTime();
           var review = new Review({
             message:req.body.message,
             liked:false,
             disliked:true,
             createdBy:req.session.username,
-            createdAt:moment(time).format('h:mm a'),
+            createdAt:new Date().getTime(),
             resource:id
           })
           review.save().then((review)=>{

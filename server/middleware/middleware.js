@@ -17,7 +17,7 @@ var requiresOwner = (req,res,next)=>{
     if (!comm) {
       return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
     }
-    if (comm.createdBy.equals(req.session.userId)) {
+    if (comm.createdBy.equals(req.session.username)) {
       return next();
     }
     return res.status(401).render('error.hbs',{error:'Only owner of topic can access this page.'});
@@ -30,13 +30,13 @@ var isOwner = (req,res,next)=>{
     if (!topic) {
       return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
     }
-    if (!topic.createdBy.equals(req.session.userId)) {
+    if (topic.createdBy!==req.session.username) {
       return next();
     }
     Resource.find({topic:id}).then((resources)=>{
       return res.render('topic.hbs',{topic:topic,resources:resources,user:true,owner:true});
     },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
-  }).catch((e)=>res.status(400).render('error.hbs',{error:"Topic could not be found."}));
+  }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
 }
 
 var hasPostedReview = (req,res,next)=>{
