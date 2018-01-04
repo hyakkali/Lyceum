@@ -35,6 +35,14 @@ var UserSchema = new mongoose.Schema({
     required:true,
     minlength:6
   },
+  createdAt:{
+    type:String,
+    required:true
+  },
+  lastLogin:{
+    type:String,
+    required:true
+  }
 });
 
 UserSchema.statics.authenticate = function(email,password,callback){

@@ -38,9 +38,7 @@ hbs.registerPartials(viewsPath+'/partials');
 hbs.registerHelper("inc",(value,options)=>{
   return parseInt(value)+1;
 });
-hbs.registerHelper("date",(value,options)=>{
-  return moment(value).format('MM/DD/YYYY h:mm a')
-})
+
 app.set('view engine','hbs');
 
 require('./routes.js')(app);

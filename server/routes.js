@@ -43,6 +43,8 @@ module.exports = (app)=>{
       email:req.body.email,
       username:req.body.username,
       password:req.body.password,
+      createdAt:new Date().toLocaleString(),
+      lastLogin:new Date().toLocaleString(),
     });
 
     user.save().then((doc)=>{
@@ -59,9 +61,11 @@ module.exports = (app)=>{
       if (err||!user) {
         return res.status(401).render('error.hbs',{error:'Wrong email or password.'})
       }else {
-        req.session.userId=user._id;
-        req.session.username = user.username;
-        return res.redirect('/profile');
+        User.findOneAndUpdate({_id:user._id},{$set:{lastLogin:new Date().toLocaleString()}}).then((user)=>{
+          req.session.userId=user._id;
+          req.session.username = user.username;
+          return res.redirect('/profile');
+        })
       }
     });
   })
@@ -71,7 +75,7 @@ module.exports = (app)=>{
       if (!user) {
         return res.status(404).render('error.hbs',{error:'User could not be found.'});
       }
-      Topic.find({createdBy:req.session.userId}).then((topics)=>{
+      Topic.find({createdBy:req.session.username}).then((topics)=>{
         Resource.find({createdBy:req.session.username}).then((resources)=>{
           Review.find({createdBy:req.session.username}).then((reviews)=>{
             return res.status(200).render('profile.hbs',{topics:topics,resources:resources,reviews:reviews,user:user});
@@ -106,7 +110,7 @@ module.exports = (app)=>{
     var topic = new Topic({
       name:req.body.name,
       description:req.body.description,
-      createdAt: new Date().getTime(),
+      createdAt: new Date().toLocaleString(),
       createdBy:req.session.username
     });
 
@@ -210,7 +214,7 @@ module.exports = (app)=>{
     var id = req.params.id; // topic id
         var post = new Post({
           message:req.body.message,
-          createdAt: new Date().getTime(),
+          createdAt: new Date().toLocaleString(),
           createdBy:req.session.username,
           topic:id
         });
@@ -236,7 +240,7 @@ module.exports = (app)=>{
       likes:0,
       dislikes:0,
       createdBy:req.session.username,
-      createdAt:new Date().getTime(),
+      createdAt:new Date().toLocaleString(),
       topic:id,
     })
 
@@ -260,7 +264,7 @@ module.exports = (app)=>{
             liked:true,
             disliked:false,
             createdBy:req.session.username,
-            createdAt:new Date().getTime(),
+            createdAt:new Date().toLocaleString(),
             resource:id
           })
           review.save().then((review)=>{
@@ -278,7 +282,7 @@ module.exports = (app)=>{
             liked:false,
             disliked:true,
             createdBy:req.session.username,
-            createdAt:new Date().getTime(),
+            createdAt:new Date().toLocaleString(),
             resource:id
           })
           review.save().then((review)=>{

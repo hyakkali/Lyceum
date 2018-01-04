@@ -37,7 +37,7 @@ const resources = [{
   likes:4,
   dislikes:14,
   createdBy:'hyakkali',
-  createdAt:12801823,
+  createdAt:'2018-1-4 13:06:02',
   topic:topicOneId,
   postedUsers:['randomusername','spencer']
 },{
@@ -48,7 +48,7 @@ const resources = [{
   likes:5,
   dislikes:3,
   createdBy:'spencer',
-  createdAt:12801823,
+  createdAt:'2018-1-4 13:06:02',
   topic:topicOneId,
   postedUsers:[]
 },{
@@ -59,7 +59,7 @@ const resources = [{
   likes:4,
   dislikes:14,
   createdBy:'hyakkali',
-  createdAt:12831823,
+  createdAt:'2018-1-4 13:06:02',
   topic:topicTwoId,
   postedUsers:['randomusername']
 }];
@@ -71,6 +71,8 @@ const users = [{
   email:'hemanth.yakkali@duke.edu',
   username:'hyakkali',
   password:'testpassword',
+  createdAt:'2018-1-4 13:06:02',
+  lastLogin:'2018-1-4 13:06:02'
 },{
   _id:userTwoId,
   first_name:'Spencer',
@@ -78,6 +80,8 @@ const users = [{
   email:'spencer@lyceum.network',
   username:'spencer',
   password:'testanotherpassword',
+  createdAt:'2018-1-4 13:06:02',
+  lastLogin:'2018-1-4 13:20:10'
 }];
 
 const populateTopics = (done)=>{

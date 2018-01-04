@@ -19,7 +19,7 @@ var TopicSchema = mongoose.Schema({
     required:true,
   },
   createdAt:{
-    type:Number,
+    type:String,
     required:true
   },
 });

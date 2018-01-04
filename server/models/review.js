@@ -23,7 +23,7 @@ var ReviewSchema = mongoose.Schema({
     unique:false
   },
   createdAt:{
-    type:Number,
+    type:String,
     required:true
   },
   resource:{
