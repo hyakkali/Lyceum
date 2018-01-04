@@ -11,6 +11,7 @@ const helmet = require('helmet');
 const {mongoose} = require('./db/mongoose');
 
 const publicPath = path.join(__dirname,'../public');
+const viewsPath = path.join(__dirname,'../views');
 
 var app = express();
 var port = process.env.PORT;
@@ -32,7 +33,7 @@ app.use(bodyParser.urlencoded({ //allows form submission to be read
   extended:true
 }));
 
-hbs.registerPartials('./../views/partials');
+hbs.registerPartials(viewsPath+'/partials');
 hbs.registerHelper("inc",(value,options)=>{
   return parseInt(value)+1;
 });

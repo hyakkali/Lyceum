@@ -2,37 +2,27 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/css/topic.css">
-    <link rel="stylesheet" href="https://decorator.io/tools/modulr.min.css">
+    {{> header}}
     <title></title>
   </head>
   <body>
 
-    <div class="row header">
-      <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
-        <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
-        <ul class="pull-right menu href-text-white">
-          {{# if user}}
-            <li><a href="/logout">Logout</a></li>
-          {{else}}
-            <li><a href="/login">Login</a></li>
-            <li><a class="fill-purple" href="/register">Sign up</a></li>
-          {{/if}}
-        </ul>
-      </div>
-    </div>
+    {{> navbar}}
 
-    <div class="wrapper960 center">
+    <div class="wrapper960 center body">
       <div class="col-sm-6 col-sm-offset-3">
         <h1>{{user.first_name}} {{user.last_name}}</h1>
         <h3>{{user.email}}</h3>
         <br>
         <a href="/">Go Back Home</a>
         <br>
-        <a href="/communities">View Communities</a>
+        <a href="/topics">View Topics</a>
         <br>
         <a href="/logout">Logout</a>
       </div> <!-- end div col-sm-6 col-sm-offset-3 -->
     </div> <!-- end div container -->
+
+    {{> footer}}
+
   </body>
 </html>

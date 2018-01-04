@@ -2,38 +2,26 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/css/topic.css">
-    <link rel="stylesheet" href="https://decorator.io/tools/modulr.min.css">
+    {{> header}}
     <title></title>
   </head>
   <body>
 
-    <div class="row header">
-      <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
-        <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
-        <ul class="pull-right menu href-text-white">
-          {{# if user}}
-            <li><a href="/logout">Logout</a></li>
-          {{else}}
-            <li><a href="/login">Login</a></li>
-            <li><a class="fill-purple" href="/register">Sign up</a></li>
-          {{/if}}
-        </ul>
-      </div>
-    </div>
+    {{> navbar}}
 
-
-    <div class="wrapper960 center">
+    <div class="wrapper960 center body">
       <div class="col-12">
         <div id="errors">
 
         </div>
         <h1 class="text-center">Create a New Topic</h1>
+        <br>
         <form action="/topic-create" method="post" onsubmit="return validateForm()">
           <div class="form-group">
             <label>Name</label>
             <input type="text" class="" id="name" name="name">
           </div> <!-- end div form-group -->
+          <br>
           <div class="form-group">
             <label>Description</label>
             <input type="text" class="form-control" id="description" name="description">
@@ -48,16 +36,20 @@
               if (name.value.trim()===''||description.value.trim()==='') {
                 name.style.borderColor = "#E34234";
                 description.style.borderColor = "#E34234";
-                div.className += 'alert alert-danger';
-                div.innerHTML += 'Name and description are required!';
+                div.className += 'errors';
+                div.innerHTML += '<h6>Name and description are required!</h6>';
                 return false;
               }
               return true;
             }
           </script>
+          <br>
           <button type="submit" class="btn purple">Create</button>
         </form>
       </div> <!-- end div col-sm-6 col-sm-offset-3 -->
     </div> <!-- end div container -->
+
+    {{> footer}}
+
   </body>
 </html>

@@ -1,4 +1,4 @@
-.header{
+.header,.footer{
   /* min-height: 75px; */
   text-shadow: 0 1px 1px rgba(0,0,0,0.3);
   /* background: url("https://decorator.io/media/cover-2.jpg") no-repeat center center fixed; */
@@ -7,4 +7,22 @@
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+
+.body{
+  padding-top: 8%;
+  padding-bottom: 22%;
+}
+
+.footer{
+  /* min-height: 200px; */
+}
+
+.social{
+  border-top: 1px solid rgba(255,255,255,0.16);
+}
+
+.rgba{
+  background: rgba(0,0,0,0.7);
+  /* min-height: 100px; */
 }

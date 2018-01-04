@@ -4,27 +4,14 @@
     <meta charset="utf-8">
     <script src="/js/libs/jquery-3.2.1.slim.min.js" charset="utf-8"></script>
     <script src="/js/libs/validator.min.js" charset="utf-8"></script>
-    <link rel="stylesheet" href="/css/topic.css">
-    <link rel="stylesheet" href="https://decorator.io/tools/modulr.min.css">
+    {{> header}}
     <title></title>
   </head>
   <body>
 
-    <div class="row header">
-      <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
-        <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
-        <ul class="pull-right menu href-text-white">
-          {{# if user}}
-            <li><a href="/logout">Logout</a></li>
-          {{else}}
-            <li><a href="/login">Login</a></li>
-            <li><a class="fill-purple" href="/register">Sign up</a></li>
-          {{/if}}
-        </ul>
-      </div>
-    </div>
+    {{> navbar}}
 
-    <div class="wrapper960 center">
+    <div class="wrapper960 center body">
       <div class="col-sm-6 col-sm-offset-3">
         <h1>Topics</h1>
         <!-- <h3>Search for a topic</h3> -->
@@ -43,7 +30,7 @@
               return true;
             }
           </script>
-          <button type="submit" class="btn btn-warning btn-md">Search</button>
+          <button type="submit" class="btn purple">Search</button>
         </form>
 
         {{#each topics}}
@@ -57,5 +44,7 @@
         <a href="/">Go Back Home</a>
       </div>
     </div>
+
+    {{> footer}}
   </body>
 </html>
