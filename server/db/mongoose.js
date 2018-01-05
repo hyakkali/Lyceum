@@ -1,8 +1,14 @@
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-// mongoose.connect(process.env.MONGODB_URI);
-mongoose.connect(process.env.MONGODB_URI,{
+
+// mongoose.connect(process.env.MONGODB_URI,{
+//   useMongoClient:true
+// });
+
+var prodURI = 'mongodb://hyakkali:XLGXf6WBTErBarre@ds141657.mlab.com:41657/lyceummvp';
+
+mongoose.connect(prodURI,{
   useMongoClient:true
 });
 
