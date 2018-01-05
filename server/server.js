@@ -15,7 +15,7 @@ const publicPath = path.join(__dirname,'../public');
 const viewsPath = path.join(__dirname,'../views');
 
 var app = express();
-var port = process.env.PORT;
+var port = process.env.PORT||3000;
 
 app.use(session({
   secret:'work hard',
