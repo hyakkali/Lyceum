@@ -16,7 +16,9 @@ const {
   users,
   populateUsers,
   resources,
-  populateResources
+  populateResources,
+  reviews,
+  populateReviews
 } = require('./seed/seed');
 
 var testSession = null;
@@ -28,6 +30,7 @@ beforeEach(()=>{
 beforeEach(populateTopics);
 beforeEach(populateUsers);
 beforeEach(populateResources);
+beforeEach(populateReviews);
 
 describe('After logging in', ()=> {
 
@@ -250,10 +253,10 @@ describe('After logging in', ()=> {
             expect(resource.dislikes).toBe(14) //originally 14
           }).catch((e)=>done(e));
           Review.find({resource:id}).then((reviews)=>{
-            expect(reviews.length).toBe(1);
-            expect(reviews[0].message).toBe('This resource is great!');
-            expect(reviews[0].liked).toBe(true);
-            expect(reviews[0].disliked).toBe(false);
+            expect(reviews.length).toBe(2); //one from seed database
+            expect(reviews[1].message).toBe('This resource is great!');
+            expect(reviews[1].liked).toBe(true);
+            expect(reviews[1].disliked).toBe(false);
             done();
           }).catch((e)=>done(e));
         });
@@ -312,8 +315,52 @@ describe('After logging in', ()=> {
       .expect(401)
       .end(done)
     });
+  });
+
+  describe('POST /review-delete/:id',()=> {
+    it('should delete review and decrement likes by one if positive review', (done)=> {
+      var id = reviews[0]._id.toHexString();
+
+      testSession.post(`/review-delete/${id}`)
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Resource.findById(reviews[0].resource).then((resource)=>{
+            expect(resource.likes).toBe(9)
+            expect(resource.dislikes).toBe(3)
+          }).catch((e)=>done(e));
+          Review.find({resource:id}).then((reviews)=>{
+            expect(reviews.length).toBe(0)
+            done();
+          }).catch((e)=>done(e));
+        });
+    });
+
+    it('should delete review and decrement dislikes by one if negative review', (done)=> {
+      var id = reviews[1]._id.toHexString();
+
+      testSession.post(`/review-delete/${id}`)
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Resource.findById(reviews[1].resource).then((resource)=>{
+            expect(resource.likes).toBe(4)
+            expect(resource.dislikes).toBe(13)
+          }).catch((e)=>done(e));
+          Review.find({resource:id}).then((reviews)=>{
+            expect(reviews.length).toBe(0)
+            done();
+          }).catch((e)=>done(e));
+        });
+    });
 
 
+
+    // body...
   });
 });
 

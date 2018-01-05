@@ -152,7 +152,8 @@ module.exports = (app)=>{
         return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
       return res.render('topic-delete.hbs',{topic:topic,user:true});
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))  })
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
+  })
 
   app.post('/topic-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
     var id = req.params.id;
@@ -274,6 +275,7 @@ module.exports = (app)=>{
           },(e)=>res.status(400).render('error.hbs',{error:e}));
         }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
     }
+
     if (rating==='dislike') {
         Resource.findOneAndUpdate({_id:id},{$inc:{dislikes:1},$push:{postedUsers:req.session.username}},{new:true}).then((resource)=>{
           if (!resource) {
@@ -292,6 +294,51 @@ module.exports = (app)=>{
           },(e)=>res.status(400).render('error.hbs',{error:e}));
         }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
     }
+  })
+
+  app.get('/review-delete/:id',requiresLogin,(req,res)=>{
+    var id = req.params.id; //review id
+    Review.findById(id).then((review)=>{
+      if (!review) {
+        return res.status(404).render('error.hbs',{error:'Review could not be found.'});
+      }
+      if (review.createdBy!==req.session.username) {
+        return res.status(401).render('error.hbs',{error:"Only owner of review can access this page"});
+      }
+      return res.render('review-delete.hbs',{review:review,user:true});
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
+  })
+
+  app.post('/review-delete/:id',requiresLogin,(req,res)=>{
+    var id = req.params.id //review id
+    var username = req.session.username;
+
+    Review.findById(id).then((review)=>{
+      if (review.createdBy!==username) {
+        return res.status(401).render('error.hbs',{error:"Only owner of review can access this page"});
+      }
+    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+
+    Review.findOneAndRemove({_id:id}).then((review)=>{
+      if (!review) {
+        return res.status(404).render('error.hbs',{error:'Review could not be found.'});
+      }
+      if (review.liked===true) {
+        Resource.findOneAndUpdate({_id:review.resource},{$inc:{likes:-1},$pop:{postedUsers:username}},{new:true}).then((resource)=>{
+          if (!resource) {
+            return res.status(404).render('error.hbs',{error:e});
+          }
+          return res.redirect('/profile');
+        }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+      } else {
+        Resource.findOneAndUpdate({_id:review.resource},{$inc:{dislikes:-1},$pop:{postedUsers:username}},{new:true}).then((resource)=>{
+          if (!resource) {
+            return res.status(404).render('error.hbs',{error:e});
+          }
+          return res.redirect('/profile');
+        }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+      }
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Review could not be deleted.'}));
   })
 
   app.get('/resource/:id',requiresLogin,(req,res)=>{

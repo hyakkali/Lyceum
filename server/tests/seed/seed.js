@@ -3,6 +3,7 @@ const {ObjectID} = require('mongodb');
 const {Topic} = require('./../../models/topic');
 const {User} = require('./../../models/user');
 const {Resource} = require('./../../models/resource');
+const {Review} = require('./../../models/review');
 
 const topicOneId = new ObjectID();
 const topicTwoId = new ObjectID();
@@ -13,7 +14,10 @@ const userTwoId = new ObjectID();
 const resOneId = new ObjectID();
 const resTwoId = new ObjectID();
 const resThreeId = new ObjectID();
+const resFourId = new ObjectID();
 
+const reviewOneId = new ObjectID();
+const reviewTwoId = new ObjectID();
 
 const topics = [{
   _id:topicOneId,
@@ -62,6 +66,35 @@ const resources = [{
   createdAt:'2018-1-4 13:06:02',
   topic:topicTwoId,
   postedUsers:['randomusername']
+},{
+  _id:resFourId,
+  name:'Slack group on Hyperloop',
+  link:'slack.com',
+  description:'Slack group on hyperloop.',
+  likes:10,
+  dislikes:3,
+  createdBy:'hyakkali',
+  createdAt:'2018-1-4 13:06:02',
+  topic:topicTwoId,
+  postedUsers:['randomusername']
+}];
+
+const reviews = [{
+  _id:reviewOneId,
+  message:'Love this resource!',
+  liked:true,
+  disliked:false,
+  createdBy:'spencer',
+  createdAt:'2018-1-4 13:06:02',
+  resource: resFourId
+},{
+  _id:reviewTwoId,
+  message:'Hate this resource!',
+  liked:false,
+  disliked:true,
+  createdBy:'spencer',
+  createdAt:'2018-1-4 13:06:02',
+  resource:resThreeId
 }];
 
 const users = [{
@@ -98,8 +131,18 @@ const populateResources = (done)=>{
     var resOne = new Resource(resources[0]).save();
     var resTwo = new Resource(resources[1]).save();
     var resThree = new Resource(resources[2]).save();
+    var resFour = new Resource(resources[3]).save();
 
-    return Promise.all([resOne,resTwo,resThree])
+    return Promise.all([resOne,resTwo,resThree,resFour])
+  }).then(()=>done());
+};
+
+const populateReviews = (done)=>{
+  Review.remove({}).then(()=>{
+    var reviewOne = new Review(reviews[0]).save();
+    var reviewTwo = new Review(reviews[1]).save();
+
+    return Promise.all([reviewOne,reviewTwo])
   }).then(()=>done());
 };
 
@@ -118,5 +161,7 @@ module.exports = {
   users,
   populateUsers,
   resources,
-  populateResources
+  populateResources,
+  reviews,
+  populateReviews
 };

@@ -14,31 +14,30 @@
         <h1>{{user.first_name}} {{user.last_name}}</h1> <br>
         <h3>{{user.email}}</h3> <br>
         <h3>{{user.username}}</h3> <br>
-        <h5>Your Topics:</h5>
-        <br>
+
+        <h5>Your Topics:</h5> <br>
         {{#each topics}}
-        <a href="/topic/{{this._id}}"><h6>{{this.name}}</h6></a>
-        <br>
-        {{/each}}
-        <br>
-        <h5>Your Resources:</h5>
-        <br>
+        <a href="/topic/{{this._id}}"><h6>{{this.name}}</h6></a> <br>
+        <a href="/topic-update/{{this._id}}">Update</a> <br>
+        <a href="/topic-delete/{{this._id}}">Delete</a>
+        {{/each}} <br>
+
+        <h5>Your Resources:</h5> <br>
         {{#each resources}}
-        <a href="/resource/{{this._id}}"><h6>{{this.name}}</h6></a>
-        <br>
-        {{/each}}
-        <br>
-        <h5>Your Reviews:</h5>
-        <br>
+        <a href="/resource/{{this._id}}"><h6>{{this.name}}</h6></a> <br>
+        <a href="/resource-update/{{this._id}}">Update</a> <br>
+        <a href="/resource-delete/{{this._id}}">Delete</a>
+        {{/each}} <br>
+
+        <h5>Your Reviews:</h5> <br>
         {{#each reviews}}
-        <a href="/review/{{this._id}}"><h6>{{this.message}}</h6></a>
-        <br>
-        {{/each}}
-        <br>
-        <a href="/">Go Back Home</a>
-        <br>
-        <a href="/topics">View Topics</a>
-        <br>
+        <a href="/resource/{{this.resource}}"><h6>{{this.message}} Review</h6></a> <br>
+        <a href="/review-update/{{this._id}}">Update</a> <br>
+        <a href="/review-delete/{{this._id}}">Delete</a>
+        {{/each}} <br>
+
+        <a href="/">Go Back Home</a> <br>
+        <a href="/topics">View Topics</a> <br>
         <a href="/logout">Logout</a>
       </div> <!-- end div col-sm-6 col-sm-offset-3 -->
     </div> <!-- end div container -->
