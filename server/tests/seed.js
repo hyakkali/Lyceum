@@ -1,9 +1,9 @@
 const {ObjectID} = require('mongodb');
 
-const {Topic} = require('./../../models/topic');
-const {User} = require('./../../models/user');
-const {Resource} = require('./../../models/resource');
-const {Review} = require('./../../models/review');
+const {Topic} = require('./../models/topic');
+const {User} = require('./../models/user');
+const {Resource} = require('./../models/resource');
+const {Review} = require('./../models/review');
 
 const topicOneId = new ObjectID();
 const topicTwoId = new ObjectID();

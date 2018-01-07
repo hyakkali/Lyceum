@@ -31,7 +31,7 @@
 
         <h5>Your Reviews:</h5> <br>
         {{#each reviews}}
-        <a href="/resource/{{this.resource}}"><h6>{{this.message}} Review</h6></a>
+        <a href="/resource/{{this.resource}}"><h6>{{this.message}}</h6></a>
         <a href="/review-update/{{this._id}}">Update</a> <br>
         <a href="/review-delete/{{this._id}}">Delete</a>
         {{/each}} <br>

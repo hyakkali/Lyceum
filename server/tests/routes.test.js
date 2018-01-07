@@ -19,7 +19,7 @@ const {
   populateResources,
   reviews,
   populateReviews
-} = require('./seed/seed');
+} = require('./seed');
 
 var testSession = null;
 
@@ -159,7 +159,7 @@ describe('After logging in', ()=> {
   // describe('POST /topic-delete/:id', ()=> {
   //   it('should remove a topic if owner', (done) =>{
   //     var id = topics[1]._id.toHexString();
-  // 
+  //
   //     testSession.post(`/topic-delete/${id}`)
   //       .expect(302)
   //       .end((err,res)=>{
@@ -189,24 +189,24 @@ describe('After logging in', ()=> {
   //   });
   // });
 
-  describe('POST /post/:id', ()=> {
-    it('should create a new post', (done)=> {
-      var id = topics[0]._id.toHexString();
-      testSession.post(`/post/${id}`)
-        .send({message:"New message!"})
-        .expect(302)
-        .end((err,res)=>{
-          if (err) {
-            return done(err);
-          }
-          Post.find({topic:id}).then((post)=>{
-            expect(post.length).toBe(1);
-            expect(post[0].message).toBe("New message!")
-            done();
-          }).catch((e)=>done(e));
-        });
-    });
-  });
+  // describe('POST /post/:id', ()=> {
+  //   it('should create a new post', (done)=> {
+  //     var id = topics[0]._id.toHexString();
+  //     testSession.post(`/post/${id}`)
+  //       .send({message:"New message!"})
+  //       .expect(302)
+  //       .end((err,res)=>{
+  //         if (err) {
+  //           return done(err);
+  //         }
+  //         Post.find({topic:id}).then((post)=>{
+  //           expect(post.length).toBe(1);
+  //           expect(post[0].message).toBe("New message!")
+  //           done();
+  //         }).catch((e)=>done(e));
+  //       });
+  //   });
+  // });
 
   describe('POST /resource/:id', ()=>{
     it('should create a new resource',(done)=>{
@@ -317,6 +317,62 @@ describe('After logging in', ()=> {
     });
   });
 
+  describe('POST /review-update/:id', ()=> {
+    it('should update review and increase likes by one', (done)=> {
+      var id = reviews[0]._id.toHexString();
+
+      testSession.post(`/review-update/${id}`)
+        .send({
+          message:'I actually like this!',
+          rating:'like'
+        })
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Resource.findById(reviews[0].resource).then((resource)=>{
+            expect(resource.likes).toBe(11) //was 10
+            expect(resource.dislikes).toBe(2)
+          }).catch((e)=>done(e));
+          Review.findById(id).then((review)=>{
+            expect(reviews.length).toBe(2);
+            expect(review.message).toBe('I actually like this!')
+            expect(review.liked).toBe(true);
+            expect(review.disliked).toBe(false);
+            done();
+          }).catch((e)=>done(e));
+        })
+    });
+
+    it('should update review and increase dislikes by one', (done)=> {
+      var id = reviews[0]._id.toHexString();
+
+      testSession.post(`/review-update/${id}`)
+        .send({
+          message:'I actually hate this!',
+          rating:'dislike'
+        })
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          Resource.findById(reviews[0].resource).then((resource)=>{
+            expect(resource.likes).toBe(9) //was 10
+            expect(resource.dislikes).toBe(4) //was 3
+          }).catch((e)=>done(e));
+          Review.findById(id).then((review)=>{
+            expect(review.message).toBe('I actually hate this!')
+            expect(review.liked).toBe(false);
+            expect(review.disliked).toBe(true);
+            done();
+          }).catch((e)=>done(e));
+        })
+    });
+
+  });
+
   describe('POST /review-delete/:id',()=> {
     it('should delete review and decrement likes by one if positive review', (done)=> {
       var id = reviews[0]._id.toHexString();
@@ -328,8 +384,8 @@ describe('After logging in', ()=> {
             return done(err);
           }
           Resource.findById(reviews[0].resource).then((resource)=>{
-            expect(resource.likes).toBe(9)
-            expect(resource.dislikes).toBe(3)
+            expect(resource.likes).toBe(9) //was 10
+            expect(resource.dislikes).toBe(3) //was 3
           }).catch((e)=>done(e));
           Review.find({resource:id}).then((reviews)=>{
             expect(reviews.length).toBe(0)

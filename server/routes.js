@@ -303,6 +303,77 @@ module.exports = (app)=>{
     }
   })
 
+  app.get('/review-update/:id',requiresLogin,(req,res)=>{
+    Review.findById(req.params.id).then((review)=>{
+      if (!review) {
+        return res.status(404).render('error.hbs',{error:'Review could not be found.'});
+      }
+      if (review.createdBy!==req.session.username) {
+        return res.status(401).render('error.hbs',{error:"Only owner of review can access this page"});
+      }
+      return res.render('review-update.hbs',{review:review,user:true});
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
+  })
+
+  app.post('/review-update/:id',requiresLogin,(req,res)=>{
+    var id = req.params.id //review id
+    var username = req.session.username;
+    // var body = _.pick(req.body,['message','rating']);
+    var rating = req.body.rating;
+
+    Review.findById(id).then((review)=>{
+      if (review.createdBy!==username) {
+        return res.status(401).render('error.hbs',{error:"Only owner of review can access this page"});
+      }
+    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+
+    if (rating==='like') {
+      Review.findOneAndUpdate({_id:id},{$set:{message:req.body.message,liked:true,disliked:false}},{new:true}).then((review)=>{
+        if (!review) {
+          return res.status(404).render('error.hbs',{error:'Review could not be found.'});
+        }
+        if (review.liked===true) {
+          Resource.findOneAndUpdate({_id:review.resource},{$inc:{likes:1,dislikes:-1}},{new:true}).then((resource)=>{
+            if (!resource) {
+              return res.status(404).render('error.hbs',{error:e});
+            }
+            return res.redirect('/resource/'+review.resource);
+          }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+        } else if (review.disliked===true){
+          Resource.findOneAndUpdate({_id:review.resource},{$inc:{likes:-1,dislikes:1}},{new:true}).then((resource)=>{
+            if (!resource) {
+              return res.status(404).render('error.hbs',{error:e});
+            }
+            return res.redirect('/resource/'+review.resource);
+          }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+        }
+      }).catch((e)=>res.status(400).render('error.hbs',{error:'Review could not be updated.'}));
+    }
+    if (rating==='dislike') {
+      Review.findOneAndUpdate({_id:id},{$set:{message:req.body.message,liked:false,disliked:true}},{new:true}).then((review)=>{
+        if (!review) {
+          return res.status(404).render('error.hbs',{error:'Review could not be found.'});
+        }
+        if (review.liked===true) {
+          Resource.findOneAndUpdate({_id:review.resource},{$inc:{likes:1,dislikes:-1}},{new:true}).then((resource)=>{
+            if (!resource) {
+              return res.status(404).render('error.hbs',{error:e});
+            }
+            return res.redirect('/resource/'+review.resource);
+          }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+        } else if (review.disliked===true){
+          Resource.findOneAndUpdate({_id:review.resource},{$inc:{likes:-1,dislikes:1}},{new:true}).then((resource)=>{
+            if (!resource) {
+              return res.status(404).render('error.hbs',{error:e});
+            }
+            return res.redirect('/resource/'+review.resource);
+          }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+        }
+      }).catch((e)=>res.status(400).render('error.hbs',{error:'Review could not be updated.'}));
+    }
+
+  })
+
   app.get('/review-delete/:id',requiresLogin,(req,res)=>{
     var id = req.params.id; //review id
     Review.findById(id).then((review)=>{
@@ -337,7 +408,7 @@ module.exports = (app)=>{
           }
           return res.redirect('/profile');
         }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
-      } else {
+      } else if (review.disliked===true){
         Resource.findOneAndUpdate({_id:review.resource},{$inc:{dislikes:-1},$pop:{postedUsers:username}},{new:true}).then((resource)=>{
           if (!resource) {
             return res.status(404).render('error.hbs',{error:e});
@@ -350,10 +421,6 @@ module.exports = (app)=>{
 
   app.get('/resource/:id',(req,res)=>{
     var id = req.params.id; //resource id
-
-    if (!ObjectID.isValid(id)) {
-      return res.status(404).render('error.hbs',{error:'Invalid URL.'});
-    };
 
     Resource.findById(id).then((resource)=>{
       if (!resource) {
