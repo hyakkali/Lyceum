@@ -60,7 +60,7 @@ describe('After logging in', ()=> {
 
   describe('GET /logout', ()=> {
     it('should logout user', (done)=> {
-        testSession.get('/logout')
+        testSession.post('/logout')
         .expect(302)
         .end((err,res)=>{
           if (err) {
@@ -156,38 +156,38 @@ describe('After logging in', ()=> {
     });
   });
 
-  describe('POST /topic-delete/:id', ()=> {
-    it('should remove a topic if owner', (done) =>{
-      var id = topics[1]._id.toHexString();
-
-      testSession.post(`/topic-delete/${id}`)
-        .expect(302)
-        .end((err,res)=>{
-          if (err) {
-            return done(err);
-          }
-          Topic.findById(id).then((topic)=>{
-            expect(topic).toBeFalsy();
-            done();
-          }).catch((e)=>done(e));
-        });
-    });
-
-    it('should not remove a topic if not owner', (done) =>{
-      var id = topics[0]._id.toHexString();
-
-      testSession.post(`/topic-delete/${id}`)
-        .expect(401)
-        .end(done)
-    });
-
-    it('should return a 404 if topic not found', (done) =>{
-      var id = new ObjectID().toHexString();
-      testSession.post(`/topic-delete/${id}`)
-        .expect(404)
-        .end(done);
-    });
-  });
+  // describe('POST /topic-delete/:id', ()=> {
+  //   it('should remove a topic if owner', (done) =>{
+  //     var id = topics[1]._id.toHexString();
+  // 
+  //     testSession.post(`/topic-delete/${id}`)
+  //       .expect(302)
+  //       .end((err,res)=>{
+  //         if (err) {
+  //           return done(err);
+  //         }
+  //         Topic.findById(id).then((topic)=>{
+  //           expect(topic).toBeFalsy();
+  //           done();
+  //         }).catch((e)=>done(e));
+  //       });
+  //   });
+  //
+  //   it('should not remove a topic if not owner', (done) =>{
+  //     var id = topics[0]._id.toHexString();
+  //
+  //     testSession.post(`/topic-delete/${id}`)
+  //       .expect(401)
+  //       .end(done)
+  //   });
+  //
+  //   it('should return a 404 if topic not found', (done) =>{
+  //     var id = new ObjectID().toHexString();
+  //     testSession.post(`/topic-delete/${id}`)
+  //       .expect(404)
+  //       .end(done);
+  //   });
+  // });
 
   describe('POST /post/:id', ()=> {
     it('should create a new post', (done)=> {

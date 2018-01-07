@@ -86,6 +86,10 @@ module.exports = (app)=>{
   });
 
   app.get('/logout',requiresLogin,(req,res)=>{
+    return res.render('logout.hbs');
+  })
+
+  app.post('/logout',requiresLogin,(req,res)=>{
     if (req.session) {
       req.session.destroy(function (err) {
         if (err) {
@@ -145,28 +149,28 @@ module.exports = (app)=>{
     });
   });
 
-  app.get('/topic-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
-    var id = req.params.id;
-    Topic.findById(id).then((topic)=>{
-      if (!topic) {
-        return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
-      }
-      return res.render('topic-delete.hbs',{topic:topic,user:true});
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
-  })
+  // app.get('/topic-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
+  //   var id = req.params.id;
+  //   Topic.findById(id).then((topic)=>{
+  //     if (!topic) {
+  //       return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
+  //     }
+  //     return res.render('topic-delete.hbs',{topic:topic,user:true});
+  //   }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
+  // })
 
-  app.post('/topic-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
-    var id = req.params.id;
-
-    Topic.findOneAndRemove({_id:id}).then((topic)=>{
-      if (!topic) {
-        return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
-      }
-      Resource.remove({topic:id}).then((resources)=>{
-        return res.redirect('/topics');
-      })
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Topic could not be deleted.'}));
-  });
+  // app.post('/topic-delete/:id',[requiresLogin,requiresOwner],(req,res)=>{
+  //   var id = req.params.id;
+  //
+  //   Topic.findOneAndRemove({_id:id}).then((topic)=>{
+  //     if (!topic) {
+  //       return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
+  //     }
+  //     Resource.remove({topic:id}).then((resources)=>{
+  //       return res.redirect('/topics');
+  //     })
+  //   }).catch((e)=>res.status(400).render('error.hbs',{error:'Topic could not be deleted.'}));
+  // });
 
   app.get('/topics',(req,res)=>{ //GET all topics
     Topic.find().then((topics)=>{
