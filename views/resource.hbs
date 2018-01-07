@@ -46,8 +46,10 @@
           <p>No reviews yet!</p>
         {{/each}}
         <form action="/review/{{resource._id}}/{{resource.topic}}" method="post">
-          <input type="radio" name="rating" value="like" checked> Like
-          <input type="radio" name="rating" value="dislike"> Dislike <br>
+          <div class="radio-buttons">
+            <input type="radio" name="rating" class="radio" id="like" value="like" checked> Like <br>
+            <input type="radio" name="rating" class="radio" id="dislike" value="dislike"> Dislike <br>
+          </div>
           <input type="text" name="message" value="">
           <button type="submit" class="btn purple" name="button">Post Review</button>
         </form>
@@ -56,6 +58,8 @@
           <a href="/resource-update/{{resource._id}}">Update</a>
           <a href="/resource-delete/{{resource._id}}">Delete</a>
         {{/if}}
+
+        <a href="/topic/{{resource.topic}}">Go Back to Topic</a>
 
       </div>
     </div>

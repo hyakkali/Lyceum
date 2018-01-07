@@ -9,8 +9,12 @@
   background-size: cover;
 }
 
-.radio{
-  display: inline;
+fieldset{
+  overflow: hidden;
+}
+
+.radio-buttons{
+  display:inline-flex;
 }
 
 .body{
