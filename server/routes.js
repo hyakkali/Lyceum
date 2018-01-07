@@ -217,24 +217,27 @@ module.exports = (app)=>{
 
 // POST
 
-  app.post('/post/:id',requiresLogin,(req,res)=>{
-    var id = req.params.id; // topic id
-        var post = new Post({
-          message:req.body.message,
-          createdAt: new Date().toLocaleString(),
-          createdBy:req.session.username,
-          topic:id
-        });
+  // app.post('/post/:id',requiresLogin,(req,res)=>{
+  //   var id = req.params.id; // topic id
+  //       var post = new Post({
+  //         message:req.body.message,
+  //         createdAt: new Date().toLocaleString(),
+  //         createdBy:req.session.username,
+  //         topic:id
+  //       });
+  //
+  //       post.save().then((doc)=>{
+  //         return res.status(200).redirect('/topic/'+id); //reload same page with new post saved
+  //       },(e)=>res.status(400).render('error.hbs',{error:'Post could not be saved.'}));
+  // });
 
-        post.save().then((doc)=>{
-          return res.status(200).redirect('/topic/'+id); //reload same page with new post saved
-        },(e)=>res.status(400).render('error.hbs',{error:'Post could not be saved.'}));
-  });
-
-  app.get('/resource-create/:id',requiresLogin,(req,res)=>{
+  app.get('/resource-create/:id',(req,res)=>{
     var id = req.params.id // topic id
     Topic.findById(id).then((topic)=>{
-      return res.render('resource-create.hbs',{topic:topic,user:true});
+      if (req.session && req.session.userId) {
+        return res.render('resource-create.hbs',{topic:topic,user:true});
+      }
+      return res.render('resource-create.hbs',{topic:topic});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Error with finding topic.'}))
   })
 
@@ -345,7 +348,7 @@ module.exports = (app)=>{
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Review could not be deleted.'}));
   })
 
-  app.get('/resource/:id',requiresLogin,(req,res)=>{
+  app.get('/resource/:id',(req,res)=>{
     var id = req.params.id; //resource id
 
     if (!ObjectID.isValid(id)) {
@@ -357,10 +360,12 @@ module.exports = (app)=>{
         return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
       }
       Review.find({resource:id}).then((reviews)=>{
-        if (resource.createdBy===req.session.username) {
+        if (req.session && req.session.userId && resource.createdBy===req.session.username) {
           return res.render('resource.hbs',{resource:resource,reviews:reviews,user:true,owner:true})
+        } else if (req.session && req.session.userId) {
+          return res.render('resource.hbs',{resource:resource,reviews:reviews,user:true})
         }
-        return res.render('resource.hbs',{resource:resource,reviews:reviews,user:true})
+        return res.render('resource.hbs',{resource:resource,reviews:reviews})
       },(e)=> res.status(400).render('error.hbs',{error:"Reviews could not be found."}));
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be rendered.'}));
   })

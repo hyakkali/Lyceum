@@ -19,7 +19,6 @@
         <br>
         <h4>{{topic.description}}</h4>
         <br>
-        <h4>Created by {{topic.createdBy}} at {{topic.createdAt}}</h4>
         <div class="resources">
           <h3>Resources</h3>
           <br>
@@ -34,17 +33,17 @@
             <br>
             Dislikes: {{this.dislikes}}
             <br>
-            Created by {{this.createdBy}} at
-            {{this.createdAt}}
-            <br>
-            <form action="/review/{{this._id}}/{{../topic._id}}" method="post">
+            <!-- Created by {{this.createdBy}} at -->
+            <!-- {{this.createdAt}} -->
+            <!-- <br> -->
+            <!-- <form action="/review/{{this._id}}/{{../topic._id}}" method="post">
               <label>Like</label>
               <input type="radio" name="rating" value="like" checked>
               <label>Dislike</label>
               <input type="radio" name="rating" value="dislike">
               <input type="text" name="message" value="">
               <button type="submit" class="btn purple" name="button">Post Review</button>
-            </form>
+            </form> -->
             <br>
 
           {{else}}

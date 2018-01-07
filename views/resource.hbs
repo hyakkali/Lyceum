@@ -18,7 +18,7 @@
         <h1>{{resource.name}}</h1>
         <h4>{{resource.description}}</h4>
         <h4 class="resources">{{resource.link}}</h4>
-        <h4>Created by {{resource.createdBy}} at {{resource.createdAt}}</h4>
+        <!-- <h4>Created by {{resource.createdBy}} at {{resource.createdAt}}</h4> -->
         <h4>Likes: {{resource.likes}}</h4>
         <h4>Dislikes: {{resource.dislikes}}</h4>
 
@@ -37,8 +37,8 @@
             {{else}}
               disliked it.
             {{/if}}
-            <br>
-            {{this.createdAt}}
+            <!-- <br> -->
+            <!-- {{this.createdAt}} -->
             <br>
             <br>
           {{/if}}
@@ -49,7 +49,7 @@
           <input type="radio" name="rating" value="like" checked> Like
           <input type="radio" name="rating" value="dislike"> Dislike <br>
           <input type="text" name="message" value="">
-          <button type="submit" class="btn btn-warning btn-sm" name="button">Post Review</button>
+          <button type="submit" class="btn purple" name="button">Post Review</button>
         </form>
 
         {{#if owner}}
