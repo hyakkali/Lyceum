@@ -45,9 +45,9 @@
               <button type="submit" class="btn purple" name="button">Post Review</button>
             </form> -->
             <br>
-
+            <a href="/resource-create/{{topic._id}}">Post resource</a>
           {{else}}
-            <p>No Resources! Post one <a href="/resource-create/{{topic._id}}">now</a> </p>
+            <p>No Resources! Post a new resource <a href="/resource-create/{{topic._id}}">here</a> </p>
           {{/each}}
         </div>
 
@@ -56,7 +56,6 @@
         </script>
 
         <br>
-        <a href="/resource-create/{{topic._id}}">Post resource</a>
 
         {{#if owner}}
           <a href="/topic-update/{{topic._id}}">Update Topic</a>

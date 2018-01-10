@@ -41,12 +41,14 @@
             {{#if isModZero}}
               <div class="row gutter-col-20 topics">
             {{/if}}
-            <div class="col-4">
-              <div class="topic href-text-white text-white text-center padding-top-30">
-                <a href="/topic/{{this._id}}">{{this.name}}</a> <br>
-                <p>{{this.description}}</p>
+            <a href="/topic/{{this._id}}">
+              <div class="col-4">
+                <div class="topic href-text-purple text-purple text-center padding-top-30">
+                  <p>{{this.name}}</p> <br>
+                  <p>{{this.description}}</p>
+                </div>
               </div>
-            </div>
+            </a>
             {{#if isLast}}
               </div>
             {{/if}}
