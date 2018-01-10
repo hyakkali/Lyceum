@@ -1,15 +1,13 @@
-<div class="row header">
-  <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
-    <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
-    <ul class="pull-right menu href-text-white">
-        <li><a href="/topics">Topics</a></li>
-      {{# if user}}
-        <li><a href="/profile">My Profile</a></li>
-        <li><a href="/logout">Logout</a></li>
-      {{else}}
-        <li><a href="/login">Login</a></li>
-        <li><a class="fill-purple" href="/register">Sign up</a></li>
-      {{/if}}
-    </ul>
-  </div>
+<div class="navbar cf height-auto padding-20 transparent -tablet-padding">
+  <a href="/" class="brand text-21 text-gray -padding-left -tablet-margin"><b class="green-text">Lyceum</b></a>
+  <ul class="pull-right menu href-text-gray">
+      <li><a href="/topics">Topics</a></li>
+    {{# if user}}
+      <li><a href="/profile">My Profile</a></li>
+      <li><a href="/logout">Logout</a></li>
+    {{else}}
+      <li><a href="/login">Login</a></li>
+      <li><a class="" href="/register">Sign up</a></li>
+    {{/if}}
+  </ul>
 </div>

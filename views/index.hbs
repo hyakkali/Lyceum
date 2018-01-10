@@ -12,52 +12,54 @@
     <div class="row header">
       <!-- Navbar Start -->
       <div class="navbar cf height-auto padding-20 transparent -tablet-padding">
-        <a href="/" class="brand text-21 text-white -padding-left -tablet-margin">Lyceum</a>
-        <ul class="pull-right menu href-text-white">
+        <a href="/" class="brand text-21 text-gray -padding-left -tablet-margin"><b class="green-text">Lyceum</b></a>
+        <ul class="pull-right menu href-text-gray">
             <li><a href="/topics">Topics</a></li>
           {{# if user}}
             <li><a href="/profile">My Profile</a></li>
             <li><a href="/logout">Logout</a></li>
           {{else}}
             <li><a href="/login">Login</a></li>
-            <li><a class="fill-purple" href="/register">Sign up</a></li>
+            <li><a class="" href="/register">Sign up</a></li>
           {{/if}}
         </ul>
       </div>
       <!-- Navbar End -->
-
-      <!-- Row Intro Start -->
-      <div class="row text-center padding-bottom-40 push-top">
-        <h2 class="text-white pull-left width-100">Find the Right Resources to Learn Anything</h2>
-        <!-- <p class="text-white">
-          It is now easier than ever to find the right resources to learn about any topic you want
-        </p> -->
-      </div>
-      <!-- Row Intro End -->
-
-      <!-- Search Form Start -->
-      <div class="wrapper960 center">
-        <form class="form l padding-10 cf" action="/search" method="post" name="searchForm" onsubmit="return setAction()">
-          <div class="col-10">
-            <input class="border-white -rounded" id="query" name="query" type="text" placeholder="Search Topics">
+      <div class="row">
+        <div class="searchbox col-8 offset-left-2">
+          <!-- Row Intro Start -->
+          <div class="row text-center padding-bottom-40 push-top">
+            <h2 class="text-gray pull-left width-100">Find the <b class="green-text">Right</b> Resources to Learn <b class="green-text">Anything</b></h2>
           </div>
-          <div class="col-2">
-            <button type="submit" class="btn purple width-100">Search</button>
+          <!-- Row Intro End -->
+
+          <!-- Search Form Start -->
+          <div class="wrapper960 center">
+            <form class="form l padding-10 cf" action="/search" method="post" name="searchForm" onsubmit="return setAction()">
+              <div class="col-8 offset-left-1">
+                <input class="border-gray -rounded" id="query" name="query" type="text" placeholder="Search Topics">
+              </div>
+              <div class="col-2">
+                <button type="submit" class="btn gray width-100 fill-green">Search</button>
+              </div>
+              <script>
+                function setAction() {
+                  var query = document.getElementById('query');
+                  if (query.value.trim()==='') {
+                    document.searchForm.action = "/search/"+'topics';
+                    return true;
+                  }
+                  document.searchForm.action = "/search/"+query.value;
+                  return true;
+                }
+              </script>
+            </form>
           </div>
-          <script>
-            function setAction() {
-              var query = document.getElementById('query');
-              if (query.value.trim()==='') {
-                document.searchForm.action = "/search/"+'topics';
-                return true;
-              }
-              document.searchForm.action = "/search/"+query.value;
-              return true;
-            }
-          </script>
-        </form>
+          <!-- Search Form End -->
+        </div> <!-- end searchbox -->
       </div>
-      <!-- Search Form End -->
+
+
 
     </div>
     <!-- Header End -->
@@ -65,35 +67,53 @@
 
     <!-- Content Start -->
 
-    <div class="wrapper960 center padding-v-40 tablet-padding">
+    <div class="wrapper960 center tablet-padding">
 
       <!-- Second Row Start -->
       <div class="row padding-v-40 tablet-padding-top col-gutter-20">
 
-        <h3 class="text-center padding-bottom">Explore Topics</h3>
-
-        <p class="padding-bottom-20 text-center text-16">
+        <h3 class="text-center text-gray padding-bottom">Explore <b class="green-text">Topics</b></h3> <br>
+        <!-- <p class="padding-bottom-20 text-center text-16">
           Lorem Ipsum is simply dummy text of the printing
-        </p>
+        </p> -->
 
-        <div class="col-12">
+        <!-- <div class="col-12">
           {{#each topics}}
             <a href="/topic/{{this._id}}">
               <h5 class="pull-left">{{this.name}}</h5>
             </a> <br>
           {{/each}}
-        </div>
+        </div> -->
 
-
+        {{#everyNth topics 3}}
+          {{#if isModZeroNotFirst}}
+            </div>
+          {{/if}}
+          {{#if isModZero}}
+            <div class="row gutter-col-20 topics">
+          {{/if}}
+          <a href="/topic/{{this._id}}">
+            <div class="col-4">
+              <div class="topic href-text-gray text-gray text-center padding-top-30">
+                <p class="green-text">{{this.name}}</p> <br>
+                <p>{{this.description}}</p>
+                <img src="https://cdn.teslarati.com/wp-content/uploads/2017/09/hyperloop-concept-rendering.jpg"  height="100" width="200"alt="">
+              </div>
+            </div>
+          </a>
+          {{#if isLast}}
+            </div>
+          {{/if}}
+        {{/everyNth}}
 
         <div class="row flex padding-top-30 tablet-padding-top">
           <div class="col-12">
-            <h6>Can't find what you're looking for? Make a new topic <a href="/topic-create">here!</a></h6>
+            <h6>Can't find what you're looking for? Make a new topic <a href="/topic-create"> <b class="green-text">here</b>!</a></h6>
           </div>
         </div> <br>
         <div class="row">
           <div class="col-4 offset-left-8">
-            <a href="/topics" class="btn l purple width-100">Explore More</a>
+            <a href="/topics" class="btn l green width-100">Explore More</a>
           </div>
         </div>
 
@@ -103,5 +123,6 @@
     </div>
     <!-- Content End -->
     {{>footer}}
+
   </body>
 </html>

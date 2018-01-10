@@ -13,18 +13,24 @@
 
 .header,
 .footer{
-  min-height: 500px;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  min-height: 400px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.1);
   /* background: url("https://decorator.io/media/cover-2.jpg") no-repeat center center fixed; */
-  background-color: #8342f4;
+  /* background-color: #8342f4; */
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  padding-bottom: 0;
 }
 .footer{
   min-height: 380px;
 }
+
+.green-text{
+  color: #0dba12;
+}
+
 .form{
   background: rgba(0,0,0,0.5) !important;
 }
@@ -46,7 +52,7 @@
   font-size: 17px !important;
 }
 .social{
-  border-top: 1px solid rgba(255,255,255,0.16);
+  border-top: 1px solid gray;
 }
 
 /* __ colors __ */
@@ -55,8 +61,20 @@
   background: #e8e8e8;
 }
 
+.topics{
+  margin-bottom: 20px;
+}
+
+.topic{
+  /* width: 10%; */
+  border-radius: 25px;
+  border: 1px solid gray;
+  height: 200px;
+  /* background-color: #8342f4; */
+}
+
 .rgba{
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.1);
   min-height: 380px;
 }
 
