@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const hbs = require('hbs');
 const helmet = require('helmet');
 const moment = require('moment');
+const _ = require('lodash');
 
 const {mongoose} = require('./db/mongoose');
 
@@ -37,6 +38,24 @@ app.use(bodyParser.urlencoded({ //allows form submission to be read
 hbs.registerPartials(viewsPath+'/partials');
 hbs.registerHelper("inc",(value,options)=>{
   return parseInt(value)+1;
+});
+
+hbs.registerHelper('everyNth', function(context, every, options) {
+  var fn = options.fn, inverse = options.inverse;
+  var ret = "";
+  if(context && context.length > 0) {
+    for(var i=0, j=context.length; i<j; i++) {
+      var modZero = i % every === 0;
+      ret = ret + fn(_.extend({}, context[i], {
+        isModZero: modZero,
+        isModZeroNotFirst: modZero && i > 0,
+        isLast: i === context.length - 1
+      }));
+    }
+  } else {
+    ret = inverse(this);
+  }
+  return ret;
 });
 
 app.set('view engine','hbs');

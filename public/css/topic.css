@@ -9,10 +9,6 @@
   background-size: cover;
 }
 
-fieldset{
-  overflow: hidden;
-}
-
 .radio-buttons{
   display:inline-flex;
 }
@@ -20,6 +16,16 @@ fieldset{
 .body{
   padding-top: 8%;
   padding-bottom: 22%;
+}
+
+.topics{
+  margin-bottom: 20px;
+}
+
+.topic{
+  /* width: 10%; */
+  height: 200px;
+  background-color: #8342f4;
 }
 
 .footer{

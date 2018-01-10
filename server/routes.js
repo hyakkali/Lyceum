@@ -191,7 +191,7 @@ module.exports = (app)=>{
     if (query==='topics') {
       return res.redirect('/topics');
     }
-    Topic.find({name:regex},(err,topics)=>{
+    Topic.find({name:regex}).limit(5).then((topics)=>{
       if (topics.length===0) {
         return res.status(400).render('error.hbs',{error:'No topics found!'})
       }

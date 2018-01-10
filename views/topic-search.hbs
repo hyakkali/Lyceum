@@ -15,18 +15,13 @@
       <div class="col-sm-6 col-sm-offset-3">
         <h1>Search results for "{{query}}"</h1>
         <br>
-        {{#each topics}}
-          <li><a href="/topic/{{this._id}}">{{this.name}}</a></li>
-        {{else}}
-          <p>No Topics!</p>
-        {{/each}}
-        <br>
-        <a href="/">Go Back Home</a>
-        <h5>Search for another topic</h5>
-        <form action="/search" method="post" onsubmit="return setAction()" name="searchForm">
-          <div class="form-group">
-            <input type="text" class="form-control" id="query" name="query">
-          </div> <!-- end div form-group -->
+        <form class="form l padding-10 cf" action="/search" method="post" name="searchForm" onsubmit="return setAction()">
+          <div class="col-10">
+            <input class="-rounded" id="query" name="query" type="text" placeholder="Search Topics">
+          </div>
+          <div class="col-2">
+            <button type="submit" class="btn purple width-100">Search</button>
+          </div>
           <script>
             function setAction() {
               var query = document.getElementById('query');
@@ -38,8 +33,34 @@
               return true;
             }
           </script>
-          <button type="submit" class="btn purple">Search</button>
-        </form>
+          <br>
+          {{#everyNth topics 3}}
+            {{#if isModZeroNotFirst}}
+              </div>
+            {{/if}}
+            {{#if isModZero}}
+              <div class="row gutter-col-20 topics">
+            {{/if}}
+            <div class="col-4">
+              <div class="topic href-text-white text-white text-center padding-top-30">
+                <a href="/topic/{{this._id}}">{{this.name}}</a> <br>
+                <p>{{this.description}}</p>
+              </div>
+            </div>
+            {{#if isLast}}
+              </div>
+            {{/if}}
+          {{/everyNth}}
+        <!-- {{#each topics}}
+          <div class="topic href-text-white">
+            <a href="/topic/{{this._id}}">{{this.name}}</a>
+          </div>
+        {{else}}
+          <p>No Topics!</p>
+        {{/each}} -->
+        <br>
+        <a href="/">Go Back Home</a>
+
       </div>
     </div>
     {{> footer}}
