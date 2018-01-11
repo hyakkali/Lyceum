@@ -110,12 +110,28 @@ module.exports = (app)=>{
     return res.render('topic-create.hbs');
   });
 
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+
   app.post('/topic-create',requiresLogin,(req,res)=>{
+    var imageLinkArray = [
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Science-symbol-2.svg/2000px-Science-symbol-2.svg.png',
+      'http://cliparting.com/wp-content/uploads/2016/05/Math-clip-art-for-middle-school-free-clipart-images-4.png',
+      'http://moziru.com/images/history-clipart-history-textbook-11.png',
+      'http://www.coloradomesa.edu/social-behavioral-sciences/images/human-1211467.png',
+      'https://s3.us-east-2.amazonaws.com/hamiltoncityschoolscom/2017/03/art-management.png'
+    ];
+
+    var randInt = getRandomInt(5);
+    var imageLink = imageLinkArray[randInt];
+
     var topic = new Topic({
       name:req.body.name,
       description:req.body.description,
       createdAt: new Date().toLocaleString(),
-      createdBy:req.session.username
+      createdBy:req.session.username,
+      image:imageLink
     });
 
     topic.save().then((doc)=>{

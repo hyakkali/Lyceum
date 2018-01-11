@@ -97,7 +97,11 @@
               <div class="topic href-text-gray text-gray text-center padding-top-30">
                 <p class="green-text">{{this.name}}</p> <br>
                 <p>{{this.description}}</p>
-                <img src="https://cdn.teslarati.com/wp-content/uploads/2017/09/hyperloop-concept-rendering.jpg"  height="100" width="200"alt="">
+                {{#if this.image}}
+                  <img src="{{this.image}}"  height="100" width="100"alt="">
+                {{else}}
+                  <img src="http://www.coloradomesa.edu/social-behavioral-sciences/images/human-1211467.png"  height="100" width="100"alt="">
+                {{/if}}
               </div>
             </div>
           </a>

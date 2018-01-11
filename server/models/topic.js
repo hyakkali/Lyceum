@@ -14,6 +14,12 @@ var TopicSchema = mongoose.Schema({
     minlength:1,
     unique:false
   },
+  image:{
+    type:String,
+    required:true,
+    minlength:1,
+    unique:false
+  },
   createdBy:{
     type:String,
     required:true,
