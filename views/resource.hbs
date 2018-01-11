@@ -34,6 +34,7 @@
                   {{this.createdBy}}
                   liked it.
                 {{else}}
+                  {{this.createdBy}}
                   disliked it.
                 {{/if}}
               </div>
@@ -44,25 +45,36 @@
             No reviews yet!
           {{/each}}
           <br>
-          <form action="/review/{{resource._id}}/{{resource.topic}}" method="post">
-            <div class="radio-buttons">
-              <input type="radio" name="rating" class="radio" id="like" value="like" checked> Like <br>
-              <input type="radio" name="rating" class="radio" id="dislike" value="dislike"> Dislike <br>
+        </div>
+      </div>
+      <div class="wrapper960 center">
+        <h6>Post a Review</h6> <br>
+        <form action="/review/{{resource._id}}/{{resource.topic}}" method="post">
+          <div class="radio-buttons padding-bottom-20">
+            <input type="radio" name="rating" class="radio" id="like" value="like" checked> Like <br>
+            <input type="radio" name="rating" class="radio" id="dislike" value="dislike"> Dislike <br>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <input type="text" name="message" placeholder="Write a message">
             </div>
-            <input type="text" name="message" placeholder="Write a message">
-            <button type="submit" class="btn green" name="button">Post Review</button> <br>
-          </form>
+            <div class="col-6">
+              <button type="submit" class="btn green" name="button">Post Review</button> <br>
+            </div>
+          </div>
+        </form>
+      </div>
 
+      <div class="row">
+        <div class="col-8 offset-left-2 resourceinfo padding-top-20">
           {{#if owner}}
             <a href="/resource-update/{{resource._id}}">Update</a> <br>
             <a href="/resource-delete/{{resource._id}}">Delete</a> <br>
           {{/if}}
-
           <a href="/topic/{{resource.topic}}">Back to Topic</a>
-
-
         </div>
       </div>
+
 
       <script>
         $(".resourceLink").linkify();

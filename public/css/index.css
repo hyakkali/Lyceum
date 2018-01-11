@@ -66,11 +66,13 @@
 }
 
 .topic{
-  /* width: 10%; */
   border-radius: 25px;
   border: 1px solid gray;
   height: 200px;
-  /* background-color: #8342f4; */
+}
+
+.topic:hover{
+  background-color: #e1e4e8;
 }
 
 .rgba{

@@ -11,24 +11,24 @@
 
     {{> navbar}}
 
-    <div class="wrapper960 center body">
-      <div class="col-12">
-        <h3>Post a New Resource for <a href="/topic/{{topic._id}}">{{topic.name}}</a> </h3>
-        <br>
+  <div class="center body">
+    <div class="row">
+      <div class="col-8 offset-left-2 text-center">
+        <h3>Post a New Resource for <a href="/topic/{{topic._id}}">{{topic.name}}</a> </h3> <br> <br>
         <div id="errors"></div>
         <form class="" action="/resource/{{topic._id}}" method="post" onsubmit="return validateForm()">
           <div class="form-group">
-            <label>Name</label>
+            <label class="text-left">Name</label>
             <input type="text" class="form-control" id="name" name="name">
           </div> <!-- end div form-group -->
           <br>
           <div class="form-group">
-            <label>Description</label>
+            <label class="text-left">Description</label>
             <input type="text" class="form-control" id="description" name="description">
           </div> <!-- end div form-group -->
           <br>
           <div class="form-group">
-            <label>Link</label>
+            <label class="text-left">Link</label>
             <input type="text" class="form-control" id="link" name="link">
           </div> <!-- end div form-group -->
           <br>
@@ -58,10 +58,15 @@
             }
           </script>
           <br>
-          <button type="submit" class="btn green">Post Resource</button>
+          <div class="col-1">
+            <button type="submit" class="btn green align-left">Post Resource</button>
+          </div>
         </form> <!-- add validation for valid URL's -->
       </div>
     </div>
+  </div>
+
+    {{> footer}}
 
   </body>
 </html>
