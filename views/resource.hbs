@@ -13,55 +13,61 @@
 
     {{> navbar}}
 
-    <div class="wrapper960 center body">
-      <div class="col-12">
-        <h1>{{resource.name}}</h1>
-        <h4>{{resource.description}}</h4>
-        <h4 class="resources">{{resource.link}}</h4>
-        <!-- <h4>Created by {{resource.createdBy}} at {{resource.createdAt}}</h4> -->
-        <h4>Likes: {{resource.likes}}</h4>
-        <h4>Dislikes: {{resource.dislikes}}</h4>
+    <div class="center body">
+      <div class="row">
+        <div class="col-8 offset-left-2 resourceinfo">
+          <h1>{{resource.name}}</h1> <br>
+          <h4>{{resource.description}}</h4> <br>
+          <h4 class="resourceLink">{{resource.link}}</h4> <br>
+          <h4>Likes: {{resource.likes}}</h4>
+          <h4>Dislikes: {{resource.dislikes}}</h4> <br>
 
-        <script>
-          $(".resources").linkify();
-        </script>
+          <h3>Reviews</h3> <br>
+          {{# each reviews}}
+          <div class="row reviews">
+            <div class="col-8 offset-left-2">
+              <div class="height-auto review padding-v-20">
+                {{#if this.message}}
+                  {{this.message}} <br>
+                {{/if}}
+                {{#if this.liked}}
+                  {{this.createdBy}}
+                  liked it.
+                {{else}}
+                  disliked it.
+                {{/if}}
+              </div>
 
-        <h5>Reviews</h5>
-        {{#each reviews}}
-          {{#if this.message}}
-            {{this.message}}
-            <br>
-            {{this.createdBy}}
-            {{#if this.liked}}
-              liked it.
-            {{else}}
-              disliked it.
-            {{/if}}
-            <!-- <br> -->
-            <!-- {{this.createdAt}} -->
-            <br>
-            <br>
-          {{/if}}
-        {{else}}
-          <p>No reviews yet!</p>
-        {{/each}}
-        <form action="/review/{{resource._id}}/{{resource.topic}}" method="post">
-          <div class="radio-buttons">
-            <input type="radio" name="rating" class="radio" id="like" value="like" checked> Like <br>
-            <input type="radio" name="rating" class="radio" id="dislike" value="dislike"> Dislike <br>
+            </div>
           </div>
-          <input type="text" name="message" value="">
-          <button type="submit" class="btn green" name="button">Post Review</button>
-        </form>
+          {{else}}
+            No reviews yet!
+          {{/each}}
+          <br>
+          <form action="/review/{{resource._id}}/{{resource.topic}}" method="post">
+            <div class="radio-buttons">
+              <input type="radio" name="rating" class="radio" id="like" value="like" checked> Like <br>
+              <input type="radio" name="rating" class="radio" id="dislike" value="dislike"> Dislike <br>
+            </div>
+            <input type="text" name="message" placeholder="Write a message">
+            <button type="submit" class="btn green" name="button">Post Review</button> <br>
+          </form>
 
-        {{#if owner}}
-          <a href="/resource-update/{{resource._id}}">Update</a>
-          <a href="/resource-delete/{{resource._id}}">Delete</a>
-        {{/if}}
+          {{#if owner}}
+            <a href="/resource-update/{{resource._id}}">Update</a> <br>
+            <a href="/resource-delete/{{resource._id}}">Delete</a> <br>
+          {{/if}}
 
-        <a href="/topic/{{resource.topic}}">Go Back to Topic</a>
+          <a href="/topic/{{resource.topic}}">Back to Topic</a>
 
+
+        </div>
       </div>
+
+      <script>
+        $(".resourceLink").linkify();
+      </script>
+
     </div>
 
     {{> footer}}

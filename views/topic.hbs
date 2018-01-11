@@ -13,56 +13,48 @@
 
     {{> navbar}}
 
-    <div class="wrapper960 center body">
-      <div class="col-12">
-        <h1>{{topic.name}}</h1>
-        <br>
-        <h4>{{topic.description}}</h4>
-        <br>
-        <div class="resources">
+    <div class="center body">
+      <div class="row">
+        <div class="col-8 offset-left-2 topicinfo">
+          <h1>{{topic.name}}</h1> <br>
+          <h4>{{topic.description}}</h4> <br>
           <h3>Resources</h3>
           <br>
           {{#each resources}}
-            {{inc @index}}. <a href="/resource/{{this._id}}">{{this.name}}</a>
-            <br>
-            {{this.link}}
-            <br>
-            {{this.description}}
-            <br>
-            Likes: {{this.likes}}
-            <br>
-            Dislikes: {{this.dislikes}}
-            <br>
-            <!-- Created by {{this.createdBy}} at -->
-            <!-- {{this.createdAt}} -->
-            <!-- <br> -->
-            <!-- <form action="/review/{{this._id}}/{{../topic._id}}" method="post">
-              <label>Like</label>
-              <input type="radio" name="rating" value="like" checked>
-              <label>Dislike</label>
-              <input type="radio" name="rating" value="dislike">
-              <input type="text" name="message" value="">
-              <button type="submit" class="btn purple" name="button">Post Review</button>
-            </form> -->
-            <br>
-            <a href="/resource-create/{{topic._id}}">Post resource</a>
+          <div class="row resources">
+            <div class="col-8 offset-left-2">
+              <div class="height-auto resource padding-v-20">
+                {{inc @index}}. <a href="/resource/{{this._id}}">{{this.name}}</a>
+                <br>
+                {{this.description}}
+                <br>
+                {{this.link}}
+                <br>
+                Likes: {{this.likes}}
+                Dislikes: {{this.dislikes}}
+              </div>
+            </div>
+          </div>
           {{else}}
             <p>No Resources! Post a new resource <a href="/resource-create/{{topic._id}}">here</a> </p>
           {{/each}}
-        </div>
-
-        <script>
-          $(".resources").linkify();
-        </script>
-
-        <br>
-
-        {{#if owner}}
-          <a href="/topic-update/{{topic._id}}">Update Topic</a>
           <br>
-          <a href="/topic-delete/{{topic._id}}">Delete Topic</a>
-        {{/if}}
-      </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+          <a href="/resource-create/{{topic._id}}">Have a good resource to share? Post it here!</a>
+
+          <script>
+            $(".resources").linkify();
+          </script>
+
+          <br>
+
+          {{#if owner}}
+            <a href="/topic-update/{{topic._id}}">Update Topic</a>
+            <br>
+            <a href="/topic-delete/{{topic._id}}">Delete Topic</a>
+          {{/if}}
+        </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+      </div>
+
     </div> <!-- end div container -->
     {{> footer}}
 

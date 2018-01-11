@@ -22,8 +22,12 @@
   color: #0dba12;
 }
 
-.topics{
+.topics,.resources{
   margin-bottom: 20px;
+}
+
+.topicinfo,.resourceinfo{
+  text-align: center;
 }
 
 .topic{
@@ -32,6 +36,12 @@
   border: 2px solid gray;
   height: 200px;
   /* background-color: #8342f4; */
+}
+
+.resource,.review{
+  border-radius: 25px;
+  border: 2px solid gray;
+  /* height: 50px; */
 }
 
 .social{

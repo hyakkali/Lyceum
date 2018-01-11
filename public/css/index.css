@@ -14,7 +14,7 @@
 .header,
 .footer{
   min-height: 400px;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  /* text-shadow: 0 1px 1px rgba(0,0,0,0.1); */
   /* background: url("https://decorator.io/media/cover-2.jpg") no-repeat center center fixed; */
   /* background-color: #8342f4; */
   -webkit-background-size: cover;
