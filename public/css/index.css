@@ -23,6 +23,11 @@
   background-size: cover;
   padding-bottom: 0;
 }
+
+body{
+  font-family: 'Raleway', sans-serif;
+}
+
 .footer{
   min-height: 380px;
 }

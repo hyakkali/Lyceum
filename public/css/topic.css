@@ -9,6 +9,10 @@
   background-size: cover;
 }
 
+body{
+  font-family: 'Raleway', sans-serif;
+}
+
 .radio-buttons{
   display:inline-flex;
 }
