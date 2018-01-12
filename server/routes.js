@@ -294,7 +294,7 @@ module.exports = (app)=>{
     },(e)=>res.status(400).render('error.hbs',{error:e}));
   });
 
-  app.post('/review/:id/:topicid',[requiresLogin,hasPostedReview,isResourceOwner],(req,res)=>{
+  app.post('/review/:id/:topicid',[requiresLogin,hasPostedReview],(req,res)=>{
     var id = req.params.id; //resource id
     var topicid = req.params.topicid; //topic id
     var rating = req.body.rating;
