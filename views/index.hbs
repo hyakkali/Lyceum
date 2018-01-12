@@ -35,7 +35,7 @@
           <!-- Row Intro End -->
 
           <!-- Search Form Start -->
-          <div class="wrapper960 center">
+          <div class="row">
             <form class="form l padding-10 cf" action="/search" method="post" name="searchForm" onsubmit="return setAction()">
               <div class="col-8 offset-left-1">
                 <input class="border-gray -rounded" id="query" name="query" type="text" placeholder="Search Topics">
@@ -98,11 +98,7 @@
               <div class="topic href-text-gray text-gray text-center padding-top-30">
                 <p class="green-text">{{this.name}}</p> <br>
                 <p>{{this.description}}</p>
-                {{#if this.image}}
-                  <img src="{{this.image}}"  height="100" width="100"alt="">
-                {{else}}
-                  <img src="http://www.coloradomesa.edu/social-behavioral-sciences/images/human-1211467.png"  height="100" width="100"alt="">
-                {{/if}}
+                <img src="{{this.image}}"  height="100" width="100"alt="">
               </div>
             </div>
           </a>
