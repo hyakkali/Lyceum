@@ -29,8 +29,8 @@
                 <div class="padding-left-20 padding-right-20">
                   {{this.description}}
                 </div>
-                {{this.link}}
-                <br>
+                <!-- <a href="{{this.link}}">Go to link</a> -->
+                <span class="link">{{this.link}}</span> <br>
                 Likes: {{this.likes}}
                 Dislikes: {{this.dislikes}}
               </div>
@@ -43,7 +43,10 @@
           <a href="/resource-create/{{topic._id}}">Have a good resource to share? Post it here!</a>
 
           <script>
-            $(".resources").linkify();
+            $(".link").linkify({
+              target:"_blank",
+            });
+            $(".linkified").text("Go to link");
           </script>
 
           <br>
