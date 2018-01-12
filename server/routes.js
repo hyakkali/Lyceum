@@ -110,28 +110,47 @@ module.exports = (app)=>{
     return res.render('topic-create.hbs');
   });
 
-  function getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-  }
-
   app.post('/topic-create',requiresLogin,(req,res)=>{
-    var imageLinkArray = [
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Science-symbol-2.svg/2000px-Science-symbol-2.svg.png',
-      'http://cliparting.com/wp-content/uploads/2016/05/Math-clip-art-for-middle-school-free-clipart-images-4.png',
-      'http://moziru.com/images/history-clipart-history-textbook-11.png',
-      'http://www.coloradomesa.edu/social-behavioral-sciences/images/human-1211467.png',
-      'https://s3.us-east-2.amazonaws.com/hamiltoncityschoolscom/2017/03/art-management.png'
-    ];
 
-    var randInt = getRandomInt(5);
-    var imageLink = imageLinkArray[randInt];
+    var greekMap = {
+      'A':'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Greek_lc_alpha.svg/1200px-Greek_lc_alpha.svg.png',
+      'B':'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Greek_lc_beta.svg/1200px-Greek_lc_beta.svg.png',
+      'C':'http://www.wallquotes.com/sites/default/files/arts0153-81.png',
+      'D':'http://www.wallquotes.com/sites/default/files/styles/uc_canvas/public/arts0154-83.png?itok=Z9YWDF1k',
+      'E':'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/LetterE.svg/1200px-LetterE.svg.png',
+      'F':'https://commons.wikimedia.org/w/index.php?search=digamma&title=Special:Search&go=Go&searchToken=aixpluv9tktc4w72hel6bawfr#/media/File:Greek_Digamma_normal.svg',
+      'G':'http://www.wallquotes.com/sites/default/files/arts0153-81.png',
+      'H':'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Greek_lc_eta.svg/1200px-Greek_lc_eta.svg.png',
+      'I':'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Greek_lc_iota.svg/400px-Greek_lc_iota.svg.png',
+      'J':'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Greek_lc_psi.svg/1200px-Greek_lc_psi.svg.png',
+      'K':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Greek_lowercase_kappa_variant.svg/1054px-Greek_lowercase_kappa_variant.svg.png',
+      'L':'http://www.wallquotes.com/sites/default/files/styles/uc_product_full/public/arts0161-91.png?itok=7JR60nKI',
+      'M':'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Greek_lc_mu.svg/1200px-Greek_lc_mu.svg.png',
+      'N':'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Greek_lc_nu.svg/1200px-Greek_lc_nu.svg.png',
+      'O':'http://www.wallquotes.com/sites/default/files/arts0165-95.png',
+      'P':'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Greek_lc_pi.svg/1200px-Greek_lc_pi.svg.png',
+      'Q':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Greek_letter_uppercase_Phi.svg/1200px-Greek_letter_uppercase_Phi.svg.png',
+      'R':'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Greek_lc_rho.svg/1200px-Greek_lc_rho.svg.png',
+      'S':'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Greek_uc_sigma.svg/1200px-Greek_uc_sigma.svg.png',
+      'T':'https://i.pinimg.com/originals/fe/b5/6d/feb56d8344d0e95296fc7562f0ad2c5f.png',
+      'U':'https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&ved=0ahUKEwjVtN_pk9PYAhUyRN8KHbpJBiAQjBwIBA&url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F2%2F25%2FGreek_uc_Omega.svg%2F1200px-Greek_uc_Omega.svg.png&psig=AOvVaw3PY1HYDcEK93BswwVTFxgQ&ust=1515871577137312',
+      'V':'http://www.charbase.com/images/glyph/964',
+      'W':'http://www.wallquotes.com/sites/default/files/arts0164-94.png',
+      'X':'http://www.charbase.com/images/glyph/967',
+      'Y':'http://www.charbase.com/images/glyph/965',
+      'Z':'https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Greek_lc_zeta.svg/1200px-Greek_lc_zeta.svg.png',
+    }
+
+    var topicName = req.body.name;
+    var letter = topicName.toUpperCase().split('')[0];
+    var greekLetter = greekMap[letter];
 
     var topic = new Topic({
-      name:req.body.name,
+      name:topicName,
       description:req.body.description,
       createdAt: new Date().toLocaleString(),
       createdBy:req.session.username,
-      image:imageLink
+      image:greekLetter
     });
 
     topic.save().then((doc)=>{
