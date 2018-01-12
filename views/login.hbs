@@ -9,10 +9,9 @@
   <body>
     {{> navbar}}
     <div class="wrapper960 center body">
-      <div class="col-sm-6 col-sm-offset-3">
-        <h1>Login</h1>
-        <br>
-        <div id="errors"></div>
+      <div class="col-12">
+        <h3 class="text-center">Login</h3> <br> <br>
+        <div id="errors"></div> <br>
         <form action="/login" method="post" onsubmit="return validateForm()">
           <div class="form-group">
             <label>Email</label>

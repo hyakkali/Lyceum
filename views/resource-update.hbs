@@ -10,9 +10,8 @@
     {{> navbar}}
 
     <div class="wrapper960 center body">
-      <div class="col-sm-6 col-sm-offset-3">
-        <h1>Update {{resource.name}}</h1>
-        <br>
+      <div class="col-12">
+        <h2 class="text-center">Update {{resource.name}}</h2> <br> <br>
         <form action="/resource-update/{{resource._id}}" method="post" onsubmit="return validateForm()">
           <div class="form-group">
             <label>Name</label>
