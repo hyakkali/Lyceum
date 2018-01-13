@@ -262,21 +262,7 @@ module.exports = (app)=>{
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Topic could not be rendered.'}));
   });
 
-// POST
-
-  // app.post('/post/:id',requiresLogin,(req,res)=>{
-  //   var id = req.params.id; // topic id
-  //       var post = new Post({
-  //         message:req.body.message,
-  //         createdAt: new Date().toLocaleString(),
-  //         createdBy:req.session.username,
-  //         topic:id
-  //       });
-  //
-  //       post.save().then((doc)=>{
-  //         return res.status(200).redirect('/topic/'+id); //reload same page with new post saved
-  //       },(e)=>res.status(400).render('error.hbs',{error:'Post could not be saved.'}));
-  // });
+  //RESOURCE
 
   app.get('/resource-create/:id',(req,res)=>{
     var id = req.params.id // topic id
@@ -305,6 +291,92 @@ module.exports = (app)=>{
       return res.status(200).redirect('/topic/'+id);
     },(e)=>res.status(400).render('error.hbs',{error:e}));
   });
+
+  app.get('/resource/:id',(req,res)=>{
+    var id = req.params.id; //resource id
+
+    Resource.findById(id).then((resource)=>{
+      if (!resource) {
+        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+      }
+      Review.find({resource:id}).then((reviews)=>{
+        if (req.session && req.session.userId && resource.createdBy===req.session.username) {
+          return res.render('resources/resource.hbs',{resource:resource,reviews:reviews,user:true,owner:true})
+        } else if (req.session && req.session.userId) {
+          return res.render('resources/resource.hbs',{resource:resource,reviews:reviews,user:true})
+        }
+        return res.render('resources/resource.hbs',{resource:resource,reviews:reviews})
+      },(e)=> res.status(400).render('error.hbs',{error:"Reviews could not be found."}));
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be rendered.'}));
+  })
+
+  app.get('/resource-update/:id',requiresLogin,(req,res)=>{
+    Resource.findById(req.params.id).then((resource)=>{ //resource id
+      if (!resource) {
+        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+      }
+      if (resource.createdBy!==req.session.username) {
+        return res.status(401).render('error.hbs',{error:"Only owner of resource can access this page"});
+      }
+      return res.render('resources/resource-update.hbs',{resource:resource,user:true});
+    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+  })
+
+  app.post('/resource-update/:id',(req,res)=>{
+    var id = req.params.id;
+    // var body = _.pick(req.body,['name','description','link']);
+    var objForUpdate = {};
+    if (req.body.name) objForUpdate.name = req.body.name;
+    if (req.body.description) objForUpdate.description = req.body.description;
+    if (req.body.link) objForUpdate.link = req.body.link;
+
+    Resource.findById(req.params.id).then((resource)=>{
+      if (resource.createdBy!==req.session.username) {
+        return res.status(401).render('error.hbs',{error:"Only owner of resource can update"});
+      }
+    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+
+    Resource.findOneAndUpdate({_id:id},{$set:objForUpdate},{new:true}).then((resource)=>{
+      if (!resource) {
+        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+      }
+      return res.status(200).redirect('/resource/'+resource._id);
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
+  })
+
+  app.get('/resource-delete/:id',requiresLogin,(req,res)=>{
+    var id = req.params.id;
+    Resource.findById(id).then((resource)=>{
+      if (!resource) {
+        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+      }
+      if (resource.createdBy!==req.session.username) {
+        return res.status(401).render('error.hbs',{error:"Only owner of resource can access this page"});
+      }
+      return res.render('resources/resource-delete.hbs',{resource:resource,user:true});
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
+  })
+
+  app.post('/resource-delete/:id',requiresLogin,(req,res)=>{
+    var id = req.params.id;
+
+    Resource.findById(req.params.id).then((resource)=>{
+      if (resource.createdBy!==req.session.username) {
+        return res.status(401).render('error.hbs',{error:"Only owner of resource can delete"});
+      }
+    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+
+    Resource.findOneAndRemove({_id:id}).then((resource)=>{
+      if (!resource) {
+        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
+      }
+      Review.remove({resource:id}).then((reviews)=>{
+        return res.redirect('/topic/'+resource.topic);
+      })
+    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be deleted.'}));
+  });
+
+  //REVIEWS
 
   app.post('/review/:id/:topicid',[requiresLogin,hasPostedReview],(req,res)=>{
     var id = req.params.id; //resource id
@@ -466,88 +538,5 @@ module.exports = (app)=>{
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Review could not be deleted.'}));
   })
 
-  app.get('/resource/:id',(req,res)=>{
-    var id = req.params.id; //resource id
-
-    Resource.findById(id).then((resource)=>{
-      if (!resource) {
-        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
-      }
-      Review.find({resource:id}).then((reviews)=>{
-        if (req.session && req.session.userId && resource.createdBy===req.session.username) {
-          return res.render('resources/resource.hbs',{resource:resource,reviews:reviews,user:true,owner:true})
-        } else if (req.session && req.session.userId) {
-          return res.render('resources/resource.hbs',{resource:resource,reviews:reviews,user:true})
-        }
-        return res.render('resources/resource.hbs',{resource:resource,reviews:reviews})
-      },(e)=> res.status(400).render('error.hbs',{error:"Reviews could not be found."}));
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be rendered.'}));
-  })
-
-  app.get('/resource-update/:id',requiresLogin,(req,res)=>{
-    Resource.findById(req.params.id).then((resource)=>{ //resource id
-      if (!resource) {
-        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
-      }
-      if (resource.createdBy!==req.session.username) {
-        return res.status(401).render('error.hbs',{error:"Only owner of resource can access this page"});
-      }
-      return res.render('resources/resource-update.hbs',{resource:resource,user:true});
-    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
-  })
-
-  app.post('/resource-update/:id',(req,res)=>{
-    var id = req.params.id;
-    // var body = _.pick(req.body,['name','description','link']);
-    var objForUpdate = {};
-    if (req.body.name) objForUpdate.name = req.body.name;
-    if (req.body.description) objForUpdate.description = req.body.description;
-    if (req.body.link) objForUpdate.link = req.body.link;
-
-    Resource.findById(req.params.id).then((resource)=>{
-      if (resource.createdBy!==req.session.username) {
-        return res.status(401).render('error.hbs',{error:"Only owner of resource can update"});
-      }
-    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
-
-    Resource.findOneAndUpdate({_id:id},{$set:objForUpdate},{new:true}).then((resource)=>{
-      if (!resource) {
-        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
-      }
-      return res.status(200).redirect('/resource/'+resource._id);
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
-  })
-
-  app.get('/resource-delete/:id',requiresLogin,(req,res)=>{
-    var id = req.params.id;
-    Resource.findById(id).then((resource)=>{
-      if (!resource) {
-        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
-      }
-      if (resource.createdBy!==req.session.username) {
-        return res.status(401).render('error.hbs',{error:"Only owner of resource can access this page"});
-      }
-      return res.render('resources/resource-delete.hbs',{resource:resource,user:true});
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
-  })
-
-  app.post('/resource-delete/:id',requiresLogin,(req,res)=>{
-    var id = req.params.id;
-
-    Resource.findById(req.params.id).then((resource)=>{
-      if (resource.createdBy!==req.session.username) {
-        return res.status(401).render('error.hbs',{error:"Only owner of resource can delete"});
-      }
-    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
-
-    Resource.findOneAndRemove({_id:id}).then((resource)=>{
-      if (!resource) {
-        return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
-      }
-      Review.remove({resource:id}).then((reviews)=>{
-        return res.redirect('/topic/'+resource.topic);
-      })
-    }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be deleted.'}));
-  });
 
 }
