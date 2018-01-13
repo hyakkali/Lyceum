@@ -9,7 +9,7 @@ mongoose.Promise = global.Promise;
 var prodURI = 'mongodb://hyakkali:XLGXf6WBTErBarre@ds141657.mlab.com:41657/lyceummvp';
 var testURI = 'mongodb://localhost:27017/LyceumTest';
 
-mongoose.connect(testURI,{
+mongoose.connect(prodURI,{
   useMongoClient:true
 });
 
