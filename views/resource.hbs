@@ -31,7 +31,7 @@
 
           <h3>Reviews</h3> <br>
           {{# each reviews}}
-          <div class="row reviews">
+          <div class="row reviews padding-top-10">
             <div class="col-8 offset-left-2">
               <div class="height-auto review padding-v-20">
                 {{#if this.message}}
@@ -45,7 +45,6 @@
                   disliked it.
                 {{/if}}
               </div>
-
             </div>
           </div>
           {{else}}
@@ -62,10 +61,10 @@
             <input type="radio" name="rating" class="radio" id="dislike" value="dislike"> Dislike <br>
           </div>
           <div class="row">
-            <div class="col-6">
-              <input type="text" name="message" placeholder="Write a message">
+            <div class="col-4 offset-right-8">
+              <textarea name="message" placeholder="Write a review" rows="4" cols="80"></textarea>
             </div>
-            <div class="col-6">
+            <div class="col-4 padding-top-10">
               <button type="submit" class="btn green" name="button">Post Review</button> <br>
             </div>
           </div>
