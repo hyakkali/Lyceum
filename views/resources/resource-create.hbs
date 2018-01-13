@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="/js/libs/jquery-3.2.1.slim.min.js" charset="utf-8"></script>
+    <script src="/js/libs/validator.min.js" charset="utf-8"></script>
+    {{> header}}
+  </head>
+  <body>
+
+    {{> navbar}}
+
+  <div class="wrapper960 center body">
+      <div class="col-12">
+        <h2 class="text-center">Post a New Resource for <a href="/topic/{{topic._id}}">{{topic.name}}</a> </h2> <br> <br>
+        <div id="errors"></div> <br>
+        <form class="" action="/resource/{{topic._id}}" method="post" onsubmit="return validateForm()">
+          <div class="form-group">
+            <label class="text-left">Name</label>
+            <input type="text" class="form-control" id="name" name="name">
+          </div> <!-- end div form-group -->
+          <br>
+          <div class="form-group">
+            <label class="text-left">Description</label>
+            <input type="text" class="form-control" id="description" name="description">
+          </div> <!-- end div form-group -->
+          <br>
+          <div class="form-group">
+            <label class="text-left">Link</label>
+            <input type="text" class="form-control" id="link" name="link">
+          </div> <!-- end div form-group -->
+          <br>
+          <script>
+            function validateForm() {
+              var name = document.getElementById('name');
+              var link = document.getElementById('link');
+              var description = document.getElementById('description');
+              var div = document.getElementById('errors');
+              div.className = '';
+              div.innerHTML = '';
+              if (name.value.trim()===''||link.value.trim()===''||description.value.trim()==='') {
+                name.style.borderColor = "#E34234";
+                link.style.borderColor = "#E34234";
+                description.style.borderColor = "#E34234";
+                div.className += '';
+                div.innerHTML += 'All fields must be filled out!';
+                return false;
+              }
+              if (!validator.isURL(link.value.trim())) {
+                link.style.borderColor = "#E34234";
+                div.className += '';
+                div.innerHTML += 'Must be a valid URL!';
+                return false;
+              }
+              return true;
+            }
+          </script>
+          <br>
+          <div class="col-1">
+            <button type="submit" class="btn green align-left">Post Resource</button>
+          </div>
+        </form> <!-- add validation for valid URL's -->
+      </div>
+  </div>
+
+    {{> footer}}
+
+  </body>
+</html>

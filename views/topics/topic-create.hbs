@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    {{> header}}
+    <title></title>
+  </head>
+  <body>
+
+    {{> navbar}}
+
+    <div class="wrapper960 center body">
+      <div class="col-12">
+        <h2 class="text-center">Create a New Topic</h2> <br> <br>
+        <div id="errors"></div> <br>
+        <form action="/topic-create" method="post" onsubmit="return validateForm()">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="" id="name" name="name">
+          </div> <!-- end div form-group -->
+          <br>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" class="form-control" id="description" name="description">
+          </div> <!-- end div form-group -->
+          <script>
+            function validateForm() {
+              var name = document.getElementById('name');
+              var description = document.getElementById('description');
+              var div = document.getElementById('errors');
+              div.className = '';
+              div.innerHTML = '';
+              if (name.value.trim()===''||description.value.trim()==='') {
+                name.style.borderColor = "#E34234";
+                description.style.borderColor = "#E34234";
+                div.className += 'errors';
+                div.innerHTML += '<h6>Name and description are required!</h6>';
+                return false;
+              }
+              return true;
+            }
+          </script>
+          <br>
+          <button type="submit" class="btn green">Create</button>
+        </form>
+      </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+    </div> <!-- end div container -->
+
+    {{> footer}}
+
+  </body>
+</html>

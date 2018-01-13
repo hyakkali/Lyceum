@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="/js/libs/jquery-3.2.1.slim.min.js" charset="utf-8"></script>
+    <script src="/js/libs/validator.min.js" charset="utf-8"></script>
+    {{> header}}
+    <title></title>
+  </head>
+  <body>
+
+    {{> navbar}}
+
+    <div class="wrapper960 center body">
+      <div class="col-sm-6 col-sm-offset-3">
+        <h1>Search results for "{{query}}"</h1>
+        <br>
+        <form class="form l padding-10 cf" action="/search" method="post" name="searchForm" onsubmit="return setAction()">
+          <div class="col-10">
+            <input class="-rounded" id="query" name="query" type="text" placeholder="Search Topics">
+          </div>
+          <div class="col-2">
+            <button type="submit" class="btn purple width-100">Search</button>
+          </div>
+          <script>
+            function setAction() {
+              var query = document.getElementById('query');
+              if (query.value.trim()==='') {
+                document.searchForm.action = "/search/"+'topics';
+                return true;
+              }
+              document.searchForm.action = "/search/"+query.value;
+              return true;
+            }
+          </script>
+          <br>
+          {{#everyNth topics 3}}
+            {{#if isModZeroNotFirst}}
+              </div>
+            {{/if}}
+            {{#if isModZero}}
+              <div class="row gutter-col-20 topics">
+            {{/if}}
+            <a href="/topic/{{this._id}}">
+              <div class="col-4">
+                <div class="topic href-text-gray text-gray text-center padding-top-30">
+                  <p class="green-text">{{this.name}}</p> <br>
+                  <p>{{this.description}}</p>
+                  <img src="{{this.image}}" class="padding-bottom-10" height="100" width="100"alt="">
+                </div>
+              </div>
+            </a>
+            {{#if isLast}}
+              </div>
+            {{/if}}
+          {{/everyNth}}
+        <!-- {{#each topics}}
+          <div class="topic href-text-white">
+            <a href="/topic/{{this._id}}">{{this.name}}</a>
+          </div>
+        {{else}}
+          <p>No Topics!</p>
+        {{/each}} -->
+        <br>
+        <a href="/">Go Back Home</a>
+
+      </div>
+    </div>
+    {{> footer}}
+
+  </body>
+</html>

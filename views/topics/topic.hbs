@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="/js/libs/jquery-3.2.1.slim.min.js" charset="utf-8"></script>
+    <script src="/js/libs/validator.min.js" charset="utf-8"></script>
+    <script src="/js/libs/linkify.min.js" charset="utf-8"></script>
+    <script src="/js/libs/linkify-jquery.min.js" charset="utf-8"></script>
+    {{> header}}
+    <title></title>
+  </head>
+  <body>
+
+    {{> navbar}}
+
+    <div class="center body">
+      <div class="row">
+        <div class="col-8 offset-left-2 topicinfo">
+          <h1>{{topic.name}}</h1> <br>
+          <h4>{{topic.description}}</h4> <br>
+          <h3>Resources</h3>
+          <br>
+          {{#each resources}}
+          <div class="row resources">
+            <div class="col-8 offset-left-2">
+              <div class="height-auto resource padding-v-20">
+                {{inc @index}}. <a href="/resource/{{this._id}}">{{this.name}}</a>
+                <br>
+                <div class="padding-left-20 padding-right-20">
+                  {{this.description}}
+                </div>
+                <!-- <a href="{{this.link}}">Go to link</a> -->
+                <span class="link">{{this.link}}</span> <br>
+                Likes: {{this.likes}}
+                Dislikes: {{this.dislikes}}
+              </div>
+            </div>
+          </div>
+          {{else}}
+            <p>No Resources! Post a new resource <a href="/resource-create/{{topic._id}}">here</a> </p>
+          {{/each}}
+          <br>
+          <a href="/resource-create/{{topic._id}}">Have a good resource to share? Post it here!</a>
+
+          <script>
+            $(".link").linkify({
+              target:"_blank",
+            });
+            $(".linkified").text("Go to link");
+          </script>
+
+          <br>
+
+          {{#if owner}}
+            <a href="/topic-update/{{topic._id}}">Update Topic</a>
+          {{/if}}
+        </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+      </div>
+
+    </div> <!-- end div container -->
+    {{> footer}}
+
+  </body>
+</html>

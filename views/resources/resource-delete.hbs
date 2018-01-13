@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    {{> header}}
+  </head>
+  <body>
+
+    {{> navbar}}
+
+    <div class="wrapper960 center body">
+      <div class="col-sm-6 col-sm-offset-3">
+        <form action="/resource-delete/{{resource._id}}" method="post">
+          <div class="form-group">
+            <h3>Are you sure you want to delete this resource?</h3>
+            <br>
+            <button type="submit" class="btn green" name="button">Yes, Delete</button>
+          </div> <!-- end div form-group -->
+        </form>
+      </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+    </div> <!-- end div container -->
+    {{> footer}}
+
+  </body>
+</html>
