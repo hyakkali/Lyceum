@@ -378,6 +378,58 @@ module.exports = (app)=>{
 
   //REVIEWS
 
+  app.post('/like/:id',requiresLogin,(req,res)=>{
+    var id = req.params.id; //resource id
+    var username = req.session.username;
+
+    Resource.findById(id).then((resource)=>{
+      if (resource.hasLiked.indexOf(username)>-1) {
+        return res.redirect('back'); //reload same page
+      } else if (resource.hasDisliked.indexOf(username)>-1) {
+        resource.likes+=1;
+        resource.dislikes-=1;
+        resource.hasLiked.push(username);
+        var index = resource.hasDisliked.indexOf(username);
+        resource.hasDisliked.splice(index,1)
+        resource.save().then((doc)=>{
+          return res.redirect('back');
+        }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+      } else {
+        resource.likes+=1;
+        resource.hasLiked.push(username);
+        resource.save().then((doc)=>{
+          return res.redirect('back');
+        }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+      }
+    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+  })
+
+  app.post('/dislike/:id',requiresLogin,(req,res)=>{
+    var id = req.params.id; //resource id
+    var username = req.session.username;
+
+    Resource.findById(id).then((resource)=>{
+      if (resource.hasDisliked.indexOf(username)>-1) {
+        return res.redirect('back'); //reload same page
+      } else if (resource.hasLiked.indexOf(username)>-1) {
+        resource.dislikes+=1;
+        resource.likes-=1;
+        resource.hasDisliked.push(username);
+        var index = resource.hasLiked.indexOf(username);
+        resource.hasLiked.splice(index,1)
+        resource.save().then((doc)=>{
+          return res.redirect('back');
+        }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+      } else {
+        resource.dislikes+=1;
+        resource.hasDisliked.push(username);
+        resource.save().then((doc)=>{
+          return res.redirect('back');
+        }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+      }
+    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+  })
+
   app.post('/review/:id/:topicid',[requiresLogin,hasPostedReview],(req,res)=>{
     var id = req.params.id; //resource id
     var topicid = req.params.topicid; //topic id

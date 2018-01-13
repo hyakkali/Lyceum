@@ -33,6 +33,12 @@
                 <span class="link">{{this.link}}</span> <br>
                 Likes: {{this.likes}}
                 Dislikes: {{this.dislikes}}
+                <form action="/like/{{this._id}}" method="post">
+                  <button type="submit" name="button">Like</button>
+                </form>
+                <form action="/dislike/{{this._id}}" method="post">
+                  <button type="submit" name="button">Dislike</button>
+                </form>
               </div>
             </div>
           </div>

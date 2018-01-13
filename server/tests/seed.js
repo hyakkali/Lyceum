@@ -45,6 +45,8 @@ const resources = [{
   createdBy:'hyakkali',
   createdAt:'2018-1-4 13:06:02',
   topic:topicOneId,
+  hasLiked:[],
+  hasDisliked:[],
   postedUsers:['randomusername','spencer']
 },{
   _id:resTwoId,
@@ -56,6 +58,8 @@ const resources = [{
   createdBy:'spencer',
   createdAt:'2018-1-4 13:06:02',
   topic:topicOneId,
+  hasLiked:['spencer'],
+  hasDisliked:[],
   postedUsers:[]
 },{
   _id:resThreeId,
@@ -67,6 +71,8 @@ const resources = [{
   createdBy:'hyakkali',
   createdAt:'2018-1-4 13:06:02',
   topic:topicTwoId,
+  hasLiked:[],
+  hasDisliked:['spencer'],
   postedUsers:['randomusername']
 },{
   _id:resFourId,
@@ -78,6 +84,8 @@ const resources = [{
   createdBy:'hyakkali',
   createdAt:'2018-1-4 13:06:02',
   topic:topicTwoId,
+  hasLiked:[],
+  hasDisliked:[],
   postedUsers:['randomusername']
 }];
 

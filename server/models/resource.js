@@ -45,6 +45,18 @@ var ResourceSchema = mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     required:true,
   },
+  hasLiked:[{
+    type:String,
+    trim:true,
+    minlength:1,
+    required:false,
+  }],
+  hasDisliked:[{
+    type:String,
+    trim:true,
+    minlength:1,
+    required:false,
+  }],
   postedUsers:[{
     type:String,
     trim:true,
