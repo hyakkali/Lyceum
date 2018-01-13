@@ -172,9 +172,12 @@ module.exports = (app)=>{
 
   app.post('/topic-update/:id',[requiresLogin,requiresOwner],(req,res)=>{
     var id = req.params.id;
-    var body = _.pick(req.body,['name','description']);
+    // var body = _.pick(req.body,['name','description']);
+    var objForUpdate = {};
+    if (req.body.name) objForUpdate.name = req.body.name;
+    if (req.body.description) objForUpdate.description = req.body.description;
 
-    Topic.findOneAndUpdate({_id:id},{$set:body},{new:true}).then((topic)=>{
+    Topic.findOneAndUpdate({_id:id},{$set:objForUpdate},{new:true}).then((topic)=>{
       if (!topic) {
         return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
@@ -486,7 +489,11 @@ module.exports = (app)=>{
 
   app.post('/resource-update/:id',(req,res)=>{
     var id = req.params.id;
-    var body = _.pick(req.body,['name','description','link']);
+    // var body = _.pick(req.body,['name','description','link']);
+    var objForUpdate = {};
+    if (req.body.name) objForUpdate.name = req.body.name;
+    if (req.body.description) objForUpdate.description = req.body.description;
+    if (req.body.link) objForUpdate.link = req.body.link;
 
     Resource.findById(req.params.id).then((resource)=>{
       if (resource.createdBy!==req.session.username) {
@@ -494,7 +501,7 @@ module.exports = (app)=>{
       }
     }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
 
-    Resource.findOneAndUpdate({_id:id},{$set:body},{new:true}).then((resource)=>{
+    Resource.findOneAndUpdate({_id:id},{$set:objForUpdate},{new:true}).then((resource)=>{
       if (!resource) {
         return res.status(404).render('error.hbs',{error:'Resource could not be found.'});
       }

@@ -12,7 +12,7 @@
     <div class="wrapper960 center body">
       <div class="col-12">
         <h2 class="text-center">Update {{topic.name}}</h2> <br> <br>
-        <form action="/topic-update/{{topic._id}}" method="post" onsubmit="return validateForm()">
+        <form action="/topic-update/{{topic._id}}" method="post">
           <div class="form-group">
             <label>Name</label>
             <input type="text" class="form-control" placeholder="Leave blank to keep original name" id="name" name="name">
@@ -23,7 +23,7 @@
             <input type="text" class="form-control" placeholder="Leave blank to keep original description" id="description" name="description">
           </div> <!-- end div form-group -->
           <br>
-          <script>
+          <!-- <script>
             function validateForm() {
               var name = document.getElementById('name');
               var description = document.getElementById('description');
@@ -37,7 +37,7 @@
               }
               return true;
             }
-          </script>
+          </script> -->
           <br>
           <button type="submit" class="btn green">Update Topic</button>
         </form>
