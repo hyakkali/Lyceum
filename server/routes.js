@@ -28,11 +28,17 @@ module.exports = (app)=>{
 // USER
 
   app.get('/register',(req,res)=>{
-    return res.render('signup.hbs');
+    if (req.session && req.session.userId) {
+      return res.render('auth/signup.hbs',{user:true});
+    }
+    return res.render('auth/signup.hbs');
   })
 
   app.get('/login',(req,res)=>{
-    return res.render('login.hbs');
+    if (req.session && req.session.userId) {
+      return res.render('auth/login.hbs',{user:true});
+    }
+    return res.render('auth/login.hbs');
   })
 
   app.post('/register',(req,res)=>{
@@ -78,7 +84,7 @@ module.exports = (app)=>{
       Topic.find({createdBy:req.session.username}).then((topics)=>{
         Resource.find({createdBy:req.session.username}).then((resources)=>{
           Review.find({createdBy:req.session.username}).then((reviews)=>{
-            return res.status(200).render('profile.hbs',{topics:topics,resources:resources,reviews:reviews,user:user});
+            return res.status(200).render('auth/profile.hbs',{topics:topics,resources:resources,reviews:reviews,user:user});
           }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
         }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
       }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
@@ -86,7 +92,10 @@ module.exports = (app)=>{
   });
 
   app.get('/logout',requiresLogin,(req,res)=>{
-    return res.render('logout.hbs');
+    if (req.session && req.session.userId) {
+      return res.render('auth/logout.hbs',{user:true});
+    }
+    return res.render('auth/logout.hbs');
   })
 
   app.post('/logout',requiresLogin,(req,res)=>{
@@ -105,9 +114,9 @@ module.exports = (app)=>{
 
   app.get('/topic-create',(req,res)=>{
     if (req.session && req.session.userId) {
-      return res.render('topic-create.hbs',{user:true});
+      return res.render('topics/topic-create.hbs',{user:true});
     }
-    return res.render('topic-create.hbs');
+    return res.render('topics/topic-create.hbs');
   });
 
   app.post('/topic-create',requiresLogin,(req,res)=>{
@@ -166,7 +175,7 @@ module.exports = (app)=>{
       if (!topic) {
         return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
-      return res.render('topic-update.hbs',{topic:topic,user:true});
+      return res.render('topics/topic-update.hbs',{topic:topic,user:true});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
   })
 
@@ -213,9 +222,9 @@ module.exports = (app)=>{
   app.get('/topics',(req,res)=>{ //GET all topics
     Topic.find().then((topics)=>{
       if (req.session && req.session.userId) {
-        return res.status(200).render('topic-list.hbs',{topics:topics,user:true});
+        return res.status(200).render('topics/topic-list.hbs',{topics:topics,user:true});
       }
-      res.status(200).render('topic-list.hbs',{topics:topics})
+      res.status(200).render('topics/topic-list.hbs',{topics:topics})
     },(e)=>{
       if (e) {
         res.status(400).render('error.hbs',{error:'Topics could not be found.'})
@@ -233,7 +242,7 @@ module.exports = (app)=>{
       if (topics.length===0) {
         return res.status(400).render('error.hbs',{error:'No topics found!'})
       }
-      return res.status(200).render('topic-search.hbs',{topics:topics,query:query});
+      return res.status(200).render('topics/topic-search.hbs',{topics:topics,query:query});
     })
   })
 
@@ -246,9 +255,9 @@ module.exports = (app)=>{
       }
       Resource.find({topic:id}).sort({likes:-1}).then((resources)=>{
         if (req.session && req.session.userId) {
-          return res.render('topic.hbs',{topic:topic,resources:resources,user:true});
+          return res.render('topics/topic.hbs',{topic:topic,resources:resources,user:true});
         }
-       return res.render('topic.hbs',{topic:topic,resources:resources});
+       return res.render('topics/topic.hbs',{topic:topic,resources:resources});
      },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Topic could not be rendered.'}));
   });
@@ -273,9 +282,9 @@ module.exports = (app)=>{
     var id = req.params.id // topic id
     Topic.findById(id).then((topic)=>{
       if (req.session && req.session.userId) {
-        return res.render('resource-create.hbs',{topic:topic,user:true});
+        return res.render('resources/resource-create.hbs',{topic:topic,user:true});
       }
-      return res.render('resource-create.hbs',{topic:topic});
+      return res.render('resources/resource-create.hbs',{topic:topic});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Error with finding topic.'}))
   })
 
@@ -349,7 +358,7 @@ module.exports = (app)=>{
       if (review.createdBy!==req.session.username) {
         return res.status(401).render('error.hbs',{error:"Only owner of review can access this page"});
       }
-      return res.render('review-update.hbs',{review:review,user:true});
+      return res.render('reviews/review-update.hbs',{review:review,user:true});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
   })
 
@@ -421,7 +430,7 @@ module.exports = (app)=>{
       if (review.createdBy!==req.session.username) {
         return res.status(401).render('error.hbs',{error:"Only owner of review can access this page"});
       }
-      return res.render('review-delete.hbs',{review:review,user:true});
+      return res.render('reviews/review-delete.hbs',{review:review,user:true});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
   })
 
@@ -466,11 +475,11 @@ module.exports = (app)=>{
       }
       Review.find({resource:id}).then((reviews)=>{
         if (req.session && req.session.userId && resource.createdBy===req.session.username) {
-          return res.render('resource.hbs',{resource:resource,reviews:reviews,user:true,owner:true})
+          return res.render('resources/resource.hbs',{resource:resource,reviews:reviews,user:true,owner:true})
         } else if (req.session && req.session.userId) {
-          return res.render('resource.hbs',{resource:resource,reviews:reviews,user:true})
+          return res.render('resources/resource.hbs',{resource:resource,reviews:reviews,user:true})
         }
-        return res.render('resource.hbs',{resource:resource,reviews:reviews})
+        return res.render('resources/resource.hbs',{resource:resource,reviews:reviews})
       },(e)=> res.status(400).render('error.hbs',{error:"Reviews could not be found."}));
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be rendered.'}));
   })
@@ -483,7 +492,7 @@ module.exports = (app)=>{
       if (resource.createdBy!==req.session.username) {
         return res.status(401).render('error.hbs',{error:"Only owner of resource can access this page"});
       }
-      return res.render('resource-update.hbs',{resource:resource,user:true});
+      return res.render('resources/resource-update.hbs',{resource:resource,user:true});
     }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
   })
 
@@ -518,7 +527,7 @@ module.exports = (app)=>{
       if (resource.createdBy!==req.session.username) {
         return res.status(401).render('error.hbs',{error:"Only owner of resource can access this page"});
       }
-      return res.render('resource-delete.hbs',{resource:resource,user:true});
+      return res.render('resources/resource-delete.hbs',{resource:resource,user:true});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
   })
 
