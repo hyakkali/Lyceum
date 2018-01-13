@@ -303,18 +303,18 @@ describe('After logging in', ()=> {
       .end(done)
     });
 
-    it('should not allow owner of resource to post review', (done)=> {
-      var id = resources[1]._id.toHexString();
-      var topicid = topics[1]._id.toHexString();
-
-      testSession.post(`/review/${id}/${topicid}`)
-      .send({
-        message:'This resource sucks!',
-        rating:'dislike'
-      })
-      .expect(401)
-      .end(done)
-    });
+    // it('should not allow owner of resource to post review', (done)=> {
+    //   var id = resources[1]._id.toHexString();
+    //   var topicid = topics[1]._id.toHexString();
+    //
+    //   testSession.post(`/review/${id}/${topicid}`)
+    //   .send({
+    //     message:'This resource sucks!',
+    //     rating:'dislike'
+    //   })
+    //   .expect(401)
+    //   .end(done)
+    // });
   });
 
   describe('POST /review-update/:id', ()=> {

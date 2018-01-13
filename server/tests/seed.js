@@ -23,12 +23,14 @@ const topics = [{
   _id:topicOneId,
   name:'Quantum Computing',
   description:'Seed database description',
+  image:'http://www.wallquotes.com/sites/default/files/arts0153-81.png',
   createdBy:'hyakkali',
   createdAt:10000,
 },{
   _id:topicTwoId,
   name:'Hyperloop',
   description:'Seed database description 2',
+  image:'http://www.wallquotes.com/sites/default/files/styles/uc_canvas/public/arts0154-83.png?itok=Z9YWDF1k',
   createdBy:'spencer',
   createdAt:150000,
 }];
