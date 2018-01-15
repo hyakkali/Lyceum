@@ -58,7 +58,7 @@ describe('After logging in', ()=> {
     });
   });
 
-  describe('GET /logout', ()=> {
+  describe('POST /logout', ()=> {
     it('should logout user', (done)=> {
         testSession.post('/logout')
         .expect(302)
@@ -68,6 +68,37 @@ describe('After logging in', ()=> {
           }
           done();
         });
+    });
+  });
+
+  describe('POST /user-update', ()=> {
+    it('should update the user ', (done)=> {
+      var first_name = 'Hemanth';
+      var last_name = 'Yakkali';
+      var email = 'hemanth@gmail.com';
+      var username = 'newUsername';
+      var id = users[1]._id.toHexString();
+
+      testSession.post('/user-update')
+        .send({
+          first_name,
+          last_name,
+          email,
+          username
+        })
+        .expect(302)
+        .end((err,res)=>{
+          if (err) {
+            return done(err);
+          }
+          User.findById(id).then((user)=>{
+            expect(user.first_name).toBe(first_name);
+            expect(user.last_name).toBe(last_name);
+            expect(user.email).toBe(email);
+            expect(user.username).toBe(username);
+            done();
+          }).catch((e)=>done(e));
+        })
     });
   });
 

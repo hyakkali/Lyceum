@@ -29,16 +29,16 @@ module.exports = (app)=>{
 
   app.get('/register',(req,res)=>{
     if (req.session && req.session.userId) {
-      return res.render('auth/signup.hbs',{user:true});
+      return res.render('users/signup.hbs',{user:true});
     }
-    return res.render('auth/signup.hbs');
+    return res.render('users/signup.hbs');
   })
 
   app.get('/login',(req,res)=>{
     if (req.session && req.session.userId) {
-      return res.render('auth/login.hbs',{user:true});
+      return res.render('users/login.hbs',{user:true});
     }
-    return res.render('auth/login.hbs');
+    return res.render('users/login.hbs');
   })
 
   app.post('/register',(req,res)=>{
@@ -84,7 +84,7 @@ module.exports = (app)=>{
       Topic.find({createdBy:req.session.username}).then((topics)=>{
         Resource.find({createdBy:req.session.username}).then((resources)=>{
           Review.find({createdBy:req.session.username}).then((reviews)=>{
-            return res.status(200).render('auth/profile.hbs',{topics:topics,resources:resources,reviews:reviews,user:user});
+            return res.status(200).render('users/profile.hbs',{topics:topics,resources:resources,reviews:reviews,user:user});
           }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
         }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
       }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
@@ -92,10 +92,7 @@ module.exports = (app)=>{
   });
 
   app.get('/logout',requiresLogin,(req,res)=>{
-    if (req.session && req.session.userId) {
-      return res.render('auth/logout.hbs',{user:true});
-    }
-    return res.render('auth/logout.hbs');
+    return res.render('users/logout.hbs',{user:true});
   })
 
   app.post('/logout',requiresLogin,(req,res)=>{
@@ -109,6 +106,25 @@ module.exports = (app)=>{
       });
     }
   });
+
+  app.get('/user-update',requiresLogin,(req,res)=>{
+    return res.render('users/user-update.hbs',{user:true});
+  })
+
+  app.post('/user-update',requiresLogin,(req,res)=>{
+    var objForUpdate = {};
+    if (req.body.first_name) objForUpdate.first_name = req.body.first_name;
+    if (req.body.last_name) objForUpdate.last_name = req.body.last_name;
+    if (req.body.email) objForUpdate.email = req.body.email;
+    if (req.body.username) objForUpdate.username = req.body.username;
+
+    User.findOneAndUpdate({_id:req.session.userId},{$set:objForUpdate},{new:true}).then((user)=>{
+      if (!user) {
+        return res.status(404).render('error.hbs',{error:'User could not be found.'});
+      }
+      return res.redirect('/profile');
+    }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
+  })
 
 // Topic
 
