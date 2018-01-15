@@ -34,7 +34,7 @@ var isOwner = (req,res,next)=>{
       return next();
     }
     Resource.find({topic:id}).then((resources)=>{
-      return res.render('topics/topic.hbs',{topic:topic,resources:resources,user:true,owner:true});
+      return res.render('topics/topic.hbs',{topic:topic,resources:resources,user:req.session.userId,owner:true});
     },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
   }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
 }

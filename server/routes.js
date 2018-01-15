@@ -15,7 +15,7 @@ module.exports = (app)=>{
   app.get('/',(req,res)=>{
     Topic.find().then((topics)=>{
       if (req.session && req.session.userId) {
-        return res.status(200).render('index.hbs',{topics:topics,user:true});
+        return res.status(200).render('index.hbs',{topics:topics,user:req.session.userId});
       }
       return res.status(200).render('index.hbs',{topics:topics});
     },(e)=>{
@@ -29,14 +29,14 @@ module.exports = (app)=>{
 
   app.get('/register',(req,res)=>{
     if (req.session && req.session.userId) {
-      return res.render('users/signup.hbs',{user:true});
+      return res.render('users/signup.hbs',{user:req.session.userId});
     }
     return res.render('users/signup.hbs');
   })
 
   app.get('/login',(req,res)=>{
     if (req.session && req.session.userId) {
-      return res.render('users/login.hbs',{user:true});
+      return res.render('users/login.hbs',{user:req.session.userId});
     }
     return res.render('users/login.hbs');
   })
@@ -56,7 +56,7 @@ module.exports = (app)=>{
     user.save().then((doc)=>{
       req.session.userId = user._id;
       req.session.username = user.username;
-      return res.redirect('/profile');
+      return res.redirect('/profile/'+doc._id);
     },(e)=>{
       return res.status(400).render('error.hbs',{error:'Email or Display Name already exists.'});
     });
@@ -70,21 +70,22 @@ module.exports = (app)=>{
         User.findOneAndUpdate({_id:user._id},{$set:{lastLogin:new Date().toLocaleString()}}).then((user)=>{
           req.session.userId=user._id;
           req.session.username = user.username;
-          return res.redirect('/profile');
+          return res.redirect('/profile/'+user._id);
         })
       }
     });
   })
 
-  app.get('/profile',requiresLogin,(req,res)=>{
-    User.findById(req.session.userId).then((user)=>{
+  app.get('/profile/:id',requiresLogin,(req,res)=>{
+    User.findById(req.params.id).then((user)=>{
       if (!user) {
         return res.status(404).render('error.hbs',{error:'User could not be found.'});
       }
-      Topic.find({createdBy:req.session.username}).then((topics)=>{
-        Resource.find({createdBy:req.session.username}).then((resources)=>{
-          Review.find({createdBy:req.session.username}).then((reviews)=>{
-            return res.status(200).render('users/profile.hbs',{topics:topics,resources:resources,reviews:reviews,user:user});
+      var username = user.username
+      Topic.find({createdBy:username}).then((topics)=>{
+        Resource.find({createdBy:username}).then((resources)=>{
+          Review.find({createdBy:username}).then((reviews)=>{
+            return res.status(200).render('users/profile.hbs',{topics:topics,resources:resources,reviews:reviews,user:user._id,signedUser:user});
           }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
         }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
       }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
@@ -92,7 +93,7 @@ module.exports = (app)=>{
   });
 
   app.get('/logout',requiresLogin,(req,res)=>{
-    return res.render('users/logout.hbs',{user:true});
+    return res.render('users/logout.hbs',{user:req.session.userId});
   })
 
   app.post('/logout',requiresLogin,(req,res)=>{
@@ -107,29 +108,30 @@ module.exports = (app)=>{
     }
   });
 
-  app.get('/user-update',requiresLogin,(req,res)=>{
-    return res.render('users/user-update.hbs',{user:true});
+  app.get('/user-update/:id',requiresLogin,(req,res)=>{
+    return res.render('users/user-update.hbs',{user:req.params.id});
   })
 
-  app.post('/user-update',requiresLogin,(req,res)=>{
+  app.post('/user-update/:id',requiresLogin,(req,res)=>{
     var objForUpdate = {};
+    var id = req.params.id;
     if (req.body.first_name) objForUpdate.first_name = req.body.first_name;
     if (req.body.last_name) objForUpdate.last_name = req.body.last_name;
     if (req.body.email) objForUpdate.email = req.body.email;
     if (req.body.username) objForUpdate.username = req.body.username;
 
-    User.findOneAndUpdate({_id:req.session.userId},{$set:objForUpdate},{new:true}).then((user)=>{
+    User.findOneAndUpdate({_id:id},{$set:objForUpdate},{new:true}).then((user)=>{
       if (!user) {
         return res.status(404).render('error.hbs',{error:'User could not be found.'});
       }
-      return res.redirect('/profile');
+      return res.redirect('/profile/'+user._id);
     }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
   })
 
 // Topic
 
   app.get('/topic-create',requiresLogin,(req,res)=>{
-    return res.render('topics/topic-create.hbs',{user:true});
+    return res.render('topics/topic-create.hbs',{user:req.session.userId});
   });
 
   app.post('/topic-create',requiresLogin,(req,res)=>{
@@ -191,7 +193,7 @@ module.exports = (app)=>{
       if (topic.createdBy!==req.session.username) {
         return res.status(401).render('error.hbs',{error:'Only owner of topic can access this page.'});
       }
-      return res.render('topics/topic-update.hbs',{topic:topic,user:true});
+      return res.render('topics/topic-update.hbs',{topic:topic,user:req.session.userId});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
   })
 
@@ -238,7 +240,7 @@ module.exports = (app)=>{
   app.get('/topics',(req,res)=>{ //GET all topics
     Topic.find().then((topics)=>{
       if (req.session && req.session.userId) {
-        return res.status(200).render('topics/topic-list.hbs',{topics:topics,user:true});
+        return res.status(200).render('topics/topic-list.hbs',{topics:topics,user:req.session.userId});
       }
       res.status(200).render('topics/topic-list.hbs',{topics:topics})
     },(e)=>{
@@ -271,12 +273,12 @@ module.exports = (app)=>{
       }
       if (topic.createdBy===req.session.username) {
         Resource.find({topic:id}).then((resources)=>{
-          return res.render('topics/topic.hbs',{topic:topic,resources:resources,user:true,owner:true});
+          return res.render('topics/topic.hbs',{topic:topic,resources:resources,user:req.session.userId,owner:true});
         },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
       }
       Resource.find({topic:id}).sort({likes:-1}).then((resources)=>{
         if (req.session && req.session.userId) {
-          return res.render('topics/topic.hbs',{topic:topic,resources:resources,user:true});
+          return res.render('topics/topic.hbs',{topic:topic,resources:resources,user:req.session.userId});
         }
        return res.render('topics/topic.hbs',{topic:topic,resources:resources});
      },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
@@ -289,7 +291,7 @@ module.exports = (app)=>{
     var id = req.params.id // topic id
     Topic.findById(id).then((topic)=>{
       if (req.session && req.session.userId) {
-        return res.render('resources/resource-create.hbs',{topic:topic,user:true});
+        return res.render('resources/resource-create.hbs',{topic:topic,user:req.session.userId});
       }
       return res.render('resources/resource-create.hbs',{topic:topic});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Error with finding topic.'}))
@@ -322,9 +324,9 @@ module.exports = (app)=>{
       }
       Review.find({resource:id}).then((reviews)=>{
         if (req.session && req.session.userId && resource.createdBy===req.session.username) {
-          return res.render('resources/resource.hbs',{resource:resource,reviews:reviews,user:true,owner:true})
+          return res.render('resources/resource.hbs',{resource:resource,reviews:reviews,user:req.session.userId,owner:true})
         } else if (req.session && req.session.userId) {
-          return res.render('resources/resource.hbs',{resource:resource,reviews:reviews,user:true})
+          return res.render('resources/resource.hbs',{resource:resource,reviews:reviews,user:req.session.userId})
         }
         return res.render('resources/resource.hbs',{resource:resource,reviews:reviews})
       },(e)=> res.status(400).render('error.hbs',{error:"Reviews could not be found."}));
@@ -339,7 +341,7 @@ module.exports = (app)=>{
       if (resource.createdBy!==req.session.username) {
         return res.status(401).render('error.hbs',{error:"Only owner of resource can access this page"});
       }
-      return res.render('resources/resource-update.hbs',{resource:resource,user:true});
+      return res.render('resources/resource-update.hbs',{resource:resource,user:req.session.userId});
     }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
   })
 
@@ -373,7 +375,7 @@ module.exports = (app)=>{
       if (resource.createdBy!==req.session.username) {
         return res.status(401).render('error.hbs',{error:"Only owner of resource can access this page"});
       }
-      return res.render('resources/resource-delete.hbs',{resource:resource,user:true});
+      return res.render('resources/resource-delete.hbs',{resource:resource,user:req.session.userId});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
   })
 
@@ -508,7 +510,7 @@ module.exports = (app)=>{
       if (review.createdBy!==req.session.username) {
         return res.status(401).render('error.hbs',{error:"Only owner of review can access this page"});
       }
-      return res.render('reviews/review-update.hbs',{review:review,user:true});
+      return res.render('reviews/review-update.hbs',{review:review,user:req.session.userId});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
   })
 
@@ -580,7 +582,7 @@ module.exports = (app)=>{
       if (review.createdBy!==req.session.username) {
         return res.status(401).render('error.hbs',{error:"Only owner of review can access this page"});
       }
-      return res.render('reviews/review-delete.hbs',{review:review,user:true});
+      return res.render('reviews/review-delete.hbs',{review:review,user:req.session.userId});
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Page could not be rendered.'}))
   })
 
@@ -597,14 +599,14 @@ module.exports = (app)=>{
           if (!resource) {
             return res.status(404).render('error.hbs',{error:e});
           }
-          return res.redirect('/profile');
+          return res.redirect('/profile/'+req.session.userId);
         }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
       } else if (review.disliked===true){
         Resource.findOneAndUpdate({_id:review.resource},{$inc:{dislikes:-1},$pop:{postedUsers:username}},{new:true}).then((resource)=>{
           if (!resource) {
             return res.status(404).render('error.hbs',{error:e});
           }
-          return res.redirect('/profile');
+          return res.redirect('/profile/'+req.session.userId);
         }).catch((e)=>res.status(400).render('error.hbs',{error:'Resource could not be updated.'}));
       }
     }).catch((e)=>res.status(400).render('error.hbs',{error:e}));

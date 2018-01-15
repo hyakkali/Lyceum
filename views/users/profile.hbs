@@ -12,9 +12,9 @@
     <div class="center body">
       <div class="row">
         <div class="col-8 offset-left-2 userinfo">
-          <h1>Welcome <b class="green-text">{{user.first_name}} {{user.last_name}}</b>!</h1> <br>
-          <h3>{{user.email}}</h3> <br>
-          <h3>{{user.username}}</h3> <br>
+          <h1>Welcome <b class="green-text">{{signedUser.first_name}} {{signedUser.last_name}}</b>!</h1> <br>
+          <h3>{{signedUser.email}}</h3> <br>
+          <h3>{{signedUser.username}}</h3> <br>
 
           {{#if topics}}
             <h5>Your Topics:</h5> <br>
@@ -42,7 +42,7 @@
             {{/each}} <br>
           {{/if}}
 
-          <a href="/user-update">Update Your Profile</a> <br>
+          <a href="/user-update/{{user}}">Update Your Profile</a> <br>
           <a href="/">Go Back Home</a> <br>
           <a href="/topics">View Topics</a> <br>
           <a href="/logout">Logout</a>

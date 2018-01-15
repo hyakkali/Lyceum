@@ -52,7 +52,8 @@ describe('After logging in', ()=> {
 
   describe('GET /profile', ()=> {
     it('should get profile if authenticated', (done)=> {
-        testSession.get('/profile')
+      var id = users[1]._id.toHexString();
+        testSession.get('/profile/'+id)
         .expect(200)
         .end(done)
     });
@@ -635,8 +636,9 @@ describe('POST /register', ()=> {
 
 describe('GET /profile', ()=> {
   it('should return 401 if not authenticated', (done)=> {
+    var id = users[1]._id.toHexString();
     request(app)
-      .get('/profile')
+      .get('/profile/'+id)
       .expect(401)
       .end(done)
   });
