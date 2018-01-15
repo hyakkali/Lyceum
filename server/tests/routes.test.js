@@ -270,7 +270,7 @@ describe('After logging in', ()=> {
         })
     });
 
-    it('should do nothing if user already voted like', (done)=> {
+    it('should do remove a like if user already voted like', (done)=> {
       var id = resources[1]._id.toHexString();
       testSession.post('/like/'+id)
         .expect(302)
@@ -279,9 +279,9 @@ describe('After logging in', ()=> {
             return done(err);
           }
           Resource.findById(id).then((resource)=>{
-            expect(resource.likes).toBe(5) //originally 5
+            expect(resource.likes).toBe(4) //originally 5
             expect(resource.dislikes).toBe(3) //originally 3
-            expect(resource.hasLiked).toContain('spencer')
+            expect(resource.hasLiked).not.toContain('spencer')
             expect(resource.hasDisliked).not.toContain('spencer')
             done();
           }).catch((e)=>done(e));

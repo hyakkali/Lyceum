@@ -384,7 +384,12 @@ module.exports = (app)=>{
 
     Resource.findById(id).then((resource)=>{
       if (resource.hasLiked.indexOf(username)>-1) {
-        return res.redirect('back'); //reload same page
+        resource.likes-=1;
+        var index = resource.hasLiked.indexOf(username);
+        resource.hasLiked.splice(index,1);
+        resource.save().then((doc)=>{
+          return res.redirect('back'); //reload same page
+        }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
       } else if (resource.hasDisliked.indexOf(username)>-1) {
         resource.likes+=1;
         resource.dislikes-=1;
@@ -410,7 +415,12 @@ module.exports = (app)=>{
 
     Resource.findById(id).then((resource)=>{
       if (resource.hasDisliked.indexOf(username)>-1) {
-        return res.redirect('back'); //reload same page
+        resource.dislikes-=1;
+        var index = resource.hasDisliked.indexOf(username);
+        resource.hasDisliked.splice(index,1)
+        resource.save().then((doc)=>{
+          return res.redirect('back');
+        }).catch((e)=>res.status(400).render('error.hbs',{error:e}));
       } else if (resource.hasLiked.indexOf(username)>-1) {
         resource.dislikes+=1;
         resource.likes-=1;
