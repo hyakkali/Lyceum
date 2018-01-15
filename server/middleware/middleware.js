@@ -8,7 +8,7 @@ var requiresLogin = (req,res,next)=>{
   if (req.session && req.session.userId) {
     return next();
   }
-  res.status(401).render('auth/login_required.hbs');
+  res.status(401).render('users/login_required.hbs');
 }
 
 var requiresOwner = (req,res,next)=>{

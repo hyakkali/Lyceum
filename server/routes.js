@@ -128,7 +128,7 @@ module.exports = (app)=>{
 
 // Topic
 
-  app.get('/topic-create',(req,res)=>{
+  app.get('/topic-create',requiresLogin,(req,res)=>{
     if (req.session && req.session.userId) {
       return res.render('topics/topic-create.hbs',{user:true});
     }
@@ -280,7 +280,7 @@ module.exports = (app)=>{
 
   //RESOURCE
 
-  app.get('/resource-create/:id',(req,res)=>{
+  app.get('/resource-create/:id',requiresLogin,(req,res)=>{
     var id = req.params.id // topic id
     Topic.findById(id).then((topic)=>{
       if (req.session && req.session.userId) {
