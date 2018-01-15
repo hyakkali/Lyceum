@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="/js/libs/validator.min.js" charset="utf-8"></script>
+    {{> header}}
+    <title></title>
+  </head>
+  <body>
+    {{> navbar}}
+    <div class="wrapper960 center body">
+      <div class="col-12">
+        <h3 class="text-center">Login</h3> <br> <br>
+        <div id="errors"></div> <br>
+        <form action="/login" method="post" onsubmit="return validateForm()">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="text" class="form-control" id="email"name="email">
+          </div> <!-- end div form-group -->
+          <br>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" id="password"name="password">
+          </div> <!-- end div form-group -->
+          <script>
+          function validateForm() {
+            var email = document.getElementById('email');
+            var password = document.getElementById('password');
+            var div = document.getElementById('errors');
+            div.className = '';
+            div.innerHTML = '';
+            if (email.value.trim()===''||password.value.trim()==='') {
+              email.style.borderColor = "#E34234";
+              password.style.borderColor = "#E34234";
+              div.className += 'alert alert-danger';
+              div.innerHTML += 'Make sure to fill out all the fields!';
+              return false;
+            }
+            if (!validator.isEmail(email.value)) {
+              email.style.borderColor = "#E34234";
+              div.className += 'alert alert-danger';
+              div.innerHTML += 'Email must be valid!';
+              return false;
+            }
+            return true;
+          }
+          </script>
+          <br>
+          <button type="submit" class="btn green">Login</button>
+        </form>
+        <br>
+        <a href="/register">Create an account</a>
+      </div> <!-- end div col-sm-6 col-sm-offset-3 -->
+    </div> <!-- end div container -->
+
+    {{> footer}}
+
+  </body>
+</html>
