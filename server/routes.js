@@ -272,16 +272,17 @@ module.exports = (app)=>{
         return res.status(404).render('error.hbs',{error:'Topic could not be found.'});
       }
       if (topic.createdBy===req.session.username) {
-        Resource.find({topic:id}).then((resources)=>{
+        Resource.find({topic:id}).sort({likes:-1}).then((resources)=>{
           return res.render('topics/topic.hbs',{topic:topic,resources:resources,user:req.session.userId,owner:true});
         },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
+      } else {
+        Resource.find({topic:id}).sort({likes:-1}).then((resources)=>{
+          if (req.session && req.session.userId) {
+            return res.render('topics/topic.hbs',{topic:topic,resources:resources,user:req.session.userId});
+          }
+         return res.render('topics/topic.hbs',{topic:topic,resources:resources});
+       },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
       }
-      Resource.find({topic:id}).sort({likes:-1}).then((resources)=>{
-        if (req.session && req.session.userId) {
-          return res.render('topics/topic.hbs',{topic:topic,resources:resources,user:req.session.userId});
-        }
-       return res.render('topics/topic.hbs',{topic:topic,resources:resources});
-     },(e)=> res.status(400).render('error.hbs',{error:"Resources could not be found."}));
     }).catch((e)=>res.status(400).render('error.hbs',{error:'Topic could not be rendered.'}));
   });
 
