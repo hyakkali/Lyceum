@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 
 var UserSchema = new mongoose.Schema({
   first_name:{
@@ -67,7 +67,7 @@ UserSchema.statics.authenticate = function(email,password,callback){
 
 UserSchema.pre('save',function (next) {
   var user = this;
-  bcrypt.hash(user.password,10,function (err,hash) {
+  bcryptjs.hash(user.password,10,function (err,hash) {
     if (err) {
       return next(err);
     }
